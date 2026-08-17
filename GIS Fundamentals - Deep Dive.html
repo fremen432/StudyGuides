@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GIS Fundamentals — Study Guide</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- Applies stored theme/sidebar prefs BEFORE first paint — prevents both a flash of the
+       wrong theme and the sidebar visibly snapping from expanded to collapsed on load. Must
+       run synchronously and this early; script.js is intentionally NOT the place for this
+       (it only runs after the whole page, including the sidebar, has already painted once). -->
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <!-- Icon sprite: hidden <symbol> defs referenced everywhere else via <svg class="sg-icon">
+       <use href="#icon-name"></use></svg>. See template.html in the study-guide-maker skill for
+       the authoritative copy of this block and how to add more icons. -->
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">GIS Fundamentals</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-05 &middot; General, software-agnostic GIS concepts — applies to any GIS or CAD environment</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Deep Dive</span>
+                  <span class="sg-badge">Beginner &rarr; Expert</span>
+                  <span class="sg-badge">Focus: Coordinate Reference Systems</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2 data-toc="Contents">Contents</h2>
+          <ul class="sg-contents-list">
+            <li><a href="#what-is-gis">What Is GIS?</a>
+              <ul>
+                <li><a href="#vector-vs-raster-the-two-data-models">Vector vs. Raster — the two data models</a></li>
+                <li><a href="#layers">Layers</a></li>
+                <li><a href="#attribute-data">Attribute data</a></li>
+                <li><a href="#feature-classes-shapefiles-geodatabases">Feature classes, shapefiles, geodatabases</a></li>
+              </ul>
+            </li>
+            <li><a href="#coordinate-reference-systems-the-big-picture">Coordinate Reference Systems — The Big Picture</a></li>
+            <li><a href="#datums-modeling-the-shape-of-the-earth">Datums: Modeling the Shape of the Earth</a>
+              <ul>
+                <li><a href="#ellipsoid-vs-geoid">Ellipsoid vs. geoid</a></li>
+                <li><a href="#horizontal-vs-vertical-datums">Horizontal vs. vertical datums</a></li>
+                <li><a href="#the-datums-youll-actually-run-into">The datums you'll actually run into</a></li>
+              </ul>
+            </li>
+            <li><a href="#geographic-vs-projected-coordinate-systems">Geographic vs. Projected Coordinate Systems</a>
+              <ul>
+                <li><a href="#every-projection-trades-off-distortion-never-eliminates-it">Every projection trades off distortion — never eliminates it</a></li>
+              </ul>
+            </li>
+            <li><a href="#epsg-wgs-nad-what-the-acronyms-actually-mean">EPSG, WGS, NAD — What the Acronyms Actually Mean</a></li>
+            <li><a href="#where-does-a-crs-actually-live-environment-vs-file-vs-layer">Where Does a CRS Actually Live? Environment vs. File vs. Layer</a></li>
+            <li><a href="#diagnosing-repairing-crs-mismatches">Diagnosing &amp; Repairing CRS Mismatches</a>
+              <ul>
+                <li><a href="#a-practical-checklist">A practical checklist</a></li>
+              </ul>
+            </li>
+            <li><a href="#reprojecting-vs-redefining-getting-layers-to-snap-together">Reprojecting vs. Redefining — Getting Layers to "Snap" Together</a>
+              <ul>
+                <li><a href="#on-the-fly-vs-permanent">On-the-fly vs. permanent</a></li>
+              </ul>
+            </li>
+            <li><a href="#how-different-environment-types-handle-crs-general-categories">How Different Environment Types Handle CRS (General Categories)</a></li>
+            <li><a href="#surface-adjustment-factor-combined-scale-factor">Surface Adjustment Factor (Combined Scale Factor)</a></li>
+            <li><a href="#how-different-industries-use-gis">How Different Industries Use GIS</a>
+              <ul>
+                <li><a href="#transportation-civil-engineering">Transportation / civil engineering</a></li>
+                <li><a href="#surveying">Surveying</a></li>
+                <li><a href="#military">Military</a></li>
+              </ul>
+            </li>
+            <li><a href="#quick-reference-glossary">Quick-Reference Glossary</a>
+              <ul>
+                <li><a href="#which-crs-problem-do-i-have-compressed">Which CRS problem do I have? (compressed)</a></li>
+              </ul>
+            </li>
+            <li><a href="#index-sources">Index &amp; Sources</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 data-toc="What Is GIS?">What Is GIS?</h2>
+          <p>A Geographic Information System (GIS) is technology for creating, managing, analyzing, and
+          mapping data by connecting <strong>location</strong> to <strong>descriptive information</strong>.
+          Every GIS answers the same basic question over and over: <em>"what is at this location, and what
+          do we know about it?"</em> — then lets you query, combine, and visualize the answers across
+          thousands of locations at once.</p>
+
+          <h3 data-toc="Vector vs. Raster">Vector vs. Raster — the two data models</h3>
+          <table>
+            <thead><tr><th></th><th>Vector</th><th>Raster</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Structure</strong></td><td>Discrete features: points, lines, polygons</td><td>A grid of cells (pixels), each holding one value</td></tr>
+              <tr><td><strong>Good for</strong></td><td>Parcels, roads, utility lines, buildings — things with a crisp boundary</td><td>Continuous surfaces — elevation, temperature, imagery, land cover</td></tr>
+              <tr><td><strong>Carries attributes via</strong></td><td>An attribute table, one row per feature</td><td>The cell value itself (and often a lookup/legend)</td></tr>
+              <tr><td><strong>Common formats</strong></td><td>Shapefile, GeoPackage, geodatabase feature class</td><td>GeoTIFF, IMG, DEM</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Layers</h3>
+          <p>A GIS map is built from <strong>layers</strong> — separate thematic datasets (parcels, roads,
+          flood zones, aerial imagery) stacked and drawn together. Each layer is independent: it can be
+          turned on/off, symbolized differently, and — critically for this guide — <strong>can carry its
+          own coordinate reference system</strong>, reconciled with the others at display time.</p>
+
+          <h3>Attribute data</h3>
+          <p>Every spatial feature (a point, line, or polygon) is paired with non-spatial
+          <strong>attribute data</strong> in a table — a road's name and speed limit, a parcel's owner and
+          assessed value. The geometry answers "where," the attributes answer "what."</p>
+
+          <h3 data-toc="Classes &amp; Shapefiles">Feature classes, shapefiles, geodatabases</h3>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>A <strong>shapefile</strong> isn't one file — it's a set of files (<code>.shp</code>
+            geometry, <code>.dbf</code> attributes, <code>.shx</code> index, and critically
+            <code>.prj</code> — the CRS definition) that together form one <strong>feature class</strong>
+            (one theme of features, all the same geometry type). A <strong>geodatabase</strong> is a
+            container that holds many feature classes and tables together, often adding relationships,
+            domains, and topology rules a loose shapefile can't.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="CRS — The Big Picture">Coordinate Reference Systems — The Big Picture</h2>
+          <p>This is the concept behind almost every "why doesn't this line up" problem in GIS, so it's
+          worth building the mental model carefully before anything else.</p>
+
+          <p>The Earth is a lumpy, roughly spherical 3D object. A map is flat. You cannot represent a
+          curved surface on a flat one without <strong>stretching, skewing, or tearing it</strong> —
+          some distortion is mathematically unavoidable. A <strong>Coordinate Reference System (CRS)</strong>
+          is the complete rulebook that says exactly how a set of numbers (like <code>34.05, -118.24</code>
+          or <code>6,481,203, 1,842,991</code>) maps to one specific real-world location, including which
+          distortions were accepted and where.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> The one sentence that unlocks everything else</div>
+            <p>A CRS is always a bundle of <strong>(1) a datum</strong> — the model of the Earth's shape and
+            a fixed reference point — <strong>plus (2) a coordinate system type</strong> (geographic or
+            projected) <strong>and, if projected, (3) a specific projection method and units.</strong> Two
+            files can both be "correct" and still not overlay, because they're using different bundles.</p>
+          </div>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">From Lumpy Real Earth to Flat Map: Three Layers of Abstraction</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel">
+                <div class="sg-diagram-panel-header"><div class="sg-diagram-panel-title">1. The Geoid</div></div>
+                <div class="sg-diagram-shape-blob accent"></div>
+                <div class="sg-diagram-caption">Earth's true, lumpy shape (mean sea-level surface)</div>
+              </div>
+              <div class="sg-diagram-arrow-right"><div class="arrow-glyph">&#8594;</div><div class="arrow-caption">a datum<br>fits this...</div></div>
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header"><div class="sg-diagram-panel-title">2. The Ellipsoid (Datum)</div></div>
+                <div class="sg-diagram-shape-ellipse tip"></div>
+                <div class="sg-diagram-caption">Best-fit smooth ellipse — e.g. GRS80, WGS84</div>
+              </div>
+              <div class="sg-diagram-arrow-right"><div class="arrow-glyph">&#8594;</div><div class="arrow-caption">a projection<br>flattens this...</div></div>
+              <div class="sg-diagram-panel formula">
+                <div class="sg-diagram-panel-header"><div class="sg-diagram-panel-title">3. The Projection</div></div>
+                <div class="sg-diagram-mini-grid formula">
+                  <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                </div>
+                <div class="sg-diagram-caption">Flat X/Y grid — always distorts something</div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer tip">
+              <strong>Key point:</strong> A "datum" answers <strong>"what shape is the Earth, and where's the origin point?"</strong> — a "projection" answers <strong>"how do I flatten that shape onto a screen or paper?"</strong> A CRS is always both of these, bundled together.
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Datums">Datums: Modeling the Shape of the Earth</h2>
+          <p>A <strong>datum</strong> is a reference framework: it picks a specific mathematical
+          <strong>ellipsoid</strong> (a smooth, squashed sphere that approximates Earth's shape) and pins it
+          to the real Earth at a defined origin and orientation. Everything downstream — every coordinate —
+          is measured relative to that framework.</p>
+
+          <h3 data-toc="Ellipsoid vs. Geoid">Ellipsoid vs. geoid</h3>
+          <p>The <strong>geoid</strong> is Earth's true, irregular shape — the surface of equal gravitational
+          potential that mean sea level actually follows, bumpy because Earth's mass isn't evenly
+          distributed. The <strong>ellipsoid</strong> is the smooth mathematical stand-in used for
+          coordinate math, chosen to fit the geoid as closely as practical for a given region or for the
+          whole globe.</p>
+
+          <h3 data-toc="Horizontal vs. Vertical">Horizontal vs. vertical datums</h3>
+          <p>These are independent choices that are easy to conflate: a <strong>horizontal datum</strong>
+          (e.g. NAD83, WGS84) governs latitude/longitude positioning. A <strong>vertical datum</strong>
+          (e.g. NAVD88, NGVD29) governs elevation — measured from a different reference (a geoid model or a
+          tidal benchmark, not the ellipsoid). A file can have the right horizontal datum and the wrong
+          vertical one, or vice versa.</p>
+
+          <h3 data-toc="Common Datums">The datums you'll actually run into</h3>
+          <table>
+            <thead><tr><th>Datum</th><th>Established</th><th>Basis</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><strong>NAD27</strong></td><td>1927</td><td>Clarke 1866 ellipsoid, single ground origin at Meades Ranch, Kansas</td><td>Legacy — pre-satellite, regionally distorted by up to several meters</td></tr>
+              <tr><td><strong>NAD83</strong></td><td>1983 (multiple later realizations)</td><td>GRS80 ellipsoid, Earth-centered, satellite-derived</td><td>Modern standard for US/Canada/Mexico surveying and most state plane systems</td></tr>
+              <tr><td><strong>WGS84</strong></td><td>1984 (updated realizations since)</td><td>WGS84 ellipsoid, Earth-centered</td><td>Global military/GPS standard — what your phone's GPS actually broadcasts in</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common trap</div>
+            <p>NAD83 and WGS84 are often treated as interchangeable — and for most everyday mapping they're
+            close enough to ignore. But they are <strong>not identical</strong>: they've diverged by roughly
+            1-2 meters in North America due to different realizations and real tectonic plate motion since
+            1983. For sub-meter precision work (survey, construction stakeout), that gap matters.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Geographic vs. Projected">Geographic vs. Projected Coordinate Systems</h2>
+          <p>Every CRS is one of these two types:</p>
+
+          <ul>
+            <li><strong>Geographic Coordinate System (GCS)</strong> — latitude/longitude on the curved
+            ellipsoid itself. Units are <em>angular</em> (degrees). Nothing has been flattened yet.</li>
+            <li><strong>Projected Coordinate System (PCS)</strong> — the geographic coordinates have been
+            run through a mathematical <strong>projection</strong> onto a flat plane. Units are
+            <em>linear</em> (meters or feet), and the result is a straight, square grid.</li>
+          </ul>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Geographic vs. Projected Coordinate Systems</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header"><div class="sg-diagram-panel-title">Geographic (Unprojected)</div></div>
+                <div class="sg-diagram-globe tip">
+                  <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.7">
+                    <ellipse cx="50" cy="50" rx="20" ry="50"/>
+                    <ellipse cx="50" cy="50" rx="40" ry="50"/>
+                    <path d="M 0 50 Q 50 35 100 50"/>
+                    <path d="M 0 50 Q 50 65 100 50"/>
+                    <path d="M 8 25 Q 50 12 92 25"/>
+                    <path d="M 8 75 Q 50 88 92 75"/>
+                  </svg>
+                </div>
+                <div class="sg-diagram-caption">Latitude / Longitude<br>Angular units (degrees)<br>Curved graticule follows the globe<br>e.g. WGS84 (EPSG:4326)</div>
+              </div>
+              <div class="sg-diagram-arrow-right"><div class="arrow-glyph">&#8594;</div><div class="arrow-caption">a projection<br>transforms</div></div>
+              <div class="sg-diagram-panel formula">
+                <div class="sg-diagram-panel-header"><div class="sg-diagram-panel-title">Projected ("Grid")</div></div>
+                <div class="sg-diagram-mini-grid formula">
+                  <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                </div>
+                <div class="sg-diagram-caption">Easting / Northing (X / Y)<br>Linear units (meters or feet)<br>Straight, square grid on a flat plane<br>e.g. UTM Zone, State Plane (EPSG:26914...)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> "Projected map vs. grid map" — these aren't two different things</div>
+            <p>Colloquially, a "grid map" almost always just means a <strong>projected</strong> coordinate
+            system — the straight grid lines (UTM grid, State Plane grid) are simply what a projection looks
+            like once it's flattened. There isn't a separate third category; "grid" describes a visual/
+            structural property that projected systems have and geographic systems don't.</p>
+          </div>
+
+          <h3 data-toc="Projection Trade-offs">Every projection trades off distortion — never eliminates it</h3>
+          <table>
+            <thead><tr><th>Projection family</th><th>Preserves</th><th>Sacrifices</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Conformal</strong></td><td>Local angles and shapes</td><td>Area and distance</td></tr>
+              <tr><td><strong>Equal-area</strong></td><td>Relative size/area</td><td>Angles and shape</td></tr>
+              <tr><td><strong>Equidistant</strong></td><td>Distance from a specific point or line</td><td>Everything else, away from that point/line</td></tr>
+              <tr><td><strong>Compromise</strong></td><td>A moderate balance of all properties</td><td>Perfection in any one — good for whole-world reference maps</td></tr>
+            </tbody>
+          </table>
+          <p>Choosing a projection is choosing <em>which</em> distortion you can live with, based on your
+          map's extent, scale, and purpose — the goal is minimizing distortion where it matters most for
+          your use case, not eliminating it everywhere (impossible).</p>
+        </section>
+
+        <section>
+          <h2 data-toc="EPSG, WGS, NAD">EPSG, WGS, NAD — What the Acronyms Actually Mean</h2>
+          <table>
+            <thead><tr><th>Acronym</th><th>Stands for</th><th>What it actually is</th></tr></thead>
+            <tbody>
+              <tr><td><strong>EPSG</strong></td><td>European Petroleum Survey Group</td><td>A registry of standardized CRS codes (e.g. <code>EPSG:4326</code>, <code>EPSG:26914</code>). Originated in the 1980s oil &amp; gas industry, which needed consistent geodetic parameters for exploration crossing international borders. Now maintained by the IOGP, but the "EPSG code" name stuck industry-wide as the universal shorthand for "which CRS."</td></tr>
+              <tr><td><strong>WGS</strong></td><td>World Geodetic System</td><td>A global geodetic standard maintained by the US National Geospatial-Intelligence Agency (formerly DMA). <strong>WGS84</strong> (the 1984 realization, since refined) is the reference frame GPS satellites themselves broadcast in — it's the closest thing to a universal default.</td></tr>
+              <tr><td><strong>NAD</strong></td><td>North American Datum</td><td>The geodetic reference system for the continental control network across the US, Canada, and Mexico. <strong>NAD27</strong> (1927) was ground-survey based; <strong>NAD83</strong> (1983) rebuilt it on satellite geodesy and remains the standard for most US state/local coordinate systems today.</td></tr>
+            </tbody>
+          </table>
+          <p>The throughline: all three exist because different communities (oil &amp; gas, military/GPS,
+          continental surveying) each needed a precise, shared, unambiguous way to say "this exact spot on
+          Earth" — and each built their own standard before anyone unified them. That's also why so many
+          overlapping systems still coexist today.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Where a CRS Lives">Where Does a CRS Actually Live? Environment vs. File vs. Layer</h2>
+          <p>This is the question behind most real-world CRS headaches, including CAD-to-GIS exports that
+          land in the wrong place.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Where Does a CRS Actually Live?</div>
+            <div class="sg-diagram-row">
+
+              <div class="sg-diagram-panel warning">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title warning-text">CAD-Style Environment</div>
+                  <div class="sg-diagram-panel-sub">(e.g. a civil design file)</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title">ONE Working Coordinate System</div>
+                  <div class="sg-diagram-box-sub">for the whole file/environment</div>
+                </div>
+                <div class="sg-diagram-shapes">
+                  <div class="sg-diagram-shape-line"></div>
+                  <div class="sg-diagram-shape-circle"></div>
+                  <div class="sg-diagram-shape-rect"></div>
+                  <div class="sg-diagram-shape-triangle"></div>
+                </div>
+                <div class="sg-diagram-caption">All elements share raw design X/Y — may be local/arbitrary, not geographic, unless explicitly georeferenced</div>
+              </div>
+
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Desktop-GIS-Style Environment</div>
+                  <div class="sg-diagram-panel-sub">(e.g. a mapping project)</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title accent-text">MANY Layers, each with its OWN CRS</div>
+                </div>
+                <div class="sg-diagram-box">Layer A — parcels &middot; EPSG:26914</div>
+                <div class="sg-diagram-box">Layer B — imagery &middot; EPSG:3857</div>
+                <div class="sg-diagram-box">Layer C — GPS points &middot; EPSG:4326</div>
+                <div class="sg-diagram-arrow-down accent">&#8595;</div>
+                <div class="sg-diagram-box accent center">
+                  <div class="sg-diagram-box-title">On-the-fly reprojection engine</div>
+                  <div class="sg-diagram-box-sub">(math only — source files untouched)</div>
+                </div>
+                <div class="sg-diagram-arrow-down accent">&#8595;</div>
+                <div class="sg-diagram-box tip center">
+                  <div class="sg-diagram-box-title">Project CRS — one shared display frame</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="sg-diagram-footer">
+              <strong>Why exports go wrong:</strong> a CAD export often carries raw numbers with no CRS tag — GIS then guesses, or assumes its own default, and gets it wrong.
+            </div>
+          </div>
+
+          <table>
+            <thead><tr><th></th><th>CAD-style environment</th><th>Desktop-GIS-style environment</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CRS scope</strong></td><td>One working coordinate system for the entire drawing/file</td><td>Each layer carries its own CRS independently</td></tr>
+              <tr><td><strong>If undefined</strong></td><td>Coordinates are just raw numbers — often a local/arbitrary design origin, not a real geographic location at all</td><td>The app typically forces you to specify or guess a CRS on import — silent guesses are the danger point</td></tr>
+              <tr><td><strong>Reconciling multiple sources</strong></td><td>Usually manual — everything gets drawn/translated into the one working system by the user</td><td>Automatic, on-the-fly reprojection for display; source files aren't altered unless you explicitly export/transform</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> This is why CAD-to-GIS exports go wrong</div>
+            <p>A CAD design file frequently uses <strong>local, project-specific coordinates</strong> (e.g.
+            an arbitrary origin near <code>0,0</code>, or "ground" coordinates scaled for construction
+            convenience) that were never true geographic coordinates in the first place. When that file is
+            exported to a shapefile with no (or an incorrect) CRS tag, the receiving GIS either flags it as
+            undefined or — worse — silently assumes a default CRS that's wrong. The result: your CAD
+            elements land somewhere on Earth, just not where you expect, because the numbers were never
+            claiming to be real-world coordinates to begin with.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="CRS Mismatches">Diagnosing &amp; Repairing CRS Mismatches</h2>
+          <p>Every mismatch symptom points to a specific likely cause and fix. Work through this before
+          reprojecting blindly:</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">"Why Don't My Layers Line Up?" — A Diagnostic Flowchart</div>
+            <div class="sg-diagram-flow-root">My layers don't align</div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-flow-branches">
+
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box warning center">
+                  <div class="sg-diagram-box-title">Symptom:</div>
+                  <div>Layer lands in the ocean / wrong continent entirely</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box">
+                  <div class="sg-diagram-box-title">Likely cause:</div>
+                  <div class="sg-diagram-box-sub">X/Y (long/lat) axes swapped, or no CRS defined and the app assumed the wrong default</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent">
+                  <div class="sg-diagram-box-title">Fix:</div>
+                  <div class="sg-diagram-box-sub">Check the coordinate order and explicitly assign the correct source CRS</div>
+                </div>
+              </div>
+
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box warning center">
+                  <div class="sg-diagram-box-title">Symptom:</div>
+                  <div>Close, but offset by meters to kilometers</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box">
+                  <div class="sg-diagram-box-title">Likely cause:</div>
+                  <div class="sg-diagram-box-sub">Different datum (NAD27 vs NAD83) or wrong UTM / State Plane zone</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent">
+                  <div class="sg-diagram-box-title">Fix:</div>
+                  <div class="sg-diagram-box-sub">Reproject using the correct datum transformation and the correct zone</div>
+                </div>
+              </div>
+
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box warning center">
+                  <div class="sg-diagram-box-title">Symptom:</div>
+                  <div>Right shape, wrong size / doesn't quite fit</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box">
+                  <div class="sg-diagram-box-title">Likely cause:</div>
+                  <div class="sg-diagram-box-sub">Unit mismatch (feet vs meters), or ground vs grid coordinates (scale factor)</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent">
+                  <div class="sg-diagram-box-title">Fix:</div>
+                  <div class="sg-diagram-box-sub">Check the unit metadata; apply/remove the combined scale factor as needed</div>
+                </div>
+              </div>
+
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box warning center">
+                  <div class="sg-diagram-box-title">Symptom:</div>
+                  <div>CRS shows "unknown" / undefined on import</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box">
+                  <div class="sg-diagram-box-title">Likely cause:</div>
+                  <div class="sg-diagram-box-sub">Raw CAD export (e.g. from OpenRoads/MicroStation) — coordinates were never geo</div>
+                </div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent">
+                  <div class="sg-diagram-box-title">Fix:</div>
+                  <div class="sg-diagram-box-sub">DEFINE the correct CRS — confirm with the designer/surveyor what system it's in</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="sg-diagram-footer"><strong>Golden rule:</strong> "Define" fixes a mislabeled CRS without moving coordinates. "Reproject" moves coordinates into a different CRS. Never guess which one you need.</div>
+          </div>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> The master distinction: Define vs. Reproject</div>
+            <p><strong>Define (a.k.a. "assign")</strong> tells the software what CRS the existing
+            coordinates are already in — it changes metadata only, <strong>the numbers never move</strong>.
+            Use this when a file's CRS is missing or mislabeled. <strong>Reproject (a.k.a. "transform")</strong>
+            mathematically converts coordinates from one CRS into another — <strong>the numbers change</strong>.
+            Use this when the file's CRS is correctly known but you need it in a different system.
+            Reprojecting a file that actually just needed a correct CRS definition moves it to a
+            confidently wrong location — this is the single most common CRS mistake.</p>
+          </div>
+
+          <h3>A practical checklist</h3>
+          <ol>
+            <li>Check what CRS each file/layer actually claims (for a shapefile, that's the <code>.prj</code>
+            sidecar file — if it's missing, the shapefile has no CRS at all).</li>
+            <li>Check units explicitly — feet vs. meters mismatches look exactly like "wrong scale" symptoms.</li>
+            <li>Sanity-check the coordinate values themselves: geographic coordinates are small (roughly
+            -180 to 180 / -90 to 90); projected coordinates are large numbers in the thousands-to-millions,
+            and their magnitude is a strong clue to which zone/system they belong to.</li>
+            <li>For a CAD export specifically: confirm with whoever produced the design file what
+            coordinate system (if any) the "ground" or "design" coordinates were actually meant to
+            represent — this is metadata that often only exists in someone's head, not in the file.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 data-toc="Reproject vs. Redefine">Reprojecting vs. Redefining — Getting Layers to "Snap" Together</h2>
+          <p>Once you know a mismatch is a genuine CRS difference (not a missing definition), reconciling
+          two layers means picking one target CRS and getting everything into it — either temporarily
+          (on-the-fly, for display only) or permanently (an explicit transform/export).</p>
+
+          <h3>On-the-fly vs. permanent</h3>
+          <p><strong>On-the-fly reprojection</strong> is what most modern GIS does automatically: it
+          displays every layer correctly aligned in the project's CRS without touching the source files'
+          actual stored coordinates. <strong>Permanent reprojection</strong> physically rewrites a file's
+          coordinates into a new CRS — needed when you're handing data to a system (or a person) that
+          doesn't reproject on the fly, like many CAD environments.</p>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Multiple transformation paths can exist between the same two datums</div>
+            <p>Going from NAD27 to NAD83, for example, isn't a single fixed formula — several
+            grid-shift/transformation methods exist with different accuracy characteristics for different
+            regions. Picking the wrong one silently introduces meters of error that look identical to "it
+            worked" until you check against a known-accurate reference point.</p>
+          </div>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Always verify after reprojecting</div>
+            <p>Overlay the result against one layer you already trust (a basemap, a known survey point).
+            "The software didn't error" is not the same as "it's actually correct."</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="CRS Environments">How Different Environment Types Handle CRS (General Categories)</h2>
+          <p>Kept deliberately conceptual — these are behavioral <em>categories</em>, not a tutorial for
+          any specific product, since the same pattern shows up across many tools in each category.</p>
+
+          <table>
+            <thead><tr><th></th><th>CAD-oriented (design software)</th><th>Desktop GIS</th><th>Consumer/web mapping</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CRS granularity</strong></td><td>One per file/environment</td><td>One per layer, plus a project display CRS</td><td>Fixed — not user-configurable</td></tr>
+              <tr><td><strong>If undefined</strong></td><td>Treated as arbitrary local coordinates, no error raised</td><td>Usually prompts you to specify, or flags "unknown"</td><td>Not applicable — there's no undefined state to hit</td></tr>
+              <tr><td><strong>Typical native CRS</strong></td><td>Whatever the designer set up — often a local/ground system</td><td>Varies by project; commonly a regional projected system</td><td>Almost always WGS84 (geographic) or Web Mercator (projected, EPSG:3857)</td></tr>
+              <tr><td><strong>Reprojection</strong></td><td>Usually manual/explicit</td><td>Automatic on-the-fly, plus explicit transform tools</td><td>Invisible — handled internally, no user control</td></tr>
+            </tbody>
+          </table>
+          <p>The practical upshot: exporting from a CAD-oriented tool into a GIS-oriented tool crosses from
+          a world where CRS is often implicit/optional into a world where it's mandatory and explicit — that
+          seam is where most mismatches are born.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Scale Factor">Surface Adjustment Factor (Combined Scale Factor)</h2>
+          <p>Even with a perfectly matched CRS, a distance you measure on the physical ground and the same
+          distance computed from map coordinates will differ slightly — because of two compounding
+          effects.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Ground Distance vs. Grid Distance</div>
+            <!-- Inline SVG (not a separate .svg file loaded via <img>) so the curves can use
+                 currentColor and actually theme-switch with the page — the three surfaces here
+                 are genuinely curved and CSS can't draw that cleanly, but that's no reason to
+                 lose dark-mode support the way an external SVG file would. -->
+            <svg viewBox="0 0 780 330" style="width:100%; height:auto; display:block;" font-family="Segoe UI, sans-serif">
+              <g style="color: var(--accent);">
+                <text x="390" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Physical ground surface (at elevation)</text>
+                <path d="M 60 88 Q 250 56 440 80 Q 560 96 700 70" fill="none" stroke="currentColor" stroke-width="3"/>
+                <circle cx="90" cy="85" r="5" fill="currentColor"/>
+                <circle cx="670" cy="73" r="5" fill="currentColor"/>
+              </g>
+              <g style="color: var(--text);">
+                <text x="90" y="70" text-anchor="middle" font-size="10.5" fill="currentColor">Point A</text>
+                <text x="670" y="58" text-anchor="middle" font-size="10.5" fill="currentColor">Point B</text>
+              </g>
+              <text x="390" y="113" text-anchor="middle" font-size="11" fill="var(--text-dim)">"Ground distance" — what a tape or GPS measures on-site</text>
+
+              <g style="color: var(--tip-border);">
+                <text x="390" y="160" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Ellipsoid surface (sea level / datum)</text>
+                <path d="M 60 193 Q 250 176 440 188 Q 560 196 700 180" fill="none" stroke="currentColor" stroke-width="3"/>
+              </g>
+              <text x="390" y="216" text-anchor="middle" font-size="11" fill="var(--text-dim)">shrunk by the "elevation factor"</text>
+
+              <g style="color: var(--formula-border);">
+                <text x="390" y="263" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">Projected grid plane (the map's flat X/Y)</text>
+                <line x1="60" y1="283" x2="700" y2="283" stroke="currentColor" stroke-width="3"/>
+              </g>
+              <text x="390" y="303" text-anchor="middle" font-size="11" fill="var(--text-dim)">further adjusted by the projection's "grid scale factor"</text>
+
+              <g style="color: var(--border);">
+                <line x1="90" y1="90" x2="90" y2="283" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <line x1="670" y1="78" x2="670" y2="283" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+              </g>
+            </svg>
+            <div class="sg-diagram-footer formula">
+              <div class="sg-diagram-footer-title">Combined Scale Factor = Elevation Factor &times; Grid Scale Factor</div>
+              <div class="sg-diagram-footer-line dim">Ground: 5,280.00 ft &#8594; Ellipsoid: 5,279.79 ft (&#215; 0.999960) &#8594; Grid: 5,279.26 ft (&#215; 0.999899)</div>
+              <div class="sg-diagram-footer-line">Matters most for civil design/stakeout at high elevation or over long distances — grid and ground distances noticeably diverge.</div>
+            </div>
+          </div>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> The formula</div>
+            <p><code>Combined Scale Factor = Elevation Factor &times; Grid Scale Factor</code></p>
+            <p style="margin-top:0.5rem;"><strong>Elevation factor</strong> accounts for your site being
+            above (or below) the ellipsoid's reference surface — ground distances at elevation are
+            physically longer than the equivalent ellipsoid distance. <strong>Grid scale factor</strong>
+            accounts for the projection's own distortion at that specific location within its zone.</p>
+          </div>
+
+          <p><strong>Why it matters:</strong> in civil design and construction, a distance measured
+          directly on-site ("ground distance") will not match the same distance computed from projected
+          "grid" coordinates unless this factor is applied. For short distances at low elevation the gap is
+          negligible; for long corridors or high-elevation sites, it accumulates into real, costly error —
+          which is exactly why civil/survey deliverables often explicitly state whether their coordinates
+          are "ground" or "grid," and why reconciling a CAD "ground" coordinate system with a GIS "grid"
+          system is its own common mismatch category, distinct from a wrong datum or projection.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="GIS by Industry">How Different Industries Use GIS</h2>
+
+          <h3 data-toc="Transportation / Civil">Transportation / civil engineering</h3>
+          <p>Corridor and alignment design, drainage and hydraulic modeling, pavement and asset management,
+          and increasingly, feeding CAD design deliverables into enterprise GIS asset-management systems
+          for the life of the infrastructure after construction — which is exactly where the CAD-to-GIS CRS
+          handoff problem from earlier sections shows up in daily practice.</p>
+
+          <h3>Surveying</h3>
+          <p>Surveyors maintain and extend <strong>geodetic control networks</strong> — physical
+          <strong>benchmark monuments</strong> with precisely known coordinates that everything else gets
+          tied back to — and produce the legal boundary descriptions that property records depend on. Their
+          work is the ultimate source of "ground truth" that datums and adjustment factors exist to
+          faithfully preserve.</p>
+
+          <figure>
+            <img src="images/gis-fundamentals/ngs-survey-benchmark-disks.jpg" alt="Photo of standard bronze geodetic survey benchmark disks used by the US National Geodetic Survey">
+            <figcaption>Standard US National Geodetic Survey benchmark disks — physical monuments with precisely known coordinates that control networks are built from. Source: <a href="https://commons.wikimedia.org/wiki/File:Standard_marks_of_the_US_NOS_NGS.jpg" target="_blank" rel="noopener">NOAA / Wikimedia Commons</a> (public domain).</figcaption>
+          </figure>
+
+          <h3>Military</h3>
+          <p>Terrain analysis, logistics, and targeting rely heavily on the
+          <strong>Military Grid Reference System (MGRS)</strong> — a global system built directly on top of
+          the UTM projected grid, letting any location be expressed as a compact alphanumeric string instead
+          of long coordinate numbers. It's a direct, practical descendant of the geographic-vs-projected
+          distinction from Section 4.</p>
+
+          <figure>
+            <img src="images/gis-fundamentals/usgs-utm-vs-latlong-topo-map.jpg" alt="USGS topographic map showing both latitude/longitude tick marks and UTM grid lines overlaid on the same map">
+            <figcaption>A USGS topo map showing both geographic (lat/long) reference marks and projected UTM grid lines on the same sheet — the two coordinate systems literally overlaid. Source: <a href="https://www.usgs.gov/media/images/utm-and-latitudelongitude-coordinates-a-topographic-map" target="_blank" rel="noopener">USGS.gov</a> (public domain).</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="Glossary">Quick-Reference Glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>One-line definition</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CRS</strong></td><td>The complete rulebook mapping coordinate numbers to real-world locations: datum + coordinate system type + (if projected) projection + units</td></tr>
+              <tr><td><strong>Datum</strong></td><td>A reference ellipsoid pinned to the Earth at a defined origin/orientation</td></tr>
+              <tr><td><strong>Ellipsoid</strong></td><td>The smooth mathematical shape standing in for the Earth's true surface</td></tr>
+              <tr><td><strong>Geoid</strong></td><td>The Earth's true, irregular, gravity-based shape</td></tr>
+              <tr><td><strong>Geographic CS</strong></td><td>Lat/long on the curved ellipsoid; angular units (degrees)</td></tr>
+              <tr><td><strong>Projected CS ("grid")</strong></td><td>Geographic coordinates flattened via a projection; linear units (m/ft)</td></tr>
+              <tr><td><strong>EPSG code</strong></td><td>A standardized numeric ID for one specific CRS, e.g. <code>EPSG:4326</code></td></tr>
+              <tr><td><strong>WGS84</strong></td><td>The global datum GPS itself uses</td></tr>
+              <tr><td><strong>NAD83</strong></td><td>The modern North American continental datum</td></tr>
+              <tr><td><strong>Define / Assign</strong></td><td>Label existing coordinates with their correct CRS — numbers don't move</td></tr>
+              <tr><td><strong>Reproject / Transform</strong></td><td>Mathematically convert coordinates into a different CRS — numbers change</td></tr>
+              <tr><td><strong>Combined Scale Factor</strong></td><td>Elevation factor &times; grid scale factor — reconciles ground vs. grid distance</td></tr>
+              <tr><td><strong>MGRS</strong></td><td>Military Grid Reference System — a compact alphanumeric addressing scheme built on UTM</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Which CRS Problem?">Which CRS problem do I have? (compressed)</h3>
+          <table>
+            <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
+            <tbody>
+              <tr><td>Lands in the ocean / wrong continent</td><td>Check axis order; assign the correct source CRS</td></tr>
+              <tr><td>Close but offset meters&ndash;km</td><td>Wrong datum or wrong zone &rarr; reproject correctly</td></tr>
+              <tr><td>Right shape, wrong size</td><td>Unit mismatch or ground-vs-grid &rarr; check units / scale factor</td></tr>
+              <tr><td>"Unknown"/undefined CRS on import</td><td>Define (don't reproject) &mdash; confirm the real source system first</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Index &amp; Sources</h2>
+
+          <h3>Index</h3>
+          <h4>A</h4>
+          <ul>
+            <li>Attribute data / attribute table — see <a href="#attribute-data">Attribute data</a></li>
+          </ul>
+          <h4>C</h4>
+          <ul>
+            <li>Combined Scale Factor — see <a href="#surface-adjustment-factor-combined-scale-factor">Surface Adjustment Factor</a></li>
+            <li>CRS environments (CAD vs. GIS) — see <a href="#how-different-environment-types-handle-crs-general-categories">How Different Environment Types Handle CRS</a></li>
+            <li>CRS mismatches, diagnosing — see <a href="#diagnosing-repairing-crs-mismatches">Diagnosing &amp; Repairing CRS Mismatches</a></li>
+          </ul>
+          <h4>D</h4>
+          <ul>
+            <li>Datums — see <a href="#datums-modeling-the-shape-of-the-earth">Datums: Modeling the Shape of the Earth</a></li>
+            <li>Define vs. reproject — see <a href="#reprojecting-vs-redefining-getting-layers-to-snap-together">Reprojecting vs. Redefining</a></li>
+          </ul>
+          <h4>E</h4>
+          <ul>
+            <li>Ellipsoid vs. geoid — see <a href="#ellipsoid-vs-geoid">Ellipsoid vs. geoid</a></li>
+            <li>EPSG codes — see <a href="#epsg-wgs-nad-what-the-acronyms-actually-mean">EPSG, WGS, NAD</a></li>
+          </ul>
+          <h4>F</h4>
+          <ul>
+            <li>Feature classes, shapefiles, geodatabases — see <a href="#feature-classes-shapefiles-geodatabases">Feature classes, shapefiles, geodatabases</a></li>
+          </ul>
+          <h4>G</h4>
+          <ul>
+            <li>Geographic vs. projected coordinate systems — see <a href="#geographic-vs-projected-coordinate-systems">Geographic vs. Projected Coordinate Systems</a></li>
+            <li>GIS by industry — see <a href="#how-different-industries-use-gis">How Different Industries Use GIS</a></li>
+          </ul>
+          <h4>H</h4>
+          <ul>
+            <li>Horizontal vs. vertical datums — see <a href="#horizontal-vs-vertical-datums">Horizontal vs. vertical datums</a></li>
+          </ul>
+          <h4>L</h4>
+          <ul>
+            <li>Layers — see <a href="#layers">Layers</a></li>
+          </ul>
+          <h4>M</h4>
+          <ul>
+            <li>Military GIS / MGRS — see <a href="#military">Military</a></li>
+          </ul>
+          <h4>N</h4>
+          <ul>
+            <li>NAD83 — see <a href="#the-datums-youll-actually-run-into">The datums you'll actually run into</a></li>
+          </ul>
+          <h4>O</h4>
+          <ul>
+            <li>On-the-fly vs. permanent reprojection — see <a href="#on-the-fly-vs-permanent">On-the-fly vs. permanent</a></li>
+          </ul>
+          <h4>P</h4>
+          <ul>
+            <li>Projection trade-offs — see <a href="#every-projection-trades-off-distortion-never-eliminates-it">Every projection trades off distortion</a></li>
+          </ul>
+          <h4>S</h4>
+          <ul>
+            <li>Scale factor — see <a href="#surface-adjustment-factor-combined-scale-factor">Surface Adjustment Factor</a></li>
+            <li>Shapefiles — see <a href="#feature-classes-shapefiles-geodatabases">Feature classes, shapefiles, geodatabases</a></li>
+            <li>Surveying, GIS in — see <a href="#surveying">Surveying</a></li>
+          </ul>
+          <h4>T</h4>
+          <ul>
+            <li>Transportation / civil engineering — see <a href="#transportation-civil-engineering">Transportation / civil engineering</a></li>
+            <li>Troubleshooting checklist — see <a href="#a-practical-checklist">A practical checklist</a></li>
+          </ul>
+          <h4>V</h4>
+          <ul>
+            <li>Vector vs. raster — see <a href="#vector-vs-raster-the-two-data-models">Vector vs. Raster — the two data models</a></li>
+          </ul>
+          <h4>W</h4>
+          <ul>
+            <li>WGS84 — see <a href="#the-datums-youll-actually-run-into">The datums you'll actually run into</a></li>
+            <li>Where a CRS lives — see <a href="#where-does-a-crs-actually-live-environment-vs-file-vs-layer">Where Does a CRS Actually Live?</a></li>
+          </ul>
+
+          <h3>Sources &amp; Further Reading</h3>
+          <ul>
+            <li>Open Geospatial Consortium — <a href="https://www.ogc.org/" target="_blank" rel="noopener">OGC geospatial &amp; CRS standards</a></li>
+            <li>IOGP — <a href="https://epsg.org/" target="_blank" rel="noopener">EPSG Geodetic Parameter Registry</a></li>
+            <li>National Geodetic Survey — <a href="https://geodesy.noaa.gov/" target="_blank" rel="noopener">Geodetic control, datums &amp; benchmarks</a></li>
+            <li>U.S. Geological Survey — <a href="https://www.usgs.gov/" target="_blank" rel="noopener">Topographic mapping &amp; coordinate systems</a></li>
+          </ul>
+
+          <h3>Image Credits</h3>
+          <ul>
+            <li>Standard US National Geodetic Survey benchmark disks — <a href="https://commons.wikimedia.org/wiki/File:Standard_marks_of_the_US_NOS_NGS.jpg" target="_blank" rel="noopener">NOAA / Wikimedia Commons</a> (public domain)</li>
+            <li>USGS topo map showing lat/long &amp; UTM grid overlay — <a href="https://www.usgs.gov/media/images/utm-and-latitudelongitude-coordinates-a-topographic-map" target="_blank" rel="noopener">USGS.gov</a> (public domain)</li>
+          </ul>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>China Trip 2026 — Itinerary Companion</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">China Trip 2026 🇨🇳🐉 — Itinerary Companion</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-05 &middot; Historical context for the actual stops on the Oct 2026 itinerary</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Personalized</span>
+                  <span class="sg-badge">Companion to the City History overview</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>Trip at a Glance</h2>
+          <p>Xing Xing is in China Oct 3–31; Clayton flies in partway through and is on the ground
+          Oct 17–31. The route runs Shanghai &rarr; Changzhou &rarr; Xi'an &rarr; Beijing. This guide
+          follows that same order and sticks to the specific places on the itinerary — for the deeper
+          dynasty-by-dynasty history of each city, see the companion overview guide:
+          <a href="China%20Trip%20City%20History%20-%20Overview.html">China Trip City History — Overview</a>.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">The Route</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Shanghai</div>
+                  <div class="sg-diagram-panel-sub">Oct 18 &ndash; 21</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title">Treaty-port &amp; reform-era megacity</div>
+                </div>
+              </div>
+              <div class="sg-diagram-arrow-right accent">&#8594;</div>
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Changzhou</div>
+                  <div class="sg-diagram-panel-sub">Oct 21 &ndash; 24</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title">Xing Xing's hometown, Grand Canal city</div>
+                </div>
+              </div>
+              <div class="sg-diagram-arrow-right accent">&#8594;</div>
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Xi'an</div>
+                  <div class="sg-diagram-panel-sub">Oct 24 &ndash; 26</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title">Ancient capital, Silk Road terminus</div>
+                </div>
+              </div>
+              <div class="sg-diagram-arrow-right accent">&#8594;</div>
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Beijing</div>
+                  <div class="sg-diagram-panel-sub">Oct 26 &ndash; 31</div>
+                </div>
+                <div class="sg-diagram-box center">
+                  <div class="sg-diagram-box-title">Imperial &amp; modern capital</div>
+                </div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Why this order works historically:</strong> it runs roughly from China's newest boom-era city to its most modern-yet-ancient capital, with a stop in the Jiangnan heartland and the Silk Road capital in between.</div>
+          </div>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>On the fast train, the local specialty worth flagging down a cart attendant for is
+            frog legs (田鸡腿) — a genuine Jiangnan/southern delicacy, not a novelty; frog and other
+            freshwater dishes have been a staple of the rice-paddy Jiangnan diet for centuries, same
+            region Changzhou sits in.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Shanghai <span class="sg-level-badge">Oct 18–21</span></h2>
+          <p>You're staying right on Nanjing Road, steps from the Bund — the two streets that, together,
+          <em>are</em> the story of treaty-port Shanghai. See the overview guide for the full 1842-onward
+          arc; here's what's specifically worth knowing at each stop on your list.</p>
+
+          <h3>Nanjing Road Pedestrian Street (your hotel's street)</h3>
+          <p>Officially named in 1865 under the British-run Shanghai Municipal Council, Nanjing Road grew
+          from a horse-racetrack access path into China's premier shopping street by the early 1900s, when
+          department stores like Wing On and Sincere opened here — Chinese-owned businesses competing
+          directly with foreign ones on a foreign-administered street, a small preview of the city's whole
+          character. It was pedestrianized in 1999 and is now one of the busiest retail strips in the
+          world; walking it at night, the neon is a direct descendant of its 1920s–30s reputation as the
+          brightest street in Asia.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/nanjing-road-shanghai.jpg" alt="Crowded pedestrian shopping street with illuminated signage on Nanjing Road, Shanghai">
+            <figcaption>Nanjing Road, China's first pedestrianized shopping street and Shanghai's main commercial strip since the early 1900s. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Nanjing_Road,_Shanghai.JPG" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Hans Bernhard (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Nanjing+Road+Pedestrian+Street%2C+Shanghai" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Ye Shanghai (夜上海) — dinner, Oct 18</h3>
+          <p>The name literally means "Shanghai Nights" — it's a direct nod to the city's 1930s jazz-age
+          nostalgia, the same golden era the Bund's architecture comes from. Restaurants and bars trading
+          on that "Paris of the East" aesthetic (Art Deco interiors, qipao-clad staff, Shanghainese comfort
+          food) are their own small tourism-and-memory industry in the city today.</p>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/vbPMaEEdFFLBdksp8?g_st=ac" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>The Bund, at night &amp; by Huangpu River cruise</h3>
+          <p>The riverfront row of banks and trading houses you'll see lit up were built mostly in the
+          1920s–30s by foreign banks and trading houses operating under extraterritorial law inside the
+          International Settlement. Your cruise departs from <strong>Shiliupu Marina</strong>, one of
+          Shanghai's oldest working docks — wharves here handled passenger and cargo traffic on the
+          Huangpu since the Qing dynasty, long before the Bund's grand facades existed; you're leaving
+          from the working harbor to go look at the monuments that harbor's wealth built.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/the-bund-shanghai.jpg" alt="Historic European-style bank and trading-house buildings along the Bund waterfront in Shanghai">
+            <figcaption>The Bund, Shanghai's riverfront row of early-20th-century foreign bank and trading-house buildings. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:20264-Shanghai,_The_Bund.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Xiquinho Silva (CC BY 2.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/d3TohXbG4taTJ8Zdu" target="_blank" rel="noopener">The Bund on Google Maps</a> &middot; <a href="https://maps.app.goo.gl/yhurD5GW7xE4eeBy5?g_st=ac" target="_blank" rel="noopener">Shiliupu Marina (cruise dock) on Google Maps</a></p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Looking across the river from the Bund at night is looking at two different eras at once:
+            the 1920s–30s foreign-concession skyline behind you, the post-1990 Pudong skyline
+            (Oriental Pearl Tower, Shanghai Tower) in front — Pudong was mostly farmland until Beijing
+            designated it a special economic zone in 1990.</p>
+          </div>
+
+          <h3>Wukang Road</h3>
+          <p>Laid out in 1907 as "Route Ferguson" inside the French Concession, this is one of the
+          best-preserved stretches of 1920s–30s garden-villa architecture in the city. The flatiron
+          building at its main intersection — Wukang Mansion, built 1924 by Hungarian-Slovak architect
+          László Hudec, shaped like a ship's bow — is one of Shanghai's most photographed pieces of
+          Concession-era architecture. It's now a relaxed, cafe-lined street, a good contrast to the
+          density of Nanjing Road and the Bund.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/wukang-mansion-shanghai.jpg" alt="Wukang Mansion's flatiron, ship-bow-shaped facade at the corner of Wukang Road in Shanghai">
+            <figcaption>Wukang Mansion, built 1924 by architect László Hudec, at the main intersection of Wukang Road. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Wukang_Mansion_Intersection.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/XHiwaGHV9GQxTXov7?g_st=ac" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Jing'an Temple</h3>
+          <p>One of the oldest institutions in the city by far — first founded in 247 CE during the Three
+          Kingdoms period near Suzhou Creek, and relocated to its current site in 1216 during the Southern
+          Song dynasty. Repeatedly rebuilt after fires and wars, its current gold-roofed halls (largely
+          rebuilt in the 2000s) now sit directly across from a modern shopping mall and subway station —
+          arguably Shanghai's starkest single "1,700 years of history vs. today" juxtaposition.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/jingan-temple-shanghai.jpg" alt="Jing'an Temple's gold-roofed halls surrounded by modern Shanghai skyscrapers">
+            <figcaption>Jing'an Temple, founded 247 CE, now framed by the modern skyline it sits inside. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:2024-Apr_Jing-an_Temple_%E9%9D%99%E5%AE%89%E5%AF%BA_Shanghai_04.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Chainwit. (CC BY 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/CvOum4F42rWt2gs1l" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Yu Garden &amp; Shanghai City God Temple</h3>
+          <p>Yu Garden was built in 1559 by Ming-dynasty official Pan Yunduan as a gift for his father —
+          a classical Jiangnan garden of the same style you'll see again, on a smaller scale, in
+          Changzhou. Right next to it, the City God Temple was built in 1403 (Ming, Yongle era) to house
+          the deities believed to protect the city; the surrounding bazaar that grew up around temple
+          worship and pilgrim traffic is still the dense shopping/snack district it's been for 600 years —
+          the commercial pattern predates the temple's religious purpose becoming secondary to tourists.</p>
+
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/china-trip-2026-itinerary/yu-garden-shanghai.jpg" alt="Classical Ming-dynasty rockery, pond and pavilions inside Yu Garden, Shanghai">
+              <figcaption>Yu Garden, a classical Jiangnan garden built in 1559. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Shanghai_-_Yu_Garden_-_0001.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Stefan Fussan (CC BY-SA 3.0)</span></figcaption>
+            </figure>
+            <figure>
+              <img src="images/china-trip-2026-itinerary/city-god-temple-shanghai.jpg" alt="Traditional temple gate and rooftop of the Shanghai City God Temple">
+              <figcaption>Shanghai City God Temple, built 1403, still the center of the surrounding bazaar district. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Chenghuang_Miao,_Shanghai.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY-SA 3.0)</span></figcaption>
+            </figure>
+          </div>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/ScRoEtcjjB6sNteN9?g_st=ac" target="_blank" rel="noopener">Yu Garden on Google Maps</a> &middot; <a href="https://share.google/NFe3MLhxavyYG8M9R" target="_blank" rel="noopener">City God Temple on Google Maps</a></p>
+        </section>
+
+        <section>
+          <h2>Changzhou <span class="sg-level-badge">Oct 21–24</span></h2>
+          <p>This is home ground — Xing Xing grew up here, and the Lao Zha apartment and old school are
+          on the itinerary before the more typical sightseeing starts. Changzhou is the least
+          internationally known of your four stops, but it's a genuinely old Jiangnan canal city; the
+          overview guide covers its Sui-to-Qing arc, so here's the color behind the specific places you're
+          actually walking through.</p>
+
+          <h3>Lao Zha &amp; Zhonglou District</h3>
+          <p>The apartment and Xing Xing's old school sit in Zhonglou, one of Changzhou's central old
+          districts — historically part of the walled city core, now a mix of older residential blocks
+          and newer development. There's no separate "history" to look up here beyond what it already
+          is for your family, but it's worth knowing you're inside the same old-city footprint that the
+          Grand Canal and the historic lanes below run through — it's all one continuous urban fabric.</p>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/wx5vfmDn4hrLSs6D6?g_st=ac" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Hongmei Park (红梅公园)</h3>
+          <p>Built around the Ming-dynasty Wenbi Pagoda ("Pen-Tip Pagoda"), constructed in 1611 — the
+          tall, narrow shape was deliberately chosen under feng shui belief that a pen-shaped tower would
+          boost the local district's luck in the imperial civil service examinations, the path to
+          government office. The park itself was assembled in 1958 around the historic pagoda grounds and
+          has since grown into one of Changzhou's main public parks, panda exhibit included.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/hongmei-park-wenbi-pagoda-changzhou.jpg" alt="Wenbi Pagoda's tall, narrow silhouette rising above the trees in Hongmei Park, Changzhou">
+            <figcaption>Wenbi Pagoda in Hongmei Park — built 1611, deliberately pen-shaped for feng shui luck in the imperial exams. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:20090919_Changzhou_Wenbi_Pagoda_5429.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Jakub Hałun (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/t6xxTUiF7JyiL4FmZ" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Tianning Temple (天宁寺)</h3>
+          <p>Founded in 646 CE under Tang Emperor Taizong, making it more than 1,300 years older than
+          almost everything else on this trip except the Xi'an sites — it's one of the "Four Great
+          Monasteries" of Chinese Chan (Zen) Buddhism, alongside temples in Zhenjiang, Yangzhou, and
+          Ningbo. It's been rebuilt repeatedly after fire and war, most notably after Taiping Rebellion
+          damage in the 1860s. The modern 153.79-meter Tianning Pagoda on the grounds, completed in 2007,
+          was briefly the tallest pagoda in the world — a genuinely ancient monastery with a genuinely
+          new record-holding tower standing right next to each other.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/tianning-temple-changzhou.jpg" alt="Tianning Temple's tall pagoda and traditional Buddhist temple buildings in Changzhou">
+            <figcaption>Tianning Temple, founded 646 CE — one of the Four Great Monasteries of Chinese Chan Buddhism. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Tianning_Temple,_Changzhou_9.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Slyronit (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/vrZoVkaBze5WFa0lw" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Qingguo Lane (青果巷) — the "downtown" lane on your list</h3>
+          <p>This is arguably the single most historically interesting stop of your Changzhou days and
+          easy to walk past without realizing it. Construction here predates 1581 (Ming, Wanli era); the
+          name means roughly "Green Fruit Lane," from its original role as a produce-trading street along
+          the canal. Over the Qing dynasty it became a residential enclave for Changzhou's scholar and
+          merchant elite, and it's the birthplace or family home of a striking number of major modern
+          Chinese figures — including Qu Qiubai (an early leader of the Chinese Communist Party) and
+          linguist Zhao Yuanren (Yuen Ren Chao), among others. The lane was restored as a historic
+          district preserving its canal-house architecture, and is now the shops/cafes stretch on your
+          itinerary — worth a slower walk than a typical "downtown lunch stop."</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/qingguo-lane-changzhou.jpg" alt="Restored canal-side historic street with traditional architecture at Qingguo Lane, Changzhou">
+            <figcaption>Qingguo Lane, a Ming-Qing canal-side street and birthplace of several major modern Chinese scholars and revolutionaries. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:201907_Qingguo_Lane_and_Dongxiatang.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by MNXANL (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/GmaYsLDUbTGOnl0rz" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Nanshan Bamboo Sea (南山竹海)</h3>
+          <p>Less about a specific historical event and more about a cultural thread: bamboo has been a
+          loaded symbol in Chinese literati culture for over a thousand years, prized by Tang and Song
+          poets and painters (Song-dynasty polymath Su Dongpo's famous line "I'd rather eat without meat
+          than live without bamboo" is the classic reference point) as a symbol of resilience and moral
+          integrity — bending in the wind without breaking. The pandas are a modern tourism addition
+          (they aren't native to this part of Jiangsu), but the reverence for bamboo forests itself is
+          old.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/nanshan-bamboo-sea-changzhou.jpg" alt="Wooden boardwalk winding through a dense bamboo forest at Nanshan Bamboo Sea near Changzhou">
+            <figcaption>Nanshan Bamboo Sea, roughly 2,300 hectares of bamboo forest on the Changzhou–Liyang border. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Nanshan_Zhuhai_boardwalk.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Sedgehead (CC0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/uJoq1D6yAYkRpfVM" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Changzhou Museum is a good rainy-day pairing with Nanshan Bamboo Sea day — it covers the
+            region's ancient Wu-state archaeology (Changzhou's roots go back to the Spring and Autumn
+            period, c. 547 BCE — see the overview guide) if you want the deep-history counterweight to
+            an otherwise scenic-nature day. <a href="https://www.google.com/maps/search/?api=1&query=Changzhou+Museum" target="_blank" rel="noopener">Changzhou Museum on Google Maps</a>.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Xi'an <span class="sg-level-badge">Oct 24–26</span></h2>
+          <p>Two dense days built almost entirely around the Tang dynasty's golden age and the Qin
+          dynasty's founding of empire — the overview guide covers Xi'an's full Zhou-through-Ming arc;
+          here's the story behind each specific stop.</p>
+
+          <h3>Muslim Quarter / Dasi (大寺) Residential Quarter — dinner, Oct 24</h3>
+          <p>This neighborhood grew directly out of the Tang-dynasty Silk Road trade community, centered
+          on the Great Mosque (first built 742 CE, expanded through the Ming), which blends Chinese
+          temple-style architecture with Islamic function — no domes or minarets, just a mosque built to
+          look like a Chinese courtyard complex. The Hui Muslim community here has been continuous for
+          over a thousand years; the street food you'll eat (biang biang noodles, roujiamo, yangrou
+          paomo) is that community's cuisine, not a tourist invention.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/great-mosque-xian.jpg" alt="Chinese-style gateway and courtyard architecture at the Great Mosque in Xi'an's Muslim Quarter">
+            <figcaption>The Great Mosque of Xi'an — built to look like a Chinese courtyard complex, no domes or minarets. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Xi'an_Great_Mosque_gateway.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Nat Krause (Public Domain)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://share.google/3z9YyV4nQ9uVECSWy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Datang Everbright City (大唐不夜城) — after dinner, Oct 24</h3>
+          <p>A modern (largely 2011–2019) pedestrian and light-show district built right next to the Big
+          Wild Goose Pagoda, deliberately designed with Tang-dynasty architectural styling and a row of
+          statues depicting Tang-era poets and scholars. It's essentially the city packaging its own
+          golden age into a night-life district — a useful, very literal illustration of just how central
+          the Tang is to Xi'an's civic identity today, nearly 1,100 years after the dynasty ended.</p>
+          <p class="sg-map-link">📍 <a href="https://share.google/TbFrThPXNLHWmInSn" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Terracotta Warriors — Oct 25 morning</h3>
+          <p>Built starting around 246 BCE to guard the tomb of Qin Shi Huang, China's first unifying
+          emperor, and discovered entirely by accident in March 1974 by farmers digging a well. Pit 1,
+          the largest and the one you'll spend the most time in, holds an entire buried infantry army in
+          battle formation — each figure was individually sculpted with a distinct face, and all were
+          originally painted in vivid color that faded within minutes of exposure to air after 2,000+
+          years underground, which is why archaeologists now leave large sections of newly found pits
+          unexcavated until better preservation techniques exist. UNESCO-listed since 1987.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/terracotta-army-xian.jpg" alt="Rows of life-size terracotta warrior statues standing in excavated Pit 1 near Xi'an">
+            <figcaption>The Terracotta Army, buried c. 210 BCE, rediscovered by farmers in 1974. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Qin_Shihuang_Terracotta_Army,_Pit_1.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Gary Todd (CC0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/Cm39CV48evWFw9Fa7" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Huaqing Palace — Oct 25 afternoon</h3>
+          <p>Hot springs at this site were used by royalty as far back as the Zhou dynasty, but its fame
+          comes from Tang Emperor Xuanzong, who had it rebuilt into a grand palace in 723 CE as a retreat
+          for himself and his celebrated consort, Yang Guifei — one of the "Four Beauties" of Chinese
+          history. Their romance, and Yang Guifei's death during the An Lushan Rebellion that followed,
+          was immortalized in Bai Juyi's Tang-dynasty poem <em>"Song of Everlasting Sorrow"</em> (长恨歌) —
+          which is exactly the show you're seeing that evening, performed outdoors against the mountain
+          backdrop where the story is actually set.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Huaqing Palace has a second, much more recent claim to fame: it's where the 1936 Xi'an
+            Incident happened — Nationalist leader Chiang Kai-shek was detained here by his own generals
+            to force a truce with the Communists and a united front against Japan. Worth mentioning if
+            the tour guide only tells the Tang-dynasty love story.</p>
+          </div>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/huaqing-palace-xian.jpg" alt="Huaqing Palace hot spring complex with traditional pavilions at the foot of Mount Li near Xi'an">
+            <figcaption>Huaqing Palace, rebuilt in 723 CE as a Tang-dynasty imperial hot-spring retreat and the setting of Bai Juyi's "Song of Everlasting Sorrow." <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Lintong_Xian_China_Huaqing-Pool-08.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by CEphoto, Uwe Aranas (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://maps.app.goo.gl/bHW6wnovNMuzxVVn7?g_st=ac" target="_blank" rel="noopener">Open in Google Maps</a></p>
+        </section>
+
+        <section>
+          <h2>Beijing <span class="sg-level-badge">Oct 26–31</span></h2>
+          <p>The imperial and modern capital, and the itinerary's longest stop. The overview guide covers
+          the Yuan-Ming-Qing-to-present arc in full; here's what to know about each specific site and day.</p>
+
+          <h3>Tian'anmen Square &amp; The Forbidden City — Oct 27</h3>
+          <p>The square in front of the Forbidden City's main gate was expanded to its current
+          million-person scale in the 1950s; it's where the People's Republic of China was declared on
+          October 1, 1949. Walk straight through it into the Forbidden City itself, built 1406–1420 under
+          the Ming Yongle Emperor and home to 24 emperors across the Ming and Qing dynasties — you're
+          covering roughly 500 years of continuous imperial rule in a single day's walk from square to
+          palace.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/tiananmen-square-beijing.jpg" alt="Wide view of Tiananmen Square with the Monument to the People's Heroes in Beijing">
+            <figcaption>Tiananmen Square, expanded to its current million-person scale in the 1950s. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Tiananmen_Square.JPG" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Paul Louis (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <figure>
+            <img src="images/china-trip-city-history/forbidden-city-beijing.jpg" alt="Aerial view of the Forbidden City's red walls and golden-roofed halls in Beijing">
+            <figcaption>The Forbidden City, imperial palace of the Ming and Qing dynasties (1420–1912). <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:The_Forbidden_City,_Beijing,_China_(%E6%95%85%E5%AE%AB%E5%8D%9A%E7%89%A9%E9%99%A2).jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Chaimaa Lkhaili (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Tiananmen+Square%2C+Beijing" target="_blank" rel="noopener">Tiananmen Square on Google Maps</a> &middot; <a href="https://www.google.com/maps/search/?api=1&query=Forbidden+City%2C+Beijing" target="_blank" rel="noopener">Forbidden City on Google Maps</a></p>
+
+          <h3>Temple of Heaven — Oct 27</h3>
+          <p>Built the same years as the Forbidden City (completed 1420) but for a different purpose:
+          this is where Ming and Qing emperors performed annual rites asking Heaven for good harvests. The
+          circular Hall of Prayer for Good Harvests, entirely wooden and built without a single nail, is
+          the single most photographed piece of non-palace imperial architecture in the city.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/temple-of-heaven-beijing.jpg" alt="The circular, triple-tiered Hall of Prayer for Good Harvests at the Temple of Heaven in Beijing">
+            <figcaption>The Hall of Prayer for Good Harvests, Temple of Heaven — built entirely of wood, without a single nail. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Temple_of_Heaven,_Beijing_02.JPG" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Namiac (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Temple+of+Heaven%2C+Beijing" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>The Great Wall — Oct 28</h3>
+          <p>Not one wall but a patchwork built and rebuilt across many dynasties over roughly 2,000
+          years; the sections closest to Beijing, and the ones typically visited, are Ming-dynasty
+          reconstructions built specifically to defend the capital from northern incursions after the
+          capital moved here in the 15th century — so the wall you'll walk is, in a real sense, the same
+          Ming building project as the Forbidden City and Temple of Heaven, just aimed outward instead of
+          inward.</p>
+
+          <figure>
+            <img src="images/china-trip-2026-itinerary/great-wall-mutianyu.jpg" alt="The Great Wall of China snaking along forested mountain ridges at Mutianyu near Beijing">
+            <figcaption>The Great Wall at Mutianyu — a Ming-dynasty reconstruction, part of the same defensive building program as the Forbidden City. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Great_Wall_at_Mutianyu.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by J. Samuel Burner (CC BY 2.0)</span></figcaption>
+          </figure>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Mutianyu+Great+Wall" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+          <h3>Old Summer Palace (Yuanmingyuan) &amp; Summer Palace (Yihe Yuan) — Oct 29</h3>
+          <p>These two sites, visited back to back, are a deliberate before-and-after. The
+          <strong>Old Summer Palace</strong> was an 18th-century Qing "garden of gardens," including
+          European-style palace buildings partly designed with input from Jesuit missionaries at the
+          Qing court — then burned and looted by British and French forces in 1860 during the Second
+          Opium War, in retaliation during treaty negotiations. The ruins were deliberately never fully
+          repaired, left standing as a national memorial to that humiliation. The <strong>Summer
+          Palace</strong> next door is what replaced it in the public imagination: rebuilt and expanded
+          in the late 1800s by Empress Dowager Cixi (controversially using funds diverted from the
+          imperial navy's budget), centered on Kunming Lake and Longevity Hill, with the famous Marble
+          Boat pavilion. One site shows what foreign intervention destroyed; the other shows how the
+          court chose to spend its way past that loss.</p>
+
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/china-trip-2026-itinerary/old-summer-palace-ruins-beijing.jpg" alt="Toppled European-style carved stone columns and arches at the Old Summer Palace ruins in Beijing">
+              <figcaption>Yuanmingyuan's European-style stone ruins, deliberately left unrepaired since the 1860 destruction. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Yuanmingyuan_Haiyantang_20130126.JPG" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY-SA 3.0)</span></figcaption>
+            </figure>
+            <figure>
+              <img src="images/china-trip-2026-itinerary/summer-palace-marble-boat-beijing.jpg" alt="The ornate Marble Boat pavilion on the shore of Kunming Lake at the Summer Palace in Beijing">
+              <figcaption>The Marble Boat, Summer Palace — rebuilt by Empress Dowager Cixi in the late 1800s. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Marble_Boat,_Summer_Palace_at_Beijing_1.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Kallgan (CC BY-SA 3.0)</span></figcaption>
+            </figure>
+          </div>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Old+Summer+Palace+Yuanmingyuan%2C+Beijing" target="_blank" rel="noopener">Old Summer Palace on Google Maps</a> &middot; <a href="https://www.google.com/maps/search/?api=1&query=Summer+Palace%2C+Beijing" target="_blank" rel="noopener">Summer Palace on Google Maps</a></p>
+
+          <h3>Hutong &amp; Houhai — evenings</h3>
+          <p>Beijing's hutong (narrow lane) and siheyuan (courtyard house) pattern dates to the original
+          Yuan-dynasty grid plan of the 13th century — the alleys you'll walk are following a street
+          layout roughly 750 years old, even though most individual buildings are newer. Houhai, the
+          lake district behind it, was originally part of the Yuan-dynasty Grand Canal terminus, dug to
+          bring grain and goods into the capital by water; it later became a recreational area for
+          imperial-era elite (Prince Gong's Mansion sits on its shore), and today's bar street is simply
+          the latest use of the same lakeside real estate.</p>
+
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/china-trip-2026-itinerary/hutong-beijing.jpg" alt="Narrow traditional hutong alley lined with grey-brick courtyard walls in Beijing">
+              <figcaption>A Beijing hutong — the narrow-lane, courtyard-house pattern laid out in the original Yuan-dynasty 13th-century city grid. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:2015-01-14_Hutong_in_Beijing.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Jan Bockaert (CC BY-SA 2.0)</span></figcaption>
+            </figure>
+            <figure>
+              <img src="images/china-trip-2026-itinerary/houhai-lake-beijing.jpg" alt="Houhai Lake in Beijing lined with lakeside bars and traditional buildings">
+              <figcaption>Houhai, part of the Yuan-dynasty Shichahai lake system dug as a Grand Canal terminus. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:2014.09.04.154127_Houhai_Lake_Beijing.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Hermann Luyken (CC0)</span></figcaption>
+            </figure>
+          </div>
+          <p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Nanluoguxiang%2C+Beijing" target="_blank" rel="noopener">Nanluoguxiang hutong on Google Maps</a> &middot; <a href="https://www.google.com/maps/search/?api=1&query=Houhai%2C+Beijing" target="_blank" rel="noopener">Houhai on Google Maps</a></p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>便宜坊 (Pianyifang), the roast duck restaurant near the Ciyunsi area, claims a founding
+            date of 1416 — older than the more internationally famous Quanjude (founded 1864). It uses
+            "menlu" (closed-oven) roasting rather than Quanjude's open hung-oven style, so the duck itself
+            is a genuinely different, older tradition, not just a competing brand.
+            <a href="https://www.google.com/maps/search/?api=1&query=Bianyifang+Roast+Duck+Dengshikou%2C+Beijing" target="_blank" rel="noopener">Pianyifang (Dengshikou) on Google Maps</a>.</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>

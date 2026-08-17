@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>China Trip City History — Study Guide</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">China Trip City History</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-05 &middot; Trip-prep history primer for Shanghai, Changzhou, Xi'an &amp; Beijing</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Brief Overview</span>
+                  <span class="sg-badge">Traveler Reference</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>How to Use This Guide</h2>
+          <p>Four cities, four very different roles in Chinese history: <strong>Beijing</strong> is the
+          imperial and modern capital, <strong>Xi'an</strong> is the ancient capital and Silk Road
+          gateway, <strong>Shanghai</strong> is the treaty-port-turned-megacity, and
+          <strong>Changzhou</strong> is a quieter Jiangnan canal town rarely covered in Western trip
+          guides. Each section below gives a compact timeline, the historical thread that matters most
+          for that city, and the sites you'll likely actually stand in front of.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>The same handful of dynasty names (Qin, Han, Tang, Song, Yuan, Ming, Qing) keep
+            reappearing across all four cities — use the timeline below as an anchor whenever a
+            section mentions one and you want the "when was that, relative to everything else" context.</p>
+          </div>
+
+          <h3>Quick Dynasty Timeline</h3>
+          <table>
+            <thead><tr><th>Dynasty / Era</th><th>Approx. Dates</th><th>Most relevant to</th></tr></thead>
+            <tbody>
+              <tr><td>Zhou</td><td>1046–256 BCE</td><td>Xi'an area (early capitals)</td></tr>
+              <tr><td>Qin</td><td>221–206 BCE</td><td>Xi'an — first unified empire, Terracotta Army</td></tr>
+              <tr><td>Han</td><td>206 BCE–220 CE</td><td>Xi'an — Silk Road opens</td></tr>
+              <tr><td>Sui</td><td>581–618 CE</td><td>Changzhou — Grand Canal dug</td></tr>
+              <tr><td>Tang</td><td>618–907 CE</td><td>Xi'an (as Chang'an) — golden age, cosmopolitan capital</td></tr>
+              <tr><td>Song</td><td>960–1279 CE</td><td>Changzhou — Jiangnan prosperity</td></tr>
+              <tr><td>Yuan</td><td>1271–1368 CE</td><td>Beijing — first made national capital (as Khanbaliq)</td></tr>
+              <tr><td>Ming</td><td>1368–1644 CE</td><td>Beijing — Forbidden City &amp; city walls built</td></tr>
+              <tr><td>Qing</td><td>1644–1912 CE</td><td>Beijing — last imperial dynasty; Shanghai treaty ports open</td></tr>
+              <tr><td>Republic / PRC</td><td>1912–present</td><td>All four — modernization, war, reform-era growth</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Beijing</h2>
+          <p>Beijing's story is the story of who controls China — it has been the seat of power for
+          three of the last four major dynasties, and for the Republic and People's Republic since.
+          Unlike Xi'an, Beijing's importance is a relatively late development: it only became a truly
+          national capital under a non-Han conquest dynasty, and every ruler since has largely kept it
+          there.</p>
+
+          <h3>Ancient Origins to Yuan Dynasty (before 1271)</h3>
+          <p>The area has been settled for over 3,000 years, known in antiquity as Ji and later as a
+          northern frontier city of shifting names (Yanjing, Zhongdu) under successive kingdoms and the
+          Liao and Jin dynasties. It mattered mainly as a military and trade post guarding the approach
+          from the northern steppe — not yet the center of the country.</p>
+
+          <h3>Yuan, Ming &amp; Qing: Becoming the Capital (1271–1912)</h3>
+          <p>Kublai Khan made the city his Yuan dynasty capital in 1271, naming it Khanbaliq ("Great
+          Khan's City") — Marco Polo's account of visiting it is one of the reasons it entered European
+          awareness. The Ming dynasty's Yongle Emperor rebuilt the city on a new plan starting in 1406,
+          constructing the <strong>Forbidden City</strong> (completed 1420) as the imperial palace and
+          giving Beijing its name ("Northern Capital"). The Qing dynasty, founded by Manchu conquerors
+          in 1644, kept Beijing as capital and largely preserved the Ming layout, adding the
+          <strong>Summer Palace</strong> as an imperial retreat. This 500-year run makes Beijing's
+          historic core almost entirely a Ming/Qing-era city.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/forbidden-city-beijing.jpg" alt="Aerial view of the Forbidden City's red walls and golden-roofed halls in Beijing">
+            <figcaption>The Forbidden City, imperial palace of the Ming and Qing dynasties (1420–1912). <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:The_Forbidden_City,_Beijing,_China_(%E6%95%85%E5%AE%AB%E5%8D%9A%E7%89%A9%E9%99%A2).jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Chaimaa Lkhaili (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+
+          <h3>Modern Era (1912–present)</h3>
+          <p>Beijing lost its capital status briefly to Nanjing under the early Republic (1912–1949),
+          then regained it the moment the People's Republic of China was declared from Tiananmen Gate
+          on October 1, 1949. It was the epicenter of Cultural Revolution-era upheaval in the 1960s–70s,
+          the site of the 1989 Tiananmen Square protests, and has since transformed into a global
+          capital, symbolized by hosting the 2008 Summer Olympics and the 2022 Winter Olympics.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Beijing rewards thinking in three historical layers when you visit: Ming/Qing imperial
+            (Forbidden City, Temple of Heaven, Summer Palace), early-PRC monumental (Tiananmen Square,
+            Great Hall of the People), and 21st-century global city (Olympic Green, CBD skyline).</p>
+          </div>
+
+          <h3>Notable Historic Sites</h3>
+          <table>
+            <thead><tr><th>Site</th><th>Era</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>Forbidden City</td><td>Ming/Qing (1420–1912)</td><td>Imperial palace of 24 emperors; the political center of China for 500 years</td></tr>
+              <tr><td>Great Wall (Badaling/Mutianyu sections)</td><td>Ming (with earlier sections back to 7th c. BCE)</td><td>Northern defensive line; sections near Beijing are the most-visited and best-restored</td></tr>
+              <tr><td>Temple of Heaven</td><td>Ming (1420)</td><td>Where emperors performed annual rites for good harvests</td></tr>
+              <tr><td>Summer Palace</td><td>Qing (rebuilt 1888)</td><td>Imperial garden retreat; lake and marble boat commissioned by Empress Dowager Cixi</td></tr>
+              <tr><td>Tiananmen Square</td><td>Ming gate; modern square expanded 1950s</td><td>Symbolic center of modern China; site of the 1949 founding declaration</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Xi'an</h2>
+          <p>If Beijing is where China's <em>modern</em> power sits, Xi'an is where Chinese civilization
+          itself was forged. As Chang'an, it was the capital of more dynasties than any other Chinese
+          city and, at its Tang-dynasty peak, arguably the largest and most cosmopolitan city on Earth.</p>
+
+          <h3>Zhou, Qin &amp; Han: Birth of an Empire (11th c. BCE – 220 CE)</h3>
+          <p>The Xi'an region was the heartland of the Zhou dynasty and then, in 221 BCE, the base from
+          which Qin Shi Huang unified China's warring states into the first centralized Chinese empire —
+          he ruled from nearby Xianyang and is buried outside modern Xi'an under a vast mausoleum guarded
+          by the <strong>Terracotta Army</strong>, discovered by farmers in 1974. The Han dynasty that
+          followed made the city (then called Chang'an) its capital and opened the <strong>Silk Road</strong>
+          west from here around the 2nd century BCE, turning the city into the eastern anchor of a trade
+          network reaching to Rome.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/terracotta-army-xian.jpg" alt="Rows of life-size terracotta warrior statues standing in excavated Pit 1 near Xi'an">
+            <figcaption>The Terracotta Army, buried c. 210 BCE to guard Qin Shi Huang's tomb; rediscovered in 1974. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Qin_Shihuang_Terracotta_Army,_Pit_1.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Gary Todd (CC0)</span></figcaption>
+          </figure>
+
+          <h3>Tang Dynasty Golden Age (618–907 CE)</h3>
+          <p>Chang'an under the Tang was the world's largest city, with population estimates over a
+          million — a planned grid of walled wards housing Persian, Sogdian, Japanese, Korean, and Arab
+          merchants and monks alongside a flourishing poetry and Buddhist culture. The
+          <strong>Big Wild Goose Pagoda</strong> was built in 652 CE to house Buddhist scriptures brought
+          back from India by the monk Xuanzang — the same journey later fictionalized as
+          <em>Journey to the West</em>.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Xi'an's <strong>Muslim Quarter</strong> traces directly back to this era — it grew from
+            the Silk Road merchant communities the Tang capital hosted, and is still centered on the
+            Great Mosque, first built in 742 CE.</p>
+          </div>
+
+          <h3>After the Tang: Decline and Rediscovery (907 CE–present)</h3>
+          <p>Chang'an lost its capital status after the Tang collapsed in 907 CE and was never again the
+          seat of a unified Chinese empire, gradually renamed Xi'an ("Western Peace") under the Ming
+          dynasty, which also built the massive <strong>Xi'an City Wall</strong> still standing today —
+          one of the best-preserved ancient city walls in China. The city faded to regional importance
+          until the Terracotta Army's 1974 discovery restored it to the map as one of China's top
+          historical destinations.</p>
+
+          <h3>Notable Historic Sites</h3>
+          <table>
+            <thead><tr><th>Site</th><th>Era</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>Terracotta Army</td><td>Qin (c. 210 BCE)</td><td>Life-size buried army guarding the First Emperor's tomb; discovered 1974</td></tr>
+              <tr><td>Xi'an City Wall</td><td>Ming (built 1370s–90s)</td><td>Complete 13.7 km rampart circling the old city; walkable/bikeable</td></tr>
+              <tr><td>Big Wild Goose Pagoda</td><td>Tang (652 CE)</td><td>Buddhist pagoda built to house scriptures from India</td></tr>
+              <tr><td>Muslim Quarter &amp; Great Mosque</td><td>Tang origins (742 CE)</td><td>Living legacy of Silk Road trade communities; street-food district today</td></tr>
+              <tr><td>Shaanxi History Museum</td><td>Modern (1991); artifacts span millennia</td><td>Best single overview of the region's imperial history</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Shanghai</h2>
+          <p>Shanghai's history inverts the other three cities: it was a minor fishing and market town
+          for most of Chinese history and became globally significant only in the last 180 years — first
+          by force, through 19th-century foreign intervention, and more recently by design, as the
+          engine of China's economic reform.</p>
+
+          <h3>Before 1842: A Regional Market Town</h3>
+          <p>Shanghai existed as a walled county town from the Yuan dynasty (13th century) onward, valued
+          for its position at the mouth of the Yangtze River delta, but it was a secondary town compared
+          to the older, wealthier Jiangnan cities inland (including Changzhou) for most of imperial
+          history.</p>
+
+          <h3>Treaty Port Era (1842–1943)</h3>
+          <p>China's defeat in the First Opium War forced the 1842 Treaty of Nanjing, which opened
+          Shanghai as one of five "treaty ports" to foreign trade. Britain, France, and the United States
+          each carved out concession areas with their own laws and administration, and by the 1920s–30s
+          Shanghai had become the "Paris of the East" — Asia's leading financial and entertainment hub,
+          with a skyline of grand banking houses along the riverfront known as <strong>the Bund</strong>,
+          alongside extreme inequality, organized crime, and a large refugee and expatriate population.
+          Foreign control ended only when Japan occupied the city during World War II.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/the-bund-shanghai.jpg" alt="Historic European-style bank and trading-house buildings along the Bund waterfront in Shanghai">
+            <figcaption>The Bund, Shanghai's riverfront row of early-20th-century foreign bank and trading-house buildings from the treaty-port era. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:20264-Shanghai,_The_Bund.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Xiquinho Silva (CC BY 2.0)</span></figcaption>
+          </figure>
+
+          <h3>Communist Era to Reform (1949–present)</h3>
+          <p>After 1949 the new Communist government shut down Shanghai's foreign concessions and
+          nightlife economy, and the city settled into a more subdued role as an industrial center for
+          decades. That changed dramatically in 1990, when Beijing designated the then-largely
+          agricultural east-bank district of <strong>Pudong</strong> a special economic zone — it's now
+          home to the futuristic skyline (Oriental Pearl Tower, Shanghai Tower) that faces the historic
+          Bund across the Huangpu River, making Shanghai China's largest city and financial capital.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Standing on the Bund and looking across the river is literally looking across Shanghai's
+            two defining eras at once: 1920s-30s foreign concession architecture on your side, post-1990
+            reform-era skyline on the other.</p>
+          </div>
+
+          <h3>Notable Historic Sites</h3>
+          <table>
+            <thead><tr><th>Site</th><th>Era</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>The Bund</td><td>Treaty port era (1920s–30s buildings)</td><td>Riverfront row of former foreign banks and trading houses</td></tr>
+              <tr><td>Yu Garden</td><td>Ming (1559)</td><td>Classical Jiangnan-style garden predating the treaty-port era</td></tr>
+              <tr><td>French Concession</td><td>1849–1943</td><td>Tree-lined former French administrative district; cafes, boutiques, colonial architecture</td></tr>
+              <tr><td>Pudong skyline / Oriental Pearl Tower</td><td>Post-1990</td><td>Symbol of reform-era economic transformation</td></tr>
+              <tr><td>Shanghai Museum</td><td>Modern (1952/1996)</td><td>Major collection of Chinese bronze, ceramic, and painting history</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Changzhou</h2>
+          <p>Changzhou is the least internationally known of the four, but it's a genuinely old Jiangnan
+          city with a continuous history stretching back roughly 2,500 years — its low profile abroad has
+          more to do with 20th-century tourism patterns than with its actual historical weight.</p>
+
+          <h3>Ancient Wu Culture Origins (c. 547 BCE onward)</h3>
+          <p>The area was settled during the Spring and Autumn period as part of the ancient state of Wu,
+          with a walled town founded in the region by 547 BCE — making Changzhou's urban history roughly
+          contemporary with early Rome. It has carried several names over the centuries (Yanling,
+          Jinling, Piling) as it passed between kingdoms and dynasties.</p>
+
+          <h3>The Grand Canal &amp; Jiangnan Prosperity (Sui–Qing, 581–1912 CE)</h3>
+          <p>Changzhou's fortunes rose with the <strong>Grand Canal</strong>, the massive Sui-dynasty
+          engineering project (begun 581 CE) linking the Yangtze and Yellow River basins — the
+          <strong>Changzhou Ancient Canal</strong> section still runs through the city today and made it
+          a key stop on the north-south grain and trade route. Under the Tang and Song, and especially
+          during the Ming and Qing, Changzhou belonged to the broader Jiangnan region — the wealthy,
+          canal-linked cluster of cities (with Suzhou and Hangzhou) that became imperial China's cultural
+          and economic heartland, known for silk, printing, and a high concentration of scholar-officials
+          who passed the imperial examinations.</p>
+
+          <figure>
+            <img src="images/china-trip-city-history/tianning-temple-changzhou.jpg" alt="Tianning Temple's tall pagoda and traditional Buddhist temple buildings in Changzhou">
+            <figcaption>Tianning Temple, one of the "Four Great Monasteries" of Chinese Chan Buddhism, with roots dating to the Tang dynasty. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Tianning_Temple,_Changzhou_9.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Slyronit (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+
+          <h3>Modern Era (1912–present)</h3>
+          <p>Changzhou industrialized early relative to the wider region and grew into a manufacturing
+          center through the 20th century. Today it's known regionally as a lighter-weight, more
+          livable alternative to Shanghai/Suzhou tourism circuits, with a mix of preserved canal-town
+          streets, its historic Tianning Temple and pagoda, and modern attractions like Dinosaur Park
+          (built on a genuine local fossil-discovery history).</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Changzhou is a good place to see the Grand Canal actually functioning as a working
+            waterway and canal-town streetscape, without the crowds of the more famous canal-town stops
+            like Suzhou or Wuzhen.</p>
+          </div>
+
+          <h3>Notable Historic Sites</h3>
+          <table>
+            <thead><tr><th>Site</th><th>Era</th><th>Why it matters</th></tr></thead>
+            <tbody>
+              <tr><td>Changzhou Ancient Canal</td><td>Sui dynasty origin (581 CE)</td><td>Living section of the Grand Canal running through the city center</td></tr>
+              <tr><td>Tianning Temple &amp; Pagoda</td><td>Tang origins; rebuilt Qing/modern</td><td>One of Chinese Chan Buddhism's "Four Great Monasteries"</td></tr>
+              <tr><td>Hongmei Park &amp; Wenbi Pagoda</td><td>Ming (pagoda, 1611)</td><td>Historic pagoda and classical garden park</td></tr>
+              <tr><td>Qinglong (Blue Dragon) &amp; Nanda street areas</td><td>Qing-era streetscape</td><td>Preserved old-town canal-side architecture</td></tr>
+              <tr><td>Changzhou Museum</td><td>Modern</td><td>Local archaeology and Jiangnan cultural history</td></tr>
+            </tbody>
+          </table>
+
+          <details class="sg-section">
+            <summary>Why is Changzhou less famous than Suzhou or Hangzhou?</summary>
+            <p>All three were part of the same historic Jiangnan canal-city cluster, but Suzhou and
+            Hangzhou developed more extensive, better-preserved classical garden districts that became
+            centerpieces of 20th-century tourism promotion (Suzhou's gardens are UNESCO-listed).
+            Changzhou industrialized more heavily and earlier, which reshaped more of its historic core —
+            it's not that its history is thinner, its surviving historic fabric is just smaller and less
+            marketed internationally.</p>
+          </details>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Study Guides</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    body { background: var(--bg); color: var(--text); font-family: "Segoe UI", system-ui, -apple-system, sans-serif; }
+    .index-wrap { max-width: 900px; margin: 0 auto; padding: 2rem clamp(1rem, 4vw, 3rem) 5rem; }
+    .index-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+    .index-title { margin: 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
+    .index-sub { color: var(--text-dim); margin: 0.3rem 0 0; font-size: 0.95rem; }
+    .index-theme-btn {
+      background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text);
+      border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 1.1rem; cursor: pointer;
+      line-height: 1; flex: 0 0 auto;
+    }
+    .index-theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.1rem; }
+    .card {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.1rem 1.2rem; text-decoration: none; color: var(--text);
+      box-shadow: var(--shadow); transition: border-color 0.15s ease, transform 0.15s ease;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-title { font-size: 1.1rem; font-weight: 700; margin: 0; }
+    .card-meta { font-size: 0.82rem; color: var(--text-dim); line-height: 1.4; }
+    .card-badges { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: auto; padding-top: 0.3rem; }
+    .card-badge {
+      display: inline-block; padding: 0.12rem 0.55rem; border-radius: 999px; font-size: 0.7rem;
+      font-weight: 600; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent);
+    }
+    .index-footer { margin-top: 2.5rem; font-size: 0.8rem; color: var(--text-dim); text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="index-wrap">
+    <div class="index-header">
+      <div>
+        <h1 class="index-title">Study Guides</h1>
+        <p class="index-sub">Personal reference material — tap a card to open.</p>
+      </div>
+      <button class="index-theme-btn" id="index-theme-toggle" title="Toggle light/dark" aria-label="Toggle light/dark">☀ / 🌙</button>
+    </div>
+
+    <div class="card-grid">
+      <a class="card" href="Home NAS Remote Access - Build Log & Reference.html">
+        <div class="card-title">Home NAS Remote Access</div>
+        <div class="card-meta">Personal build log: setting up a Netgear ReadyNAS RN202 with remote access via a Tailscale subnet router.</div>
+        <div class="card-badges">
+          <span class="card-badge">Project Build Log</span>
+          <span class="card-badge">Beginner-Friendly</span>
+        </div>
+      </a>
+
+      <a class="card" href="China Trip City History - Overview.html">
+        <div class="card-title">China Trip City History</div>
+        <div class="card-meta">Trip-prep history primer for Shanghai, Changzhou, Xi'an &amp; Beijing.</div>
+        <div class="card-badges">
+          <span class="card-badge">Brief Overview</span>
+          <span class="card-badge">Traveler Reference</span>
+        </div>
+      </a>
+
+      <a class="card" href="China Trip 2026 - Itinerary Companion.html">
+        <div class="card-title">China Trip 2026 — Itinerary Companion</div>
+        <div class="card-meta">Historical context for the actual stops on the Oct 2026 itinerary.</div>
+        <div class="card-badges">
+          <span class="card-badge">Personalized</span>
+          <span class="card-badge">Companion Guide</span>
+        </div>
+      </a>
+
+      <a class="card" href="GIS Fundamentals - Deep Dive.html">
+        <div class="card-title">GIS Fundamentals</div>
+        <div class="card-meta">General, software-agnostic GIS concepts — applies to any GIS or CAD environment.</div>
+        <div class="card-badges">
+          <span class="card-badge">Deep Dive</span>
+          <span class="card-badge">Beginner → Expert</span>
+        </div>
+      </a>
+
+      <a class="card" href="TxDOT Land Surveying - Deep Dive.html">
+        <div class="card-title">TxDOT Land Surveying</div>
+        <div class="card-meta">Field survey practice for TxDOT roadway projects — existing conditions, control, GNSS/OPUS, and Trimble field workflow.</div>
+        <div class="card-badges">
+          <span class="card-badge">Deep Dive</span>
+          <span class="card-badge">Intermediate → Expert</span>
+        </div>
+      </a>
+
+      <a class="card" href="Scout User Guide - Reference.html">
+        <div class="card-title">Scout User Guide</div>
+        <div class="card-meta">Reformatted from the Miovision "Scout User Guide" PDF (v. Jan 04, 2021).</div>
+        <div class="card-badges">
+          <span class="card-badge">Reference Manual</span>
+          <span class="card-badge">Hardware &amp; Firmware</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="index-footer">Generated from <code>study-guide-maker</code> — synced from the private working copy.</div>
+  </div>
+
+  <script>
+    (function () {
+      var btn = document.getElementById("index-theme-toggle");
+      var root = document.documentElement;
+      btn.addEventListener("click", function () {
+        var explicit = root.getAttribute("data-theme");
+        var isDark = explicit ? explicit === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var next = isDark ? "light" : "dark";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("sg-theme", next); } catch (e) {}
+      });
+    })();
+  </script>
+</body>
+</html>

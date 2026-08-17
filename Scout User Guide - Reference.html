@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scout User Guide — Reference</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Guide-specific accent override, gleaned from the source PDF's own branding: Miovision's
+       logo blue (sampled from the cover-page wordmark, ~#2880f6) and Roboto typography. This is
+       a scoped override on top of the shared template, not an edit to the shared style.css. -->
+  <style>
+    :root {
+      --accent: #2670e8;
+      --accent-soft: #e8f1fe;
+      --tip-border: #2670e8;
+      --badge-beginner: #2670e8;
+    }
+    :root[data-theme="dark"] {
+      --accent: #6ca4fb;
+      --accent-soft: #17263f;
+      --tip-border: #6ca4fb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --accent: #6ca4fb;
+        --accent-soft: #17263f;
+        --tip-border: #6ca4fb;
+      }
+    }
+    html, body {
+      font-family: "Roboto", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+    .sg-title { font-weight: 400; }
+    .sg-main h2, .sg-main h3 { font-weight: 400; }
+    .sg-main h2 strong, .sg-main h3 strong { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">Scout User Guide</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Reformatted 2026-08-07 &middot; source: Miovision "Scout User Guide" PDF, v. Jan 04, 2021</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Reference Manual</span>
+                  <span class="sg-badge">Hardware &amp; Firmware Guide</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>Welcome</h2>
+          <p>This guide covers the Miovision Scout traffic study camera: specifications, getting
+          started, deploying it at an intersection, and the day-to-day tasks you'll perform on
+          its onscreen interface. It's a reformatted, fully-navigable version of Miovision's
+          official Scout User Guide PDF (source file: <code>v1 - scout user guide.pdf</code>,
+          version dated Jan 04, 2021) &mdash; same content, cross-references, and links, just with
+          real headings, a sidebar, tables, and search instead of scrolling a 48-page PDF.</p>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Using this guide</div>
+            <p>Use the sidebar to jump straight to a task instead of scrolling. Every cross-reference
+            the original PDF made to Miovision's help site or training videos is kept as a live link
+            in the relevant section below.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Specifications</h2>
+
+          <figure>
+            <img src="images/scout-user-guide/page01_img1.png" alt="Miovision Scout control unit with its door open, showing the onboard screen and camera port">
+            <figcaption>The Scout Control Unit (SCU). Source: Miovision Scout User Guide.</figcaption>
+          </figure>
+
+          <h3>Scout battery specifications</h3>
+          <p>Sealed Lead Acid (SLA) batteries can be affected by ambient temperature, charging
+          patterns, and usage behavior.</p>
+          <ul>
+            <li>Scout VCU: 12V, 14Ah SLA battery (<a href="http://www.cumulus-soaring.com/power-sonic/PS-12140.pdf" target="_blank" rel="noopener">Specification Sheet</a>)</li>
+            <li>Power Pack: 12V, 9Ah SLA battery (<a href="http://www.cumulus-soaring.com/power-sonic/ps-1290.pdf" target="_blank" rel="noopener">Specification Sheet</a>)</li>
+          </ul>
+          <p>Prior to March 30, 2020 (valid for Europe): Replacement Batteries were 12V, 13Ah SLA
+          (<a href="https://drive.google.com/a/miovision.com/file/d/1iyvNmw9NybtUdy5deRa6dmzpv7mJMWu2/view?usp=sharing" target="_blank" rel="noopener">Spec sheet &ndash; English</a>,
+          <a href="https://drive.google.com/a/miovision.com/file/d/1mlFL1OfKP-PFF0H9NfdqmISb-v6iYFWI/view?usp=sharing" target="_blank" rel="noopener">Spec sheet &ndash; German</a>).</p>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>If purchasing new batteries, Miovision recommends the PowerSonic brands linked
+            above. A non-PowerSonic battery with matching specs can be substituted, but Miovision
+            can't guarantee it will match the recording/standby times below.</p>
+          </div>
+
+          <h3>Battery recording time</h3>
+          <ul>
+            <li>Scout VCU: 72 hours (3 days)</li>
+            <li>Scout VCU + Power Pack: 164 hours (7 days)</li>
+          </ul>
+          <p>Estimated recording times assume optimal ambient temperature and batteries charged
+          and maintained following Miovision's best practices (see
+          <a href="#charging-and-maintaining-scout-batteries">Charging and maintaining Scout batteries</a>).</p>
+
+          <h3>Battery standby time</h3>
+          <p>Scout VCU: 60 days. The VCU operates in Standby mode when not recording, which
+          impacts overall recording time and battery level over time &mdash; the Power Pack has no
+          standby state, but still loses some voltage over time in storage. When storing either
+          unit for an extended period, charge it at least every 30 days to keep the batteries at a
+          reference charge.</p>
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> Rough guideline</div>
+            <p>A Scout Control Unit loses about <strong>1 hour of recording capacity for every 100
+            hours spent in standby.</strong></p>
+          </div>
+
+          <h3>Temperature impact</h3>
+          <table>
+            <thead><tr><th>Temperature</th><th>Battery capacity</th></tr></thead>
+            <tbody>
+              <tr><td>104&deg;F (40&deg;C)</td><td>102% rated capacity</td></tr>
+              <tr><td>77&deg;F (25&deg;C)</td><td>100% rated capacity</td></tr>
+              <tr><td>32&deg;F (0&deg;C)</td><td>85% rated capacity</td></tr>
+              <tr><td>5&deg;F (&minus;15&deg;C)</td><td>65% rated capacity</td></tr>
+            </tbody>
+          </table>
+
+          <h3>SD card technical specifications</h3>
+          <p>The industrial-grade Ultra SD card Miovision sells for the Scout VCU:</p>
+          <ul>
+            <li>Storage Technology: Ultra MLC</li>
+            <li>Class Rating: Class 10</li>
+            <li>Temperature Rating: &minus;40&deg;C to +85&deg;C</li>
+            <li>Storage Capacity: 16 or 32 GB (each SD slot on Scout supports up to 32 GB)</li>
+          </ul>
+          <p>Industrial-grade cards offer superior write endurance over consumer-grade cards. If
+          buying locally, choose a card that meets or exceeds these specs.</p>
+
+          <h3>Tripod specifications</h3>
+          <ul>
+            <li>Weight: 30 lbs (12 kg)</li>
+            <li>Box Dimensions: 51.57" x 9.84" x 10.24" (131 x 25 x 26 cm)</li>
+            <li>Stance: 6.5 ft (2 m)</li>
+            <li>Collapsed Height: 4 ft (1.2 m)</li>
+            <li>Security Weights: 40 lbs (18.1 kg) &times; 3</li>
+            <li>Maximum Wind Load: 50 mph (80.5 km/h)</li>
+            <li>Maximum Grade of Hill: 40% (approximately 21&deg;)</li>
+          </ul>
+
+          <h3>Scout operating parameters</h3>
+          <p><a href="https://training.miovision.com/watch/QS73waqeCKeSvhLWJGMTXS" target="_blank" rel="noopener">&#9654; Video: Scout Specifications and Maintenance</a></p>
+          <table>
+            <tbody>
+              <tr><td>Deployed Height</td><td>~20 ft (6 m) + the height at which you mounted the bracket</td></tr>
+              <tr><td>Temperature Range</td><td>&minus;40&deg;F (&minus;40&deg;C) to 140&deg;F (60&deg;C)</td></tr>
+              <tr><td>Maximum Wind Load</td><td>50 mph (~80.5 km/h)</td></tr>
+              <tr><td>Day/Night</td><td>Camera rated for 0.03 lux &mdash; usable for 24-hour studies</td></tr>
+              <tr><td>Weather</td><td>Operates in rain, sleet, heat, and snow</td></tr>
+              <tr><td>Field of View</td><td>90&deg; horizontal and vertical</td></tr>
+              <tr><td>Video Resolution</td><td>720 &times; 480 pixels</td></tr>
+              <tr><td>Max. Battery Life</td><td>72 hours of continuous use</td></tr>
+              <tr><td>Battery Recharge Time</td><td>~24 hours</td></tr>
+              <tr><td>Memory Types Accepted</td><td>SD Memory cards (incl. SDHC)</td></tr>
+            </tbody>
+          </table>
+          <p>Max. recording time by card size (see <a href="#sd-card-capacity">SD card capacity</a> for full detail including Low Bit Rate mode):</p>
+          <table>
+            <thead><tr><th>Card Size</th><th>Standard Quality</th><th>High Quality</th></tr></thead>
+            <tbody>
+              <tr><td>2 GB</td><td>11 hours</td><td>2 hours</td></tr>
+              <tr><td>4 GB</td><td>22 hours</td><td>4 hours</td></tr>
+              <tr><td>8 GB</td><td>45 hours</td><td>8 hours</td></tr>
+              <tr><td>16 GB</td><td>90 hours</td><td>17 hours</td></tr>
+              <tr><td>32 GB</td><td>182 hours</td><td>35 hours</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Scout serial numbers</h3>
+          <p>You may need a component's serial number when reporting a hardware issue or ordering
+          replacement parts.</p>
+          <table>
+            <thead><tr><th>Component</th><th>Serial number format</th><th>Location</th></tr></thead>
+            <tbody>
+              <tr><td>Camera</td><td>Begins with "SCA" + 3 alphanumeric characters</td><td>On the camera connector cable</td></tr>
+              <tr><td>Pole Mount</td><td>Begins with "SPM" + 3 alphanumeric characters</td><td>On the Pole Mount mounting bracket</td></tr>
+              <tr><td>Scout Control Unit</td><td>Begins with "SCU" + 3 alphanumeric characters</td><td>Inside the Control Box door, and in the Information Bar along the top of Scout's screens</td></tr>
+              <tr><td>Power Pack</td><td>Format may vary</td><td>Top right corner of the Power Pack faceplate</td></tr>
+              <tr><td>Scout Connect</td><td>Begins with "CNA"</td><td>Back of the Connect Adaptor</td></tr>
+            </tbody>
+          </table>
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/scout-user-guide/page09_img3.png" alt="Camera connector cable with SCA### serial number label">
+              <figcaption>Camera serial number, on the connector cable.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/scout-user-guide/page10_img3.png" alt="Pole Mount bracket with SPM### serial number label">
+              <figcaption>Pole Mount serial number, on the mounting bracket.</figcaption>
+            </figure>
+          </div>
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/scout-user-guide/page10_img4.png" alt="Inside of the Scout Control Box door showing the SCU serial number barcode">
+              <figcaption>Scout Control Unit serial number, inside the Control Box door.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/scout-user-guide/page11_img4.png" alt="Power Pack faceplate with its serial number barcode in the top right corner">
+              <figcaption>Power Pack serial number, top right of the faceplate.</figcaption>
+            </figure>
+          </div>
+          <figure>
+            <img src="images/scout-user-guide/page12_img3.png" alt="Back of the Scout Connect Adaptor showing its CNA serial number and FCC/IC labeling">
+            <figcaption>Scout Connect Adaptor serial number, on the back of the adaptor.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Getting started with Scout</h2>
+
+          <h3>Package contents</h3>
+          <figure>
+            <img src="images/scout-user-guide/page13_img3.png" alt="Diagram of Scout package contents across two boxes: control box, SD card and reader, charger, padlocks, accessory case, camera, ratchet straps, torx driver, and pole mount">
+            <figcaption>Everything included in a standard Scout shipment.</figcaption>
+          </figure>
+
+          <h3>Box dimensions</h3>
+          <ul>
+            <li>Scout Control Unit (SCU): 30 x 33 x 30 cm / 11.81" x 12.99" x 11.81"</li>
+            <li>Pole Mount: 137 x 36 x 20 cm / 53.94" x 14.17" x 7.87"</li>
+            <li>Travel Case: 142 x 41 x 36 cm / 55.9" x 16.14" x 14.17"</li>
+          </ul>
+
+          <h3>Weight</h3>
+          <ul>
+            <li>Scout Control Unit (SCU): 12.7 kg / 28 lb</li>
+            <li>Pole Mount: 12.7 kg / 28 lb</li>
+            <li>Travel Case: 15.9 kg / 35.05 lb</li>
+          </ul>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Returning a demo unit</div>
+            <p>Use the <a href="https://miovision.my.salesforce.com/sfc/p/50000000a2wf/a/1T000000OC8p/Zenyzse88sbkO39U9KWGdcdfeEoACprG5t9h7hZquS8" target="_blank" rel="noopener">Scout Demo checklist</a> as a guide for repacking all components if you received Scout as part of the demo program.</p>
+          </div>
+
+          <h3>Scout safety instructions</h3>
+          <p>Always follow these recommendations when deploying and using Scout.</p>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Security</div>
+            <ul>
+              <li>Securely fasten and tighten the clamps when deploying the Mast &mdash; sections shouldn't rotate once clamped</li>
+              <li>Securely fasten and lock all components</li>
+              <li>The Pole Mount can be deployed off the ground for added security against tampering &mdash; fully tighten the ratchet straps if doing so</li>
+              <li>For extra security, a chain and lock can secure the Pole Mount (not included)</li>
+            </ul>
+          </div>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Safety</div>
+            <ul>
+              <li>Be mindful of overhead obstacles &mdash; never deploy where power lines or transformers could contact the extended Mast</li>
+              <li>Ensure the Pole Mount is tightly secured before extending/retracting the Mast, or mounting Scout/a Power Pack on the bracket</li>
+              <li>Never deploy the Pole Mount in a lightning storm, or when lightning is forecast</li>
+              <li>Scout is watertight only when the door is securely closed &mdash; opening it in inclement weather can damage the electronics</li>
+              <li>Avoid disassembling Scout unless instructed by a Customer Support Representative</li>
+              <li>Never touch or tamper with the internal components</li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <h2>Exploring the Scout user interface</h2>
+          <p>Environment: Scout Firmware 14.0+. When Scout boots up, you'll see the home screen
+          (the Schedule screen).</p>
+          <figure>
+            <img src="images/scout-user-guide/page15_img3.png" alt="Scout Schedule (home) screen showing the current Record Now template, duration, and Next Template / Customize / Record Now buttons">
+            <figcaption>The Schedule (home) screen.</figcaption>
+          </figure>
+
+          <h3>Information Bar</h3>
+          <p>The black Information Bar along the top of every screen shows the page title, the
+          Settings icon, the current date/time, and the VCU ID.</p>
+          <ul>
+            <li>The on-screen Battery Indicator shows overall battery level, flashing red when a
+            recharge is needed. Battery behavior is also reflected in the faceplate LEDs &mdash; see
+            <a href="https://help.miovision.com/s/article/Determining-Scout-status-from-its-LEDs" target="_blank" rel="noopener">LED States</a>.</li>
+            <li>The Settings icon links to Diagnostics, Battery, and Storage screens, plus
+            date/time and LCD settings. From Settings you can also <a href="#editing-scout-templates">edit templates</a>,
+            set the timestamp, and <a href="https://help.miovision.com/s/article/Update-Scout-Firmware" target="_blank" rel="noopener">update your firmware</a>.</li>
+          </ul>
+
+          <h3>Navigation Bar</h3>
+          <p>The grey Navigation Bar along the bottom of every screen moves between the three main
+          screens:</p>
+          <ul>
+            <li><strong>Schedule (home)</strong> &mdash; view, <a href="#editing-scout-templates">edit and customize</a> any of the five included templates, or select Record Now to begin recording instantly; also shows upcoming studies.</li>
+            <li><strong>Hardware</strong> &mdash; links to <a href="https://help.miovision.com/s/article/Scout-Battery-Check" target="_blank" rel="noopener">Battery Information</a> and <a href="https://help.miovision.com/s/article/Storage-Check-on-Scout" target="_blank" rel="noopener">Storage</a> checks, plus <a href="https://help.miovision.com/s/article/Scout-Camera-Check" target="_blank" rel="noopener">Camera Check</a> for a live video feed and connectivity confirmation.</li>
+            <li><strong>Past Recordings</strong> &mdash; review details of past recordings, including duration and status.</li>
+          </ul>
+
+          <h3 id="sd-card-capacity">SD card capacity</h3>
+          <p>The duration of video that fits on an SD card can only be estimated &mdash; storage
+          capacity is impacted by the scene being captured. Formatting the card before each
+          recording maximizes available capacity, so it's best practice to always
+          <a href="#formatting-an-sd-card-on-scout">format your SD card on Scout</a>.</p>
+          <p>These aspects of a scene raise storage requirements: complex patterns, intense bright
+          or white light/reflection, and a large amount of movement (including ambient movement
+          like leaves in the wind). Storage needs are generally higher when each frame differs a
+          lot from the one before/after it.</p>
+
+          <h3>Storage capacity</h3>
+          <p>Storage capacity can only be estimated; Miovision cannot be held liable for factors
+          resulting in an incomplete recording. Estimates below assume optimal equipment
+          maintenance/conditions and these average file sizes:</p>
+          <ul>
+            <li>Low Bit Rate Video: 70 MB/hour</li>
+            <li>Normal Video: 180 MB/hour</li>
+            <li>High Quality Video: 900 MB/hour</li>
+          </ul>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Note</div>
+            <p>Don't use High Quality mode for video you'll submit for processing &mdash; it takes up
+            to 5 times longer to upload. See <a href="https://help.miovision.com/s/article/Video-Recording-Modes-on-Scout" target="_blank" rel="noopener">Video Recording Modes</a> for more.</p>
+          </div>
+          <p>Scout supports SD cards up to 32 GB per slot; 64 GB cards (and higher) are not
+          supported. As a best practice, always deploy Scout with a card in each slot.</p>
+          <table>
+            <thead><tr><th>Card Size</th><th>Low Bit Rate</th><th>Normal Quality</th><th>High Quality</th></tr></thead>
+            <tbody>
+              <tr><td>2 GB</td><td>27 hours</td><td>11 hours</td><td>2 hours</td></tr>
+              <tr><td>4 GB</td><td>56 hours</td><td>22 hours</td><td>4 hours</td></tr>
+              <tr><td>8 GB</td><td>113 hours</td><td>44 hours</td><td>8 hours</td></tr>
+              <tr><td>16 GB</td><td>227 hours</td><td>88 hours</td><td>17 hours</td></tr>
+              <tr><td>32 GB</td><td>456 hours</td><td>177 hours</td><td>35 hours</td></tr>
+              <tr><td>2 &times; 32 GB</td><td>913 hours</td><td>354 hours</td><td>70 hours</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Inserting or ejecting the Scout SD card</h3>
+          <p>Always put Scout in standby mode first:</p>
+          <ol>
+            <li>Press the yellow button once.</li>
+            <li>Press the Sleep button.</li>
+            <li>Insert or remove an SD card.</li>
+          </ol>
+
+          <h3>Deploying Scout with SD cards in slots A and B</h3>
+          <p>Even if your recording doesn't need the capacity of both cards, deploy Scout with SD
+          cards in Slot A <em>and</em> B &mdash; if a technical issue affects one card, Scout records
+          to the other.</p>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Note</div>
+            <p>Firmware updates, including Over-the-Air updates, require a functioning SD card in
+            Slot A.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Deploying Scout at the intersection</h2>
+
+          <h3>Power Pack safety instructions</h3>
+          <ul>
+            <li>Don't put weight on the Power Pack after it's deployed on the bracket</li>
+            <li>Don't position it so that it could fall into the roadway or sidewalk</li>
+            <li>Don't deploy it when wind speed exceeds 50 mph, or in other extreme weather</li>
+            <li>Don't remove the battery from inside the Power Pack without first contacting Customer Support</li>
+            <li>Don't touch exposed battery leads or circuitry</li>
+            <li>Don't get the electronics wet</li>
+          </ul>
+
+          <h3>Scout deployment guidelines</h3>
+          <p>Fully capturing all approaches and movements is key to complete, accurate data.
+          Miovision Specialists rate deployments to convey expected accuracy and help you improve
+          future ones. Miovision also offers free deployment planning &mdash; email location details
+          to <a href="mailto:support@miovision.com">support@miovision.com</a>, ideally a week before
+          your planned deployment, especially for larger multi-location projects.</p>
+          <figure>
+            <img src="images/scout-user-guide/page19_img4.png" alt="Overhead diagram of a 4-way intersection marking good camera placement corners with checkmarks and poor placements (behind buildings, under trees, past crosswalks) with X marks">
+            <figcaption>Good vs. poor Scout placement around an intersection.</figcaption>
+          </figure>
+
+          <h4>Distance from roadway</h4>
+          <ul>
+            <li>Position Scout within 12 ft (4 m) of the roadway or intersection being recorded</li>
+            <li>Bare structures are ideal &mdash; avoid structures with obstacles under 20 ft (6 m)</li>
+            <li>Make sure trees or other objects don't obstruct Scout's view of the intersection</li>
+          </ul>
+          <figure>
+            <img src="images/scout-user-guide/page19_img3.png" alt="Diagram showing Scout mounted on a pole within 12 feet of a crosswalk corner, with viewing angles marked" style="max-width:420px">
+            <figcaption>Position Scout within 12 ft (4 m) of the roadway.</figcaption>
+          </figure>
+          <p><a href="https://training.miovision.com/watch/dDj66RUsEJ4duwhDiUVP3Y" target="_blank" rel="noopener">&#9654; Video: Camera Deployment</a></p>
+
+          <h4>Viewing distance of camera</h4>
+          <ul>
+            <li>Vehicle movements within 175 ft (53 m) of Scout can be accurately processed</li>
+            <li>ATR study: up to 4 lanes (lane-separated) or 6 lanes (direction/volume only) per Scout</li>
+            <li>TMC study: up to 6 lanes per approach, per Scout</li>
+            <li>Pedestrian and Bicycle study: all movements/approaches must be within 125 ft (38 m) &mdash; see <a href="https://help.miovision.com/s/article/Pedestrian-and-Bicycle-Studies---Pathway" target="_blank" rel="noopener">Pedestrian and Bicycle Studies</a></li>
+          </ul>
+          <p>If movements or lanes are farther than 175 ft (53 m) from Scout, deploy multiple Scouts.</p>
+          <div class="sg-figure-row">
+            <figure>
+              <img src="images/scout-user-guide/page20_img3.png" alt="Diagram of a 175-foot viewing radius covering an intersection">
+              <figcaption>Viewing distance at an intersection.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/scout-user-guide/page20_img4.png" alt="Diagram of a 175-foot viewing distance along a straight roadway">
+              <figcaption>Viewing distance along a roadway.</figcaption>
+            </figure>
+          </div>
+
+          <h4>Pole Mount height and camera angle</h4>
+          <ul>
+            <li>Always fully extend the Pole Mount to capture a full view of the intersection/roadway</li>
+            <li>Run a Camera Check from the Hardware screen to angle the camera for a full view</li>
+          </ul>
+
+          <h4>Storage and battery considerations</h4>
+          <ul>
+            <li>Set Video quality to Normal with 2 &times; 32 GB SD cards to help ensure adequate storage</li>
+            <li>Before leaving your facility, run a battery check to confirm Scout's batteries are in good working order</li>
+          </ul>
+
+          <h4>Glare from sun or streetlights</h4>
+          <ul>
+            <li>Where possible, don't face the camera directly toward the horizon during sunrise/sunset</li>
+            <li>Instead, orient the camera along a North/South viewing axis</li>
+            <li>Avoid positioning Scout so it directly faces a streetlight</li>
+          </ul>
+
+          <h3>Scout training videos</h3>
+          <p>Every training video referenced throughout this guide, gathered here for quick access:</p>
+          <ul>
+            <li><a href="https://training.miovision.com/watch/QS73waqeCKeSvhLWJGMTXS" target="_blank" rel="noopener">Scout Specifications and Maintenance</a></li>
+            <li><a href="https://training.miovision.com/watch/dDj66RUsEJ4duwhDiUVP3Y" target="_blank" rel="noopener">Camera Deployment</a></li>
+            <li><a href="https://help.miovision.com/s/article/Selecting-a-Good-Viewpoint?language=en_US" target="_blank" rel="noopener">Selecting a good viewpoint</a></li>
+            <li><a href="https://help.miovision.com/s/article/Deploy-Scout-for-a-TMC-Study?language=en_US" target="_blank" rel="noopener">Deploying a TMC study</a></li>
+            <li><a href="https://help.miovision.com/s/article/Deploy-Scout-for-a-Road-Volume-Study?language=en_US" target="_blank" rel="noopener">Deploying a road volume study</a></li>
+            <li><a href="https://training.miovision.com/watch/Xxz6fV9iFgjqZaoSFyMkbZ" target="_blank" rel="noopener">Deploying Scout Hardware</a></li>
+            <li><a href="https://training.miovision.com/watch/4AUmXQcoWfkEyM7mDj72gt" target="_blank" rel="noopener">Scheduling and Hardware Checks</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Preparing to use Scout</h2>
+
+          <h3>Performing a battery capacity test on Scout</h3>
+          <p>The capacity test lets Scout recalibrate its battery capacity estimate. Because
+          capacity is affected by usage, charging patterns, and temperature, run it ahead of each
+          count season (Fall/Spring), or at least twice a year &mdash; and any time you get a Charge
+          Temperature or Long Charge warning.</p>
+          <ol>
+            <li>Fully charge Scout, then disconnect it from the charger.</li>
+            <li>On Scout, press <strong>Hardware &gt; Battery Check &gt; Advanced &gt; Run Capacity Test</strong>.</li>
+            <li>The test takes up to 72 hours, depending on battery health. Scout shows a running progress bar during the test.</li>
+          </ol>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Note</div>
+            <p>It's normal for Scout to show 0% progress for as long as 24 hours after starting the
+            capacity test &mdash; that's actually a sign of good battery health.</p>
+          </div>
+          <p>After the test completes, Scout shows a colored indicator next to the battery icon,
+          estimating hours of regular recording the batteries can support:</p>
+          <table>
+            <thead><tr><th>Color</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>Green</td><td>&gt; 48 hours</td></tr>
+              <tr><td>Amber</td><td>Between 24&ndash;48 hours</td></tr>
+              <tr><td>Red</td><td>&lt; 24 hours</td></tr>
+            </tbody>
+          </table>
+          <p>After the capacity test completes, fully recharge the batteries.</p>
+
+          <h3>Viewing Scout's battery capacity</h3>
+          <p>Once Scout is fully charged, view its battery capacity via <strong>Hardware &gt; Battery Check</strong>.</p>
+
+          <h3>Capacity test warning</h3>
+          <p>When new batteries are installed, or the faceplate is changed, Scout prompts you to
+          run the capacity test. If you skip it, Scout keeps estimating based on the old batteries'
+          capacity. You can start the test straight from the warning screen by pressing Run Test.</p>
+          <figure>
+            <img src="images/scout-user-guide/page23_img4.png" alt="Scout screen warning: Need to run capacity test! New or replacement batteries will have different capacity performance, with Run Test and Dismiss buttons" style="max-width:420px">
+            <figcaption>The capacity-test warning screen.</figcaption>
+          </figure>
+
+          <h3 id="charging-and-maintaining-scout-batteries">Charging and maintaining Scout batteries</h3>
+          <p>Scout and the Power Pack both use Sealed Lead Acid batteries. Follow these
+          recommendations to extend battery life and prevent damage.</p>
+
+          <h4>Battery charging best practices</h4>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Best practices</div>
+            <ul>
+              <li>Let Scout cool down after recording in hot temperatures (above 30&deg;C/86&deg;F) &mdash; charging already-hot batteries shortens their lifespan</li>
+              <li>Charge Scout as soon as possible after a deployment</li>
+              <li>Dismount Scout from its deployed position to charge (don't charge upside down)</li>
+              <li>Keep the VCU door open while charging</li>
+              <li>Safe to leave connected 12&ndash;24 hours after the charger LED turns green (extends battery life) &mdash; don't leave it &gt; 24 hours after the LED turns green</li>
+              <li>Fully charge Scout every 30 days if unused, to maintain a safe battery level</li>
+              <li>Run the capacity test ahead of each count season, or a minimum of twice a year</li>
+            </ul>
+          </div>
+          <p>Undercharging lead-acid batteries causes plate sulfation &mdash; sulfuric acid reacting
+          with the plates to form lead sulfate crystals &mdash; which reduces the battery's ability to
+          accept a full charge and gets worse over time, leading to premature failure.</p>
+          <p><a href="https://training.miovision.com/watch/QS73waqeCKeSvhLWJGMTXS" target="_blank" rel="noopener">&#9654; Video: Scout Specifications and Maintenance</a></p>
+
+          <h4>Battery charging behavior</h4>
+          <ul>
+            <li>The charger operates in three modes: Constant Current, Constant Voltage, and Trickle Charge</li>
+            <li>Constant Current: rapidly recharges batteries to about 80% full</li>
+            <li>Constant Voltage: slowly charges to nearly full</li>
+            <li>Trickle Charge: tops batteries up to full</li>
+            <li>The charger LED turns green in Trickle Charge mode*</li>
+            <li>Scouts with a Rev2+ faceplate and firmware 14.3+ have a circuit that auto-stops
+            charging if there's risk of overcharge/damage &mdash; in this case Scout can stay
+            connected indefinitely. Check the faceplate version on Scout's Settings screen (Scout
+            VCU REV).</li>
+            <li>The charger and Scout will feel warm while charging &mdash; this is expected**</li>
+          </ul>
+          <p><small>*When the LED first turns green, batteries aren't yet at full capacity &mdash;
+          leave the charger plugged in another 12&ndash;24 hours to complete Trickle Charge and let
+          the batteries equalize.<br>
+          **If the charger or Control Unit are hot to the touch (you can't leave your hand on them
+          for more than 1 second), disconnect from power immediately.</small></p>
+
+          <h4>Charger warnings</h4>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Charge Temperature / Long Charge warning</div>
+            <p>Under certain conditions Scout displays a <a href="https://help.miovision.com/s/article/Charge-Temperature-Warning" target="_blank" rel="noopener">Charge Temperature</a> or
+            <a href="https://help.miovision.com/s/article/Long-Charge-Warning-on-Scout" target="_blank" rel="noopener">Long Charge</a> warning. If this happens, first run a capacity test,
+            then download logs and send them to Customer Support for analysis.</p>
+          </div>
+
+          <h3>Troubleshooting battery issues on Scout</h3>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Leaking or swollen batteries</div>
+            <p>If batteries are overcharged or short-circuited they might start to leak or swell &mdash;
+            replace them immediately. See <a href="https://miovision.lightning.force.com/s/article/Scout-Battery-Specifications" target="_blank" rel="noopener">Battery Specifications</a> for
+            purchase recommendations. Power Sonic batteries: see the
+            <a href="http://www.power-sonic.com/images/powersonic/technical/1277751263_20100627-TechManual-Lo.pdf" target="_blank" rel="noopener">Power Sonic Technical Manual</a> for care instructions.</p>
+          </div>
+          <p>See <a href="https://help.miovision.com/s/article/Measure-Scout-Battery-Capacity-with-a-Multimeter?language=en_US" target="_blank" rel="noopener">Troubleshooting: Scout battery charging issues</a> for more.</p>
+        </section>
+
+        <section>
+          <h2>Setting up Scout at the intersection</h2>
+
+          <h3>Planning the Scout setup</h3>
+          <ol>
+            <li>Charge Scout and Power Pack (if required) &mdash; review <a href="https://support.miovision.com/s/article/Determining-Scout-status-from-its-LEDs" target="_blank" rel="noopener">LED States</a>. While charging, the charger LED is orange/red; fully charged is green.</li>
+            <li>Insert an SD card &mdash; ensure it's fully seated and run a Storage Check to confirm enough space is available. Best practice: format cards between deployments.</li>
+            <li>Schedule a recording &mdash; review <a href="https://support.miovision.com/s/article/Scout-User-Interface" target="_blank" rel="noopener">Scout's interface</a>. Templates are included and can be edited, or start recording on location (see <a href="#scheduling-studies">Scheduling studies</a>). Recording longer than 72 hours requires a Power Pack &mdash; see the <a href="https://support.miovision.com/s/article/Power-Pack-User-Guide" target="_blank" rel="noopener">Power Pack User's Guide</a>.</li>
+          </ol>
+          <p><a href="https://training.miovision.com/watch/Xxz6fV9iFgjqZaoSFyMkbZ" target="_blank" rel="noopener">&#9654; Video: Deploying Scout Hardware</a></p>
+
+          <h3>Setting up the Scout on location</h3>
+          <ol>
+            <li>
+              <strong>Choose a deployment site.</strong>
+              <ul>
+                <li>Deploy within 12 ft (3.6 m) of the intersection/roadway corner</li>
+                <li>Make sure nothing obstructs the Camera's view</li>
+                <li>No overhead obstacles lower than 25 ft that the Camera or Mast could contact</li>
+                <li>Scout captures movements &lt;175 ft (53 m) away &mdash; up to 6 lanes (volume only) / 4 lanes (lane-separated) per VCU for an ATR study; see <a href="https://support.miovision.com/s/article/Scout-Deployment-Guidelines" target="_blank" rel="noopener">VCU Deployment Guidelines</a></li>
+                <li>If no suitable location is available, a Tripod may be required &mdash; see <a href="https://support.miovision.com/s/article/Tripod-User-Guide" target="_blank" rel="noopener">Tripod User Guide</a></li>
+              </ul>
+            </li>
+            <li>
+              <strong>Attach Pole Mount to Pole/Tripod.</strong>
+              <ul>
+                <li>Extend the bottom Mast section so the bracket sits at shoulder height when resting on the ground (skip if deploying off the ground)</li>
+                <li>Securely fasten the clamp so the section stays extended</li>
+                <li>Hold the Pole Mount against the pole so the rubber bumpers sit flush against it</li>
+              </ul>
+              <figure>
+                <img src="images/scout-user-guide/page26_img3.png" alt="Diagram of the Pole Mount bracket sliding open along the pole and clamping closed" style="max-width:280px">
+                <figcaption>Open/slide the bracket into place, then close the clamp.</figcaption>
+              </figure>
+            </li>
+            <li>
+              <strong>Run both Ratchet Straps</strong> through the bracket and around the pole/tripod, and securely fasten.
+              <div class="sg-figure-row">
+                <figure>
+                  <img src="images/scout-user-guide/page27_img3.png" alt="Ratchet strap being fastened around a pole through the Pole Mount bracket" style="max-width:220px">
+                  <figcaption>Fastening a ratchet strap.</figcaption>
+                </figure>
+                <figure>
+                  <img src="images/scout-user-guide/page27_img4.png" alt="Both ratchet straps fastened around the pole, with the cable hook shown" style="max-width:260px">
+                  <figcaption>Both straps fastened, with the cable Hook.</figcaption>
+                </figure>
+              </div>
+            </li>
+            <li>
+              <strong>Attach Scout to the Pole Mount bracket.</strong>
+              <ul>
+                <li>Line up Scout's rear sleeve with the mounting bracket arms on Pole Mount</li>
+                <li>Scout's connectors should face away from the Mast / toward the pole</li>
+                <li>A Power Pack can mount on the opposite bracket, if needed</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Attach cables to Scout.</strong> Line up the pins and plug the video cable into the Video In connector.
+            </li>
+            <li>
+              Plug the Power Pack cable into the Charger/Power Pack connector if required. Hand-tighten
+              both fastening rings.
+              <div class="sg-callout warning">
+                <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Don't over-tighten</div>
+                <p>Never use a tool to tighten the connector rings &mdash; this can damage the connectors or cables.</p>
+              </div>
+            </li>
+            <li>
+              <strong>Attach the camera to the Mast.</strong>
+              <p><em>Old camera mount:</em> Screw the Camera onto the top of the Mast until hand-tight,
+              ensuring it's threaded on straight. Adjust the Camera head to roughly a 45&deg; angle,
+              remove the lens cap, and line up the white lines on the Camera and Mast connectors to
+              plug it in.</p>
+              <figure>
+                <img src="images/scout-user-guide/page28_img3.png" alt="Diagram showing the camera being attached to the mast connector and twisted to a 45-degree angle" style="max-width:260px">
+                <figcaption>Attach and twist the camera to ~45&deg;.</figcaption>
+              </figure>
+              <p><em>New Camera Mount:</em> Insert the Camera Mount into the top of the Pole Mount,
+              move the thumb lever to its locked position, and connect the Camera cable to the Pole
+              Mount cable.</p>
+            </li>
+            <li>
+              <strong>Extend the mast.</strong>
+              <ul>
+                <li>Open the lever only to the point of tension to loosen the top-most clamp</li>
+                <li>Extend the top Mast section as far as it goes &mdash; don't over-extend</li>
+                <li>Close the lever to tighten the clamp, then test-turn the section by hand &mdash; it shouldn't move</li>
+                <li>If needed, tighten further by turning the fastening nut counter-clockwise</li>
+                <li>Repeat for each Mast section &mdash; the last 2 sections use a torx driver to loosen/fasten</li>
+              </ul>
+              <figure>
+                <img src="images/scout-user-guide/page29_img3.png" alt="Five-stage diagram showing the mast sections being opened, slid up, and closed sequentially">
+                <figcaption>Extending the Mast one section at a time: Open &rarr; Slide &rarr; Close.</figcaption>
+              </figure>
+              <div class="sg-callout tip">
+                <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+                <p>Make angle/direction adjustments before extending the Pole Mount as much as
+                possible, to minimize stress on the cable. This gets easier with experience &mdash; only
+                make minor adjustments once the Pole Mount is fully extended.</p>
+              </div>
+            </li>
+            <li>
+              <strong>Verify the hardware setup.</strong> Boot up Scout &mdash; any scheduled studies
+              appear under Upcoming Studies. From the Hardware screen:
+              <ul>
+                <li><strong>Battery Check</strong> &mdash; shows capacity for internal and Power Pack batteries (if connected); warns if there's not enough power for upcoming studies</li>
+                <li><strong>Camera Check</strong> &mdash; live video feed; adjust the viewing angle/direction so the full study location is in view</li>
+                <li><strong>Storage Check</strong> &mdash; confirms enough SD capacity for upcoming studies; press Format to erase existing video/data</li>
+              </ul>
+            </li>
+            <li>
+              <strong>Secure the Pole Mount.</strong> Padlock Scout's door and the Pole Mount bracket,
+              use the keys to lock the Ratchet Straps, and optionally add a third padlock and chain
+              (not included) for extra security.
+              <figure>
+                <img src="images/scout-user-guide/page30_img3.png" alt="Diagram showing a padlock on the Control Box door and a padlock securing the sleeve to the Pole Mount bracket">
+                <figcaption>Lock the Control Box door and the bracket sleeve.</figcaption>
+              </figure>
+            </li>
+          </ol>
+
+          <h3>Taking down the Scout</h3>
+          <ol>
+            <li><strong>Unlock Scout and stop the recording.</strong> Always confirm recording has
+            stopped before disconnecting cables or ejecting SD cards &mdash; if recording is still in
+            progress, press Stop on the Live Recording screen.</li>
+            <li><strong>Retract the mast.</strong> While holding the Mast, loosen the bottom clamp
+            and slowly guide it down, tightening each section before loosening and retracting the next.</li>
+            <li><strong>Remove the camera from the mast.</strong> Disconnect it, cap the lens, and
+            unscrew/lift it off the top of the Mast.</li>
+            <li><strong>Remove Scout (and Power Pack) from the bracket.</strong> Unscrew all cables,
+            cap the connectors, remove the bracket-sleeve locks, and lift Scout off the bracket onto
+            the ground or into the travel case.</li>
+            <li><strong>Remove the ratchet straps.</strong> Unlock both straps; to loosen one, pull
+            the middle lever fully toward the handle to release the ratchet mechanism, then pull the
+            ratchet away from the pole while holding Pole Mount secure (to avoid it falling into
+            traffic).</li>
+            <li><strong>Lower the bottom section of the mast.</strong> Loosen the lever beneath the
+            bracket, lower the bottom section until fully retracted, then close the lever to secure
+            the clamp.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Setting up the Scout Tripod (optional)</h2>
+          <p>The Scout Tripod is an accessory for deployments where no standalone structure is
+          available.</p>
+          <figure>
+            <img src="images/scout-user-guide/page32_img3.png" alt="Scout mounted on the Tripod, fully assembled with weighted legs, on a warehouse floor">
+            <figcaption>A fully assembled Scout Tripod deployment.</figcaption>
+          </figure>
+
+          <h3>Setting up in an ideal location</h3>
+          <ol>
+            <li>Select an appropriate location &mdash; review the deployment guidelines above; find an
+            area as flat as possible. If you must use a slight hill/incline, keep the grade under
+            40%/21&deg; (see <a href="#setting-up-on-an-incline">Setting up on an incline</a>).</li>
+            <li>Extend the legs &mdash; pull them from the bottom, stand the Tripod up, remove the
+            Velcro strap, and pull the legs away from the center column until fully extended. Latch
+            and lock all three locking clips on the center column.</li>
+            <li>Attach the weights &mdash; secure the Tripod in its deployed state, line up one weight
+            per leg with its white plastic bracket, and lock both latches on each weight.
+              <div class="sg-callout tip">
+                <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+                <p>Latch the upper latch first &mdash; it sets the weight in the correct place and makes the bottom latch easier.</p>
+              </div>
+            </li>
+            <li>Attach the Scout to the Tripod &mdash; confirm the weights are properly installed and
+            the frame is stable, position the Polemount bracket against the center column so the
+            rubber feet sit flush, then attach it and proceed per the deployment steps above.</li>
+          </ol>
+
+          <h3 id="setting-up-on-an-incline">Setting up on an incline</h3>
+          <ol>
+            <li>Select a location where the surface grade is under 40%/21&deg;, at a safe distance from the roadway/sidewalk.</li>
+            <li>Position the Tripod so two of the extended legs sit on the upper end of the hill, roughly aligned with the plane of the hill.</li>
+            <li>Attach the weights the same way as on flat ground.</li>
+            <li>Set up the Scout Polemount opposite the lower leg. Adjust the camera before fully
+            extending the mast, so the roadway stays level in the video.</li>
+          </ol>
+
+          <h3>Taking down the Tripod</h3>
+          <ol>
+            <li>Fully retract the Scout mast, then detach Scout from the Tripod. Remove the ratchet
+            straps while holding the bracket and column in place; if the bottom Polemount mast was
+            unlocked, lock it during take-down.</li>
+            <li>Unlock the weights and carefully lift them off each leg.</li>
+            <li>Unlock the column locks and collapse the legs in toward the center column.</li>
+            <li>Re-attach the Velcro strap around the legs for secure transport.</li>
+          </ol>
+
+          <h3>Tripod safety instructions</h3>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Safety</div>
+            <ul>
+              <li>Ensure the Scout Polemount is tightly secured to the center column</li>
+              <li>Leave the bottom extension of the Scout Polemount unlatched when the Tripod is on uneven ground</li>
+              <li>Make sure the Tripod is stable before attaching Scout</li>
+              <li>Make sure the weights are locked onto the legs</li>
+              <li>Don't set up the Tripod on unstable surfaces like rocks or loose soil</li>
+              <li>Don't move the Tripod while Scout is attached and extended</li>
+              <li>Don't set up the Tripod with the Scout Polemount extended over the road or walkways</li>
+            </ul>
+          </div>
+
+          <h3>Performing a Scout camera check</h3>
+          <p>Camera Check shows a live feed of Scout's camera view. Run it every time you deploy
+          Scout, to confirm the camera is connected and correctly angled.</p>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Hardware</strong>.</li>
+            <li>Press <strong>Camera Check</strong>.</li>
+          </ol>
+          <p>If the live feed doesn't appear, see <a href="https://help.miovision.com/s/article/Troubleshooting-Video-Issues-on-Scout" target="_blank" rel="noopener">Troubleshooting Video Issues on Scout</a>.</p>
+          <p><a href="https://training.miovision.com/watch/4AUmXQcoWfkEyM7mDj72gt" target="_blank" rel="noopener">&#9654; Video: Scheduling and Hardware Checks</a></p>
+
+          <h3>Adjusting the Scout camera orientation</h3>
+          <p>If the live feed isn't aligned horizontally:</p>
+          <ol>
+            <li>Use a blunt object to push the camera out of its shroud (careful not to damage the lens).</li>
+            <li>Connect the camera to Scout, then go to <strong>Hardware &gt; Camera Check</strong>.</li>
+            <li>Adjust the camera until the video is level.</li>
+            <li>Reinsert the camera into its shroud at the correct orientation.</li>
+          </ol>
+
+          <h3>Preventing camera movement during recording</h3>
+          <p>With the original threaded mount, the camera attaches to the Pole Mount via a
+          right-handed thread; its video cable then connects to the cable extending from the Pole
+          Mount. Depending on how the cables are wound, torque applied against the thread can
+          gradually shift the camera and degrade video capture. This doesn't happen with the
+          current insert-mount design.</p>
+          <p>To avoid it: make sure any torque on the camera runs clockwise (facing the camera),
+          and connect the cables around the right-hand side of the camera body.</p>
+          <figure>
+            <img src="images/scout-user-guide/page36_img4.png" alt="Close-up of the camera with its cable wrapped around the right-hand side of the body" style="max-width:340px">
+            <figcaption>Route the cable around the right-hand side of the camera body.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Using Scout</h2>
+
+          <h3 id="scheduling-studies">Scheduling studies</h3>
+          <p>Schedule studies before deploying, based on templates. Scout includes five preset
+          templates you can customize, plus the Record Now template.</p>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Next Template</strong> to scroll through
+            templates. With the one you want selected:
+              <ul>
+                <li>Press <strong>Add to Schedule</strong> to use it unchanged, or</li>
+                <li>Press <strong>Customize</strong> to adjust date, start time, and/or duration, then <strong>Add to Schedule</strong>.</li>
+              </ul>
+            </li>
+            <li>Once added, the study appears under Upcoming Studies on the left of the Home/Schedule screen.</li>
+          </ol>
+          <p><a href="https://training.miovision.com/watch/4AUmXQcoWfkEyM7mDj72gt" target="_blank" rel="noopener">&#9654; Video: Scheduling and Hardware Checks</a></p>
+
+          <h3>Using a time/date stamp on Scout</h3>
+          <p>Add a time/date watermark to all recorded video for easier, more accurate auditing:</p>
+          <ol>
+            <li>From any main screen, go to <strong>Settings</strong>.</li>
+            <li>Select <strong>Recorder</strong>.</li>
+            <li>If Timestamping shows Disabled, select + or &minus; to enable it (same control disables it if already enabled).</li>
+          </ol>
+
+          <h3>Editing a schedule template</h3>
+          <ol>
+            <li>From the Home screen, press <strong>Settings</strong>.</li>
+            <li>Press <strong>Schedule Templates</strong>.</li>
+            <li>Scroll to the template and press <strong>Edit</strong>.</li>
+            <li>Make the required changes.</li>
+            <li>Press <strong>Save</strong>.</li>
+          </ol>
+
+          <h3>Editing a scheduled study</h3>
+          <ol>
+            <li>From the Home/Schedule screen, scroll to the study (press <strong>More</strong> if it's not shown).</li>
+            <li>Press <strong>Edit</strong> next to the study and make your changes.</li>
+            <li>Press <strong>Save Changes</strong>.</li>
+          </ol>
+
+          <h3>Deleting a scheduled study</h3>
+          <p>From the Home/Schedule screen, scroll to the study &mdash; if it's on screen, press
+          <strong>Edit</strong> then <strong>Delete</strong>; if not, press <strong>More</strong>, select the study, then <strong>Delete</strong>.</p>
+
+          <h3>Checking batteries</h3>
+          <p>Run Battery Check before deploying, to confirm there's enough power (internal + Power
+          Pack, if connected) for upcoming studies.</p>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Hardware</strong>.</li>
+            <li>Press <strong>Battery Check</strong>.</li>
+          </ol>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Note</div>
+            <p>Battery Check only confirms enough power for scheduled studies <em>after</em> a
+            <a href="https://help.miovision.com/s/article/Performing-a-Battery-Capacity-Test-on-Scout" target="_blank" rel="noopener">Capacity Test</a> has been run on the unit.</p>
+          </div>
+
+          <h3>Performing a camera check</h3>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Hardware</strong>.</li>
+            <li>Press <strong>Camera Check</strong>.</li>
+          </ol>
+          <p>If the live feed doesn't appear, see <a href="https://help.miovision.com/s/article/Troubleshooting-Video-Issues-on-Scout" target="_blank" rel="noopener">Troubleshooting Video Issues on Scout</a>.</p>
+
+          <h3>Performing a storage check</h3>
+          <p>Run Storage Check before deploying, to confirm enough space for upcoming studies.</p>
+          <ol>
+            <li>With the SD cards you intend to use in place, from the Home/Schedule screen press <strong>Hardware</strong>.</li>
+            <li>If there's video or other files from a previous study, press <strong>Format</strong> to clear the card.</li>
+            <li>Press <strong>Storage Check</strong> (or <strong>Check Again</strong> if you already ran it). If more space is needed and Slot B is empty, insert a card there and press <strong>Check Again</strong>.</li>
+          </ol>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Best practice</div>
+            <p>Format SD cards between recordings &mdash; it maximizes available space and ensures the correct format. See <a href="https://help.miovision.com/s/article/SD-Card-Capacity" target="_blank" rel="noopener">SD card storage limits</a> for more.</p>
+          </div>
+
+          <h3 id="editing-scout-templates">Editing Scout templates</h3>
+          <p>Scout's five preset schedule templates can be customized.</p>
+          <h4>Edit templates</h4>
+          <ol>
+            <li>From any main screen, go to <strong>Settings</strong>.</li>
+            <li>Press <strong>Schedule Templates</strong>.</li>
+            <li>Press <strong>Edit</strong>.</li>
+            <li>Scroll with + and &minus; to edit schedule details.</li>
+            <li>Press <strong>Save</strong>.</li>
+          </ol>
+          <h4>Edit templates with Record Now feature</h4>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Customize</strong>.</li>
+            <li>Scroll with + and &minus; to edit schedule details.</li>
+            <li>Press <strong>Record Now</strong>.</li>
+          </ol>
+
+          <h3>Using the Record Now template on Scout</h3>
+          <p>Record Now begins recording immediately at the deployment site. See the
+          <a href="https://help.miovision.com/s/article/Record-Now-Template-on-Scout" target="_blank" rel="noopener">Record Now</a> article for more.</p>
+          <h4>Record Now without the Scout Connect</h4>
+          <p>The default duration is 24 hours.</p>
+          <ol>
+            <li>To modify the duration, press <strong>Customize</strong>.</li>
+            <li>From the Home/Schedule screen, press <strong>Record Now</strong>.</li>
+          </ol>
+          <h4>Record Now with the Scout Connect</h4>
+          <ol>
+            <li>From the Home/Schedule screen, press <strong>Record Now</strong> &mdash; you're prompted to allow remote management.</li>
+            <li>Press <strong>Yes, Heartbeat only</strong> (2 min wait) or <strong>Yes, Heartbeat with Position</strong> (5 min wait) to enable it. See <a href="https://help.miovision.com/s/article/Remote-Schedule-Management-for-Scout-with-the-Scout-Connect" target="_blank" rel="noopener">Remote Schedule Management</a> for more.</li>
+          </ol>
+          <figure>
+            <img src="images/scout-user-guide/page41_img3.png" alt="Scout screen: ATTENTION. Do you want to manage this Scout in Central during this recording? with Yes, Heartbeat only / Yes, Heartbeat with Position / No, Record Now buttons" style="max-width:420px">
+            <figcaption>The remote-management prompt when using Record Now with Connect.</figcaption>
+          </figure>
+          <p>Depending on the option chosen, it can take 2&ndash;5 minutes to send a Heartbeat to
+          DataLink; if a GPS position can't be acquired, Scout sends a Heartbeat only. Recording
+          begins once the heartbeat is sent, and continues sending one every hour (coinciding with
+          the hour or half-hour) during recording.</p>
+
+          <h3>Recording consecutive studies</h3>
+          <p>Traffic Data Online won't accept a video file over 100 hours. Work around this by
+          scheduling long-duration recordings as multiple shorter consecutive recordings &mdash; e.g.
+          for a 7-day study, schedule one 4-day (96 hour) recording plus one 3-day (72 hour)
+          recording. This produces separate files with no time gap between them, and avoids
+          recordings being split arbitrarily across SD cards. Upload each file as a separate study
+          in TDO, then <a href="https://help.miovision.com/s/article/Merge-Studies" target="_blank" rel="noopener">merge the studies</a> into one report once processing completes.</p>
+
+          <h3>Video recording modes on Scout</h3>
+          <table>
+            <thead><tr><th>Mode</th><th>Bitrate</th></tr></thead>
+            <tbody>
+              <tr><td>Normal</td><td>384 kbps (48 KB/s)</td></tr>
+              <tr><td>High Quality</td><td>2 mbps (250 KB/s)</td></tr>
+              <tr><td>Low Bit Rate (black and white)</td><td>150 kbps (18.75 KB/s) &mdash; requires Scout Firmware v18.0.5.382+; see <a href="https://help.miovision.com/s/article/Scout-Release-Notes" target="_blank" rel="noopener">Release Notes</a></td></tr>
+            </tbody>
+          </table>
+          <p>For long-duration studies or video you'll submit for processing, use Normal or Low Bit
+          Rate. High Quality video submitted to Miovision takes up to 5&times; longer to upload and is
+          automatically converted to Normal quality for processing/storage &mdash; High Quality is
+          better suited to observational collection, study auditing, and sample videos for clients.
+          The mode you choose affects how much video fits on your SD card (see
+          <a href="#sd-card-capacity">SD card capacity</a>).</p>
+          <ol>
+            <li>From any main screen, go to <strong>Settings</strong>.</li>
+            <li>Press <strong>Recorder</strong>.</li>
+            <li>Press + / &minus; to switch modes.</li>
+            <li>Press <strong>Save</strong>.</li>
+          </ol>
+
+          <h3>Enabling or disabling time/date stamps on Scout</h3>
+          <ol>
+            <li>From any main screen, go to <strong>Settings</strong>.</li>
+            <li>Select <strong>Recorder</strong>.</li>
+            <li>Select + or &minus; next to Timestamping to toggle it on/off.</li>
+          </ol>
+
+          <h3>Managing date and time settings on Scout</h3>
+          <p>How you manage date/time depends on whether your unit has Scout Connect. With
+          Connect, Date and Time settings are disabled &mdash; time is set by the Time Zone setting and
+          GPS when automatic mode (the default) is enabled. To set the time zone manually:</p>
+          <ol>
+            <li>Go to <strong>Settings</strong>.</li>
+            <li>Press <strong>Date &amp; Time</strong>.</li>
+            <li>Press <strong>Timezone Mode</strong>.</li>
+            <li>Press <strong>OK</strong> to acknowledge the warning.</li>
+            <li>Press <strong>Time Zone</strong>, then select the continent and the new time zone.</li>
+          </ol>
+
+          <h4>Scout Connect and time zone changes</h4>
+          <p>Scout with Connect needs no manual DST adjustment &mdash; time zone and system time update
+          automatically. If you schedule a study in one time zone and then change Scout's time zone
+          setting, the originally scheduled time is preserved (e.g. an 8 a.m. Eastern start stays
+          8 a.m. Eastern / 7 a.m. Central after switching to Central). See
+          <a href="https://help.miovision.com/s/article/Miovision-Scout-Connect-and-Timezone-Changes" target="_blank" rel="noopener">Miovision Scout Connect and time zone changes</a>.</p>
+
+          <h4>Managing date and time settings on Scout without Connect</h4>
+          <p>Without Connect, manage all date/time settings manually:</p>
+          <ol>
+            <li>Go to <strong>Settings &gt; Date &amp; Time</strong>.</li>
+            <li>To adjust the Date: select <strong>Date</strong>, scroll with + / &minus;, press <strong>Save</strong>.</li>
+            <li>To adjust the Time: select <strong>Time</strong>, scroll with + / &minus;, press <strong>Save</strong>.</li>
+            <li>To adjust the Time Zone: select <strong>Time Zone</strong>, then the continent and new zone.</li>
+          </ol>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Setting seconds precisely</div>
+            <p>Scout's time settings have no seconds field &mdash; pressing Save resets seconds to zero.
+            To set the time to the second, set it one minute ahead and press Save right as the minute changes.</p>
+          </div>
+
+          <h4>Scout without Connect and time zone changes</h4>
+          <p>Scout without Connect doesn't auto-update its time zone for DST &mdash; if your region
+          observes DST, update the time zone setting manually. Updating it adjusts the system time
+          accordingly.</p>
+
+          <h4>Confirming whether Scout time has skewed</h4>
+          <p>As Scout's RTC clock battery depletes, its set time can skew. To check: enable the
+          timestamp if it isn't already, perform a test recording, and note the timestamp (shown to
+          the second). See <a href="https://miovision.lightning.force.com/s/article/Replace-Scouts-Real-Time-Clock-RTC-Battery" target="_blank" rel="noopener">RTC clock battery</a> for replacement info, or
+          <a href="https://miovision.lightning.force.com/s/article/Enable-or-Disable-Time--Date-Stamp-on-Scout" target="_blank" rel="noopener">enable the timestamp</a> if needed.</p>
+
+          <h3>Resetting Scout to factory settings</h3>
+          <p>Factory Reset clears all templates and preferences &mdash; useful when setting up for a
+          new project/study type/count season, or when directed during troubleshooting.</p>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Cannot be undone</div>
+            <p>Once templates are wiped from Scout, they cannot be retrieved &mdash; be sure before
+            performing this. As part of regular maintenance, you don't need to run this at the start
+            of a count season unless you actually want to delete all existing templates.</p>
+          </div>
+          <ol>
+            <li>On Scout, go to <strong>Settings &gt; Diagnostics &gt; Factory Reset</strong>.</li>
+            <li>Press <strong>Yes</strong> to complete the reset.</li>
+          </ol>
+
+          <h3 id="formatting-an-sd-card-on-scout">Formatting an SD card on Scout</h3>
+          <p>Formatting regularly allows maximum storage capacity &mdash; always format your SD card on Scout.</p>
+          <ol>
+            <li>Insert an SD card into Slot A. (Always ensure Scout is in standby mode first &mdash; press the yellow button once, then Sleep.)</li>
+            <li>From the Home/Schedule screen, press <strong>Hardware</strong>.</li>
+            <li>Press <strong>Storage Check</strong>.</li>
+            <li>Press <strong>Format</strong>.</li>
+            <li>Formatting removes all files from the card &mdash; press <strong>Yes</strong> to proceed, or <strong>No</strong> to back up files first.</li>
+          </ol>
+          <p>Scout confirms once formatting is complete.</p>
+
+          <h3>Formatting an SD card on a Windows computer</h3>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Use FAT32</div>
+            <p>Set the File system to <strong>FAT32</strong>. If you choose another format, Scout won't recognize the card.</p>
+          </div>
+          <figure>
+            <img src="images/scout-user-guide/page46_img3.png" alt="Windows Format SD dialog with the File system dropdown set to FAT32 (Default), highlighted" style="max-width:340px">
+            <figcaption>Windows' Format dialog, with File system set to FAT32.</figcaption>
+          </figure>
+
+          <h3>Swapping a Scout SD card</h3>
+          <p>Scout's display doesn't indicate which card it's currently recording to. To replace a card mid-study:</p>
+          <ol>
+            <li>Stop the recording.</li>
+            <li>Put Scout to sleep (press the yellow button once, then Sleep).</li>
+            <li>Remove the card you want to replace and insert the new one.</li>
+            <li>Start Scout by pressing the yellow button.</li>
+            <li>Start the recording.</li>
+          </ol>
+          <p>With a card in both Slot A and Slot B, Scout picks which to record to using this logic:</p>
+          <ul>
+            <li>If the estimated recording size fits the open space on Slot A, record to Slot A</li>
+            <li>If it's larger than Slot A's open space but fits Slot B, record to Slot B</li>
+            <li>If it's larger than both cards' open space, record to Slot A</li>
+            <li>If either card fills up or becomes unavailable mid-recording, switch to the other card if space allows</li>
+          </ul>
+
+          <h3>Scout SD card capacity requirements by recording duration</h3>
+          <p>Estimates &mdash; actual file size varies with what the video captures. Format the card on
+          Scout before starting your study to ensure its full capacity is available. See
+          <a href="https://support.miovision.com/s/article/Replacing-Scout-SD-Cards" target="_blank" rel="noopener">Replacing Scout SD cards</a> for recommended cards.</p>
+          <table>
+            <thead><tr><th>Study Length</th><th>Scout VCU</th><th>Scout VCU + Power Pack</th></tr></thead>
+            <tbody>
+              <tr><td>8 hours</td><td>2 GB</td><td>2 GB</td></tr>
+              <tr><td>12 hours</td><td>4 GB</td><td>4 GB</td></tr>
+              <tr><td>24 hours</td><td>8 GB</td><td>8 GB</td></tr>
+              <tr><td>36 hours</td><td>8 GB</td><td>8 GB</td></tr>
+              <tr><td>48 hours</td><td>16 GB</td><td>16 GB</td></tr>
+              <tr><td>72 hours</td><td>16 GB</td><td>16 GB</td></tr>
+              <tr><td>96 hours</td><td>N/A</td><td>32 GB</td></tr>
+              <tr><td>120 hours</td><td>N/A</td><td>32 GB</td></tr>
+              <tr><td>144 hours</td><td>N/A</td><td>32 GB</td></tr>
+              <tr><td>168 hours</td><td>N/A</td><td>32 GB</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Downloading Scout log files</h3>
+          <ol>
+            <li>Insert an SD card with at least 100 MB of free space into Slot A.</li>
+            <li>Go to <strong>Settings</strong>.</li>
+            <li>Press <strong>Diagnostics</strong>.</li>
+            <li>Press <strong>Download Logs</strong>.</li>
+          </ol>
+          <p>Log files are saved to the root folder of the SD card.</p>
+        </section>
+
+        <section>
+          <details class="sg-section">
+            <summary>Source &amp; document history</summary>
+            <p>Converted from Miovision's official <strong>Scout User Guide</strong> PDF
+            (<code>v1 - scout user guide.pdf</code>), version 1 &ndash; Jan 04, 2021 (initial
+            version). All product names, screenshots, and diagrams are &copy; Miovision
+            Technologies Incorporated; this page is a personal, non-redistributed reformatting for
+            easier reference and is not an official Miovision publication.</p>
+          </details>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>

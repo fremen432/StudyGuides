@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TxDOT Land Surveying — Study Guide</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">TxDOT Land Surveying</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-15 &middot; Field survey practice for TxDOT roadway projects — existing conditions, control, GNSS/OPUS, and Trimble field workflow</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Deep Dive</span>
+                  <span class="sg-badge">Intermediate &rarr; Expert</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2 data-toc="Contents">Contents</h2>
+          <ul class="sg-contents-list">
+            <li><a href="#the-surveyors-role-on-a-txdot-roadway-project">The Surveyor's Role on a TxDOT Roadway Project</a></li>
+            <li><a href="#getting-data-on-the-existing-state-of-the-roadway">Getting Data on the Existing State of the Roadway</a>
+              <ul>
+                <li><a href="#what-gets-collected">What Gets Collected</a></li>
+                <li><a href="#field-methods">Field Methods</a></li>
+                <li><a href="#feature-coding-deliverables">Feature Coding &amp; Deliverables</a></li>
+              </ul>
+            </li>
+            <li><a href="#project-control-primary-secondary-monuments">Project Control — Primary &amp; Secondary Monuments</a>
+              <ul>
+                <li><a href="#control-network-hierarchy-primary-vs-secondary">Control Network Hierarchy: Primary vs. Secondary</a></li>
+                <li><a href="#monumentation-types">Monumentation Types</a></li>
+                <li><a href="#placement-criteria">Placement Criteria</a></li>
+                <li><a href="#survey-control-monuments-vs-rowboundary-monuments">Survey Control Monuments vs. ROW/Boundary Monuments</a></li>
+              </ul>
+            </li>
+            <li><a href="#benchmarks-vertical-control">Benchmarks &amp; Vertical Control</a>
+              <ul>
+                <li><a href="#what-is-a-benchmark">What Is a Benchmark?</a></li>
+                <li><a href="#datums-navd88-and-the-geoid">Datums: NAVD88 and the Geoid</a></li>
+                <li><a href="#benchmark-placement-along-the-corridor">Benchmark Placement Along the Corridor</a></li>
+                <li><a href="#differential-leveling-vs-gnss-derived-elevations">Differential Leveling vs. GNSS-Derived Elevations</a></li>
+              </ul>
+            </li>
+            <li><a href="#gnss-positioning-opus">GNSS Positioning &amp; OPUS</a>
+              <ul>
+                <li><a href="#observation-methods-static-rtk-and-ppk">Observation Methods: Static, RTK, and PPK</a></li>
+                <li><a href="#what-is-opus">What Is OPUS?</a></li>
+                <li><a href="#opus-variants">OPUS Variants</a></li>
+                <li><a href="#cors-the-reference-network">CORS — The Reference Network</a></li>
+              </ul>
+            </li>
+            <li><a href="#gnss-quality-metrics-pdop-and-the-dop-family">GNSS Quality Metrics — PDOP and the DOP Family</a>
+              <ul>
+                <li><a href="#dilution-of-precision-explained">Dilution of Precision Explained</a></li>
+                <li><a href="#pdop-quality-scale">PDOP Quality Scale</a></li>
+                <li><a href="#other-quality-indicators">Other Quality Indicators</a></li>
+              </ul>
+            </li>
+            <li><a href="#trimble-equipment-field-workflow">Trimble Equipment &amp; Field Workflow</a>
+              <ul>
+                <li><a href="#receiver-types-rtk-baserover-setup">Receiver Types &amp; RTK Base/Rover Setup</a></li>
+                <li><a href="#correction-sources">Correction Sources</a></li>
+                <li><a href="#trimble-access-point-codes-localization">Trimble Access: Point Codes &amp; Localization</a></li>
+                <li><a href="#horizontal-vertical-precision-in-the-field-hrmsvrms">Horizontal &amp; Vertical Precision in the Field — HRMS/VRMS</a></li>
+                <li><a href="#static-sessions-tied-into-opus">Static Sessions Tied Into OPUS</a></li>
+              </ul>
+            </li>
+            <li><a href="#coordinate-systems-datums-for-txdot-projects">Coordinate Systems &amp; Datums for TxDOT Projects</a>
+              <ul>
+                <li><a href="#texas-state-plane-coordinate-zones">Texas State Plane Coordinate Zones</a></li>
+                <li><a href="#surface-vs-grid-coordinates-combined-scale-factor">Surface vs. Grid Coordinates — Combined Scale Factor</a></li>
+              </ul>
+            </li>
+            <li><a href="#quality-control-common-pitfalls">Quality Control &amp; Common Pitfalls</a></li>
+            <li><a href="#glossary">Glossary</a></li>
+            <li><a href="#index-sources">Index &amp; Sources</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 data-toc="Surveyor's Role on a TxDOT Project">The Surveyor's Role on a TxDOT Roadway Project</h2>
+          <p>On a TxDOT roadway project, survey is the discipline that answers two questions everything else
+          depends on: <strong>where does everything actually sit on the ground right now</strong>, and
+          <strong>what stable, defensible reference points can design, ROW, and construction all measure
+          from later?</strong> Every downstream discipline — geometric design, drainage, environmental,
+          ROW acquisition, construction staking — inherits its coordinate framework from the survey crew's
+          early work. An error baked into project control early on propagates into every plan sheet built on
+          top of it.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Where Survey Sits in the Project Timeline</div>
+            <div class="sg-diagram-box tip center">
+              <div class="sg-diagram-box-title">1. Existing Conditions Survey</div>
+              <div class="sg-diagram-box-sub">Topo pickup, utilities, ROW evidence — the "what's there now" record</div>
+            </div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box accent center">
+              <div class="sg-diagram-box-title accent-text">2. Control &amp; Monumentation</div>
+              <div class="sg-diagram-box-sub">Primary/secondary monuments, benchmarks — the stable reference frame</div>
+            </div>
+            <div class="sg-diagram-arrow-down accent">&#8595;</div>
+            <div class="sg-diagram-box center">
+              <div class="sg-diagram-box-title">3. Design Surface</div>
+              <div class="sg-diagram-box-sub">DTM/TIN + control feed geometric &amp; drainage design</div>
+            </div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box warning center">
+              <div class="sg-diagram-box-title warning-text">4. ROW &amp; Construction Staking</div>
+              <div class="sg-diagram-box-sub">Boundary recovery, stakeout — all tied back to the same control</div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> control set in phase 2 is the coordinate system every later phase inherits — get it wrong once, and it's wrong everywhere downstream.</div>
+          </div>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> The two survey products that matter most</div>
+            <p>Almost everything in this guide serves one of two deliverables: a <strong>topographic /
+            existing-conditions dataset</strong> (what's physically there) and a <strong>control network</strong>
+            (the fixed, recoverable coordinate and elevation reference the whole project is built against).
+            Keep that distinction in mind — it's the organizing idea behind sections 2-4.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Existing Conditions Survey">Getting Data on the Existing State of the Roadway</h2>
+          <p>Before a designer can draw a single proposed line, the survey crew has to build an accurate,
+          three-dimensional digital record of what's physically on the ground today — this is the
+          <strong>existing conditions</strong> or <strong>topographic ("topo")</strong> survey. It becomes the
+          basis for the existing ground surface (digital terrain model), and every design decision — pavement
+          widening, drainage grades, utility conflicts, ROW takes — gets checked against it.</p>
+
+          <figure>
+            <img src="images/txdot-land-surveying/gnss-setup-road-profile-pickup.jpg" alt="A GNSS rover setup in the field being used to collect road profile survey data">
+            <figcaption>A GNSS rover configured for road profile pickup — the same core workflow TxDOT crews use to capture existing pavement, shoulder, and ditch geometry along a corridor. Source: <a href="https://commons.wikimedia.org/wiki/File:COVEC_CHC_i80_GNSS_setup_for_Tambul-Mendi_road_profile.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></figcaption>
+          </figure>
+
+          <h3 data-toc="What Gets Collected">What Gets Collected</h3>
+          <p>A TxDOT topo survey is broader than "the road" — it documents everything within the survey
+          limits that could affect design, ROW, or utility coordination:</p>
+          <table>
+            <thead><tr><th>Category</th><th>Typical features</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Planimetrics</strong></td><td>Pavement edges, shoulders, curbs, sidewalks, driveways, fences, buildings, tree lines</td></tr>
+              <tr><td><strong>Vertical / drainage</strong></td><td>Ground shots on a grid or breaklines, ditch flowlines, culvert inverts, headwalls, curb/gutter flowlines</td></tr>
+              <tr><td><strong>Utilities (visible evidence)</strong></td><td>Poles, guy wires, pedestals, manholes, valve covers, meters, overhead lines — surface evidence only unless a separate SUE (Subsurface Utility Engineering) effort is scoped</td></tr>
+              <tr><td><strong>ROW evidence</strong></td><td>Found monuments, fence lines, occupation lines — anything bearing on where the existing right-of-way and property boundaries actually are</td></tr>
+              <tr><td><strong>Structures &amp; signage</strong></td><td>Bridge elements, retaining walls, guardrail, signs, signals, striping</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Field Methods">Field Methods</h3>
+          <p>Most modern TxDOT topo work is collected with <strong>GNSS RTK rovers</strong> for open-sky
+          areas and a <strong>robotic total station</strong> for anything under tree canopy, near structures,
+          or close enough to traffic/overhead obstructions that satellite visibility or safety make GNSS
+          impractical. The two methods are complementary, not competing — a well-run crew swaps between them
+          within the same day depending on what a given feature needs.</p>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common pitfall — utility evidence is not utility location</div>
+            <p>A topo survey records what's <em>visible</em> at the surface (a manhole rim, a valve box).
+            It is <strong>not</strong> a substitute for SUE when the project needs actual horizontal/vertical
+            utility positions — those follow the ASCE 38 quality levels (D: records only, up through A:
+            test-hole-verified). Confusing "we picked up the manhole" with "we know where the pipe is" is a
+            recurring source of downstream utility conflicts.</p>
+          </div>
+
+          <h3 data-toc="Feature Coding & Deliverables">Feature Coding &amp; Deliverables</h3>
+          <p>Points are collected with standardized <strong>feature codes</strong> (linework codes that tell
+          the CAD software what to draw and how to connect points — e.g. auto-generating a continuous edge-
+          of-pavement line from a string of coded shots) so the field data translates directly into usable
+          CAD linework rather than a disconnected point cloud. The end deliverables feed the project's survey
+          CAD file (TxDOT projects are typically built in MicroStation/OpenRoads Designer) and a
+          <strong>DTM/TIN</strong> (digital terrain model / triangulated irregular network) representing the
+          existing ground surface that the design surface will be compared and tied into.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Control Monuments">Project Control — Primary &amp; Secondary Monuments</h2>
+          <p>Control is the skeleton the rest of the survey hangs on: a set of physically monumented points
+          with known, highly accurate horizontal coordinates and/or elevations that every other measurement
+          on the project — topo shots, design coordinates, construction stakeout — ties back to.</p>
+
+          <h3 data-toc="Primary vs. Secondary Control">Control Network Hierarchy: Primary vs. Secondary</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Primary vs. Secondary Control</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Primary Control</div>
+                  <div class="sg-diagram-panel-sub">Project-wide backbone</div>
+                </div>
+                <div class="sg-diagram-box">Static GNSS session, submitted to OPUS</div>
+                <div class="sg-diagram-box">Tied directly to the National Spatial Reference System (NSRS)</div>
+                <div class="sg-diagram-box accent center">
+                  <div class="sg-diagram-box-title accent-text">Highest accuracy, sparse spacing</div>
+                </div>
+              </div>
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">Secondary Control</div>
+                  <div class="sg-diagram-panel-sub">Working densification</div>
+                </div>
+                <div class="sg-diagram-box">RTK GNSS or total station traverse, tied to primary</div>
+                <div class="sg-diagram-box">Set for line-of-sight coverage &amp; day-to-day convenience</div>
+                <div class="sg-diagram-box tip center">
+                  <div class="sg-diagram-box-title">Slightly lower accuracy, denser spacing</div>
+                </div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> primary control is set once, carefully, and rarely revisited; secondary control is derived from it and does the day-to-day work of getting a total station or rover within reach of every feature.</div>
+          </div>
+
+          <p>Primary control points are the few, high-accuracy points directly observed with static GNSS and
+          post-processed (typically through OPUS — see section 5). Secondary control points densify that
+          network — set more frequently along the corridor, close enough together that a robotic total
+          station or conventional instrument always has usable backsight/foresight pairs, without needing a
+          static GNSS session at every one.</p>
+
+          <h3 data-toc="Monumentation Types">Monumentation Types</h3>
+          <table>
+            <thead><tr><th>Monument type</th><th>Typical construction</th><th>Where used</th></tr></thead>
+            <tbody>
+              <tr><td>Concrete monument</td><td>Poured concrete with a stamped bronze/aluminum disk set in the top</td><td>Primary control, permanent points expected to survive the life of the project and beyond</td></tr>
+              <tr><td>Capped rebar / iron rod</td><td>#4-#5 rebar driven flush or near-flush, capped with a stamped plastic or aluminum cap</td><td>Secondary control, ROW/boundary corners</td></tr>
+              <tr><td>Disk set in structure</td><td>Bronze/aluminum disk drilled and epoxied into existing concrete (curb, bridge, sidewalk)</td><td>Stable long-term reference where ground disturbance is likely (near construction limits)</td></tr>
+              <tr><td>PK nail / mag nail</td><td>Nail set in asphalt or concrete pavement</td><td>Temporary or short-duration secondary points, easily disturbed — used with that limitation understood</td></tr>
+            </tbody>
+          </table>
+
+          <figure>
+            <img src="images/txdot-land-surveying/geodetic-survey-marker-mndot.jpg" alt="A witness post protecting a nearby geodetic survey control monument, with agency identification signage">
+            <figcaption>A witness post protecting a nearby geodetic control monument — the same principle TxDOT crews use to flag project control near active construction so it isn't disturbed. Source: <a href="https://commons.wikimedia.org/wiki/File:Geodetic_Survey_Marker_Northern_Minnesota_MnDOT_15807802015.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Tony Webster (CC BY-SA 4.0)</figcaption>
+          </figure>
+
+          <h3 data-toc="Placement Criteria">Placement Criteria</h3>
+          <ul>
+            <li><strong>Stability</strong> — set in undisturbed ground or stable structure, outside the anticipated construction limits and clear zone, away from fill sections or pavement edges likely to move or settle.</li>
+            <li><strong>Spacing</strong> — primary control spaced to give static GNSS sessions clean sky visibility and reasonable baseline lengths; secondary control spaced tightly enough (commonly on the order of every 1,000-2,000 ft along a corridor, tighter on curves or complex interchanges) that every part of the survey/construction limits has usable line of sight to at least one point.</li>
+            <li><strong>Intervisibility</strong> — at least some secondary points need direct line of sight to each other as a backup for conventional (non-GNSS) instrument use, and as a check.</li>
+            <li><strong>Redundancy</strong> — never rely on a single tie; every point should be checkable from more than one other control point so a disturbed or blundered monument is caught rather than silently propagated.</li>
+          </ul>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common pitfall — disturbed or destroyed control</div>
+            <p>Construction equipment, mowing crews, and time itself are the enemy of monumentation. Any
+            crew returning to a project should <strong>always reconnoiter and check into known control before
+            trusting it</strong> — a shifted or destroyed monument used without verification can silently
+            corrupt every stake set from it.</p>
+          </div>
+
+          <h3 data-toc="Control vs. ROW Monuments">Survey Control Monuments vs. ROW/Boundary Monuments</h3>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Don't conflate the two</div>
+            <p><strong>Survey control monuments</strong> exist purely as an engineering convenience — a
+            recoverable coordinate/elevation reference for this project. They carry no legal weight.
+            <strong>ROW and boundary monuments</strong> (found property corners, existing ROW markers) are
+            legal evidence of where a boundary actually is, governed by boundary law and the retracement
+            rules a licensed surveyor applies when re-establishing a property line. A topo crew records
+            found ROW evidence faithfully but does not treat a project control point as if it carries
+            boundary authority, and vice versa.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Benchmarks & Vertical Control">Benchmarks &amp; Vertical Control</h2>
+          <p>Horizontal control answers "where" — benchmarks answer "how high." A <strong>benchmark
+          (BM)</strong> is a monument with a precisely known elevation, used as the starting and checking
+          point for all vertical work on the project (existing ground elevations, drainage grades,
+          construction grade stakes).</p>
+
+          <h3 data-toc="What Is a Benchmark?">What Is a Benchmark?</h3>
+          <p>TxDOT project benchmarks are typically split into two categories:</p>
+          <ul>
+            <li><strong>Project benchmarks (PBM)</strong> — durable monuments (disks in concrete, structures)
+            set specifically for the project, intended to survive from initial survey through construction.</li>
+            <li><strong>Temporary benchmarks (TBM)</strong> — set for shorter-term, localized use (a nail in
+            a curb near a work area) where a durable monument isn't warranted, but a known elevation is
+            still needed nearby.</li>
+          </ul>
+
+          <h3 data-toc="NAVD88 & the Geoid">Datums: NAVD88 and the Geoid</h3>
+          <p>TxDOT vertical control is referenced to <strong>NAVD88</strong> (North American Vertical Datum
+          of 1988) — an orthometric height system, meaning elevations are referenced to a model of mean sea
+          level (the geoid), not to the mathematical ellipsoid GNSS itself measures against.</p>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> Formula — getting from GNSS to a usable elevation</div>
+            <p><code>H = h &minus; N</code></p>
+            <p>Where <strong>H</strong> is orthometric height (NAVD88 elevation — what design and construction
+            actually use), <strong>h</strong> is the ellipsoid height a GNSS receiver directly measures, and
+            <strong>N</strong> is the geoid height (undulation) at that point, taken from a geoid model
+            (currently GEOID18 in the continental US). A rover's data collector applies this correction
+            automatically using the loaded geoid model — but the model has to be current and correct for the
+            answer to be trustworthy.</p>
+          </div>
+
+          <h3 data-toc="Benchmark Placement">Benchmark Placement Along the Corridor</h3>
+          <p>Benchmarks are placed with the same stability logic as horizontal control — outside anticipated
+          disturbance, on stable ground or structure — but with vertical-specific spacing: close enough
+          together (commonly every few thousand feet, and always near structures/drainage features requiring
+          precise grade) that a level run or GNSS check never has to carry error too far before the next
+          check point.</p>
+
+          <h3 data-toc="Leveling vs. GNSS Elevations">Differential Leveling vs. GNSS-Derived Elevations</h3>
+          <table>
+            <thead><tr><th></th><th>Differential (spirit) leveling</th><th>GNSS-derived elevation</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Method</strong></td><td>Optical level + rod, direct height differences between points</td><td>GNSS ellipsoid height minus geoid model separation</td></tr>
+              <tr><td><strong>Typical accuracy</strong></td><td>Sub-centimeter over short, well-run circuits</td><td>Centimeter-level under RTK; better under long static sessions</td></tr>
+              <tr><td><strong>Strength</strong></td><td>Highest achievable precision; independent of satellite geometry/geoid error</td><td>Fast, no intervisibility required, covers long distances efficiently</td></tr>
+              <tr><td><strong>Weakness</strong></td><td>Slow, requires intervisibility between setups, error accumulates over long runs if not looped/checked</td><td>Vertical accuracy is inherently worse than horizontal, and only as good as the local geoid model</td></tr>
+              <tr><td><strong>Typical TxDOT use</strong></td><td>Establishing/verifying primary benchmarks to the highest standard</td><td>Day-to-day topo and grade checks where GNSS accuracy is sufficient</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Why GNSS vertical is "worse" than horizontal</div>
+            <p>Satellite geometry gives GNSS receivers a naturally stronger fix on horizontal position than
+            vertical — there's no satellite below the horizon to triangulate against from underneath. This is
+            why VDOP is always worse than HDOP for the same constellation (see section 6), and why critical
+            vertical control is still often verified by conventional leveling rather than GNSS alone.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="GNSS & OPUS">GNSS Positioning &amp; OPUS</h2>
+          <p>Establishing primary control accurately means tying a project into the national reference frame
+          — and the standard tool for doing that without a private reference-station network is
+          <strong>OPUS</strong>, the National Geodetic Survey's free online processing service.</p>
+
+          <h3 data-toc="Static, RTK, PPK">Observation Methods: Static, RTK, and PPK</h3>
+          <table>
+            <thead><tr><th>Method</th><th>How it works</th><th>Typical session length</th><th>Typical use</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Static</strong></td><td>Receiver logs raw carrier-phase data at a fixed point for later post-processing (e.g. via OPUS), no real-time correction needed</td><td>1-4+ hours depending on required accuracy and baseline length</td><td>Establishing primary control monuments</td></tr>
+              <tr><td><strong>RTK (Real-Time Kinematic)</strong></td><td>Rover receives live correction data from a base station or network, computes a fixed-integer solution in real time</td><td>Seconds per point</td><td>Topo shots, secondary control, stakeout</td></tr>
+              <tr><td><strong>PPK (Post-Processed Kinematic)</strong></td><td>Like RTK but corrections are applied afterward in software rather than live in the field</td><td>Seconds per point (processed later)</td><td>Environments where a live radio/cell link is unreliable (dense canopy, remote areas)</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="What Is OPUS?">What Is OPUS?</h3>
+          <p><strong>OPUS (Online Positioning User Service)</strong>, run by NOAA's National Geodetic Survey,
+          takes raw static GNSS observation data uploaded by a user and computes a high-accuracy position by
+          comparing it against the nationwide network of CORS (Continuously Operating Reference Stations).
+          It's the standard way a project surveyor ties a new control monument into the National Spatial
+          Reference System without needing their own base station tied to a known point.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">OPUS Workflow</div>
+            <div class="sg-diagram-flow-root">Static GNSS session on the primary control monument</div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box center">
+              <div class="sg-diagram-box-title">Export raw data as RINEX</div>
+              <div class="sg-diagram-box-sub">receiver-neutral exchange format</div>
+            </div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box accent center">
+              <div class="sg-diagram-box-title accent-text">Upload to OPUS</div>
+              <div class="sg-diagram-box-sub">opus.ngs.noaa.gov — email address + antenna height/type required</div>
+            </div>
+            <div class="sg-diagram-arrow-down accent">&#8595;</div>
+            <div class="sg-diagram-box center">
+              <div class="sg-diagram-box-title">OPUS processes against 3+ nearby CORS stations</div>
+              <div class="sg-diagram-box-sub">double-differenced carrier-phase solution</div>
+            </div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box tip center">
+              <div class="sg-diagram-box-title">Solution report returned (email or on-screen)</div>
+              <div class="sg-diagram-box-sub">NAD83 &amp; ITRF coordinates, orthometric height, peak-to-peak error, observation count</div>
+            </div>
+            <div class="sg-diagram-arrow-down">&#8595;</div>
+            <div class="sg-diagram-box warning center">
+              <div class="sg-diagram-box-title warning-text">Adopted as published project control</div>
+            </div>
+          </div>
+
+          <h3 data-toc="OPUS Variants">OPUS Variants</h3>
+          <table>
+            <thead><tr><th>Variant</th><th>Best for</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td><strong>OPUS-Static (OPUS-S)</strong></td><td>Single-point static observations, 2+ hours</td><td>The standard workhorse for establishing one control point at a time</td></tr>
+              <tr><td><strong>OPUS-RS (Rapid Static)</strong></td><td>Shorter sessions (15+ min) near a dense CORS network</td><td>Trades some accuracy/reliability for speed — not appropriate everywhere</td></tr>
+              <tr><td><strong>OPUS-Projects</strong></td><td>Multi-point, multi-session projects</td><td>Lets a whole project's control network be managed, adjusted, and shared as one dataset</td></tr>
+              <tr><td><strong>OPUS-Share</strong></td><td>Publishing a mark for public/community reference</td><td>Optional — contributes the mark to the publicly searchable database</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="CORS Network">CORS — The Reference Network</h3>
+          <p>CORS stations are permanently operating GNSS receivers at surveyed, known locations across the
+          country, continuously logging data. OPUS works by differencing a user's raw observation against the
+          nearest handful of CORS stations, which cancels out most atmospheric and satellite-clock error
+          common to both — the same principle behind RTK base/rover corrections, just applied after the fact
+          against a permanent national network instead of a project's own temporary base.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Longer static sessions aren't just "more thorough" — they average out error</div>
+            <p>A longer observation window lets the satellite constellation's geometry change meaningfully
+            over the session, which averages out geometry-dependent error that a short session would bake in
+            as a systematic offset. This is why OPUS accuracy improves substantially between a 15-minute and
+            a 4-hour session, well beyond what simple averaging of more data points alone would predict.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="PDOP & GNSS Quality Metrics">GNSS Quality Metrics — PDOP and the DOP Family</h2>
+          <p>A GNSS fix is only as good as the geometry of the satellites it's computed from. <strong>Dilution
+          of Precision (DOP)</strong> is the family of numbers that quantify how much that geometry is
+          amplifying (or not) the underlying ranging error into positional error.</p>
+
+          <h3 data-toc="Dilution of Precision Explained">Dilution of Precision Explained</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Satellite Geometry Drives DOP</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">Wide, Spread-Out Geometry</div>
+                  <div class="sg-diagram-panel-sub">Satellites well distributed across the sky</div>
+                </div>
+                <div class="sg-diagram-box tip center">
+                  <div class="sg-diagram-box-title">Low PDOP (good)</div>
+                  <div class="sg-diagram-box-sub">Ranging error stays close to its raw size in the final position</div>
+                </div>
+              </div>
+              <div class="sg-diagram-panel warning">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title warning-text">Clustered, Narrow Geometry</div>
+                  <div class="sg-diagram-panel-sub">Satellites bunched together or blocked (canopy, structures)</div>
+                </div>
+                <div class="sg-diagram-box warning center">
+                  <div class="sg-diagram-box-title warning-text">High PDOP (bad)</div>
+                  <div class="sg-diagram-box-sub">Same ranging error gets amplified into much larger positional error</div>
+                </div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> DOP doesn't measure signal quality directly — it measures how forgiving (or punishing) the satellite geometry is toward whatever ranging error already exists.</div>
+          </div>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> Formula — the relationship DOP describes</div>
+            <p><code>&sigma;<sub>position</sub> &asymp; DOP &times; &sigma;<sub>UERE</sub></code></p>
+            <p>Final positional error is approximately the DOP value multiplied by the User Equivalent Range
+            Error (UERE — the underlying per-satellite ranging error from atmospheric delay, clock error,
+            multipath, etc.). A DOP of 2 roughly doubles the raw ranging error in the final fix; a DOP of 8
+            amplifies it eightfold. DOP is a <em>multiplier</em>, not an absolute accuracy figure on its own.</p>
+          </div>
+
+          <table>
+            <thead><tr><th>Term</th><th>Stands for</th><th>What it describes</th></tr></thead>
+            <tbody>
+              <tr><td><strong>GDOP</strong></td><td>Geometric DOP</td><td>Combined 3D position + receiver clock error — the broadest DOP figure</td></tr>
+              <tr><td><strong>PDOP</strong></td><td>Positional DOP</td><td>Combined 3D position error (horizontal + vertical) — the figure most commonly watched in the field</td></tr>
+              <tr><td><strong>HDOP</strong></td><td>Horizontal DOP</td><td>Horizontal (2D) position error only</td></tr>
+              <tr><td><strong>VDOP</strong></td><td>Vertical DOP</td><td>Vertical position error only — typically the weakest of the four, since no satellites are visible below the horizon</td></tr>
+              <tr><td><strong>TDOP</strong></td><td>Time DOP</td><td>Receiver clock error contribution — rarely watched directly in field work</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="PDOP Quality Scale">PDOP Quality Scale</h3>
+          <table>
+            <thead><tr><th>PDOP value</th><th>Rating</th><th>Field guidance</th></tr></thead>
+            <tbody>
+              <tr><td>&lt; 2</td><td>Ideal</td><td>Excellent geometry — highest-confidence work</td></tr>
+              <tr><td>2 &ndash; 4</td><td>Excellent</td><td>Standard good working conditions for RTK/static</td></tr>
+              <tr><td>4 &ndash; 6</td><td>Good</td><td>Acceptable for most routine work</td></tr>
+              <tr><td>6 &ndash; 8</td><td>Moderate</td><td>Usable, but treat results with more caution; consider re-observing critical points</td></tr>
+              <tr><td>8 &ndash; 10</td><td>Fair</td><td>Marginal — increasing risk, avoid for control-quality work</td></tr>
+              <tr><td>&gt; 10</td><td>Poor</td><td>Unreliable — most receivers/collectors will flag or refuse a fixed solution</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Other Quality Indicators">Other Quality Indicators</h3>
+          <ul>
+            <li><strong>Fixed vs. float solution</strong> — a "fixed" RTK solution has resolved the carrier-phase
+            integer ambiguity and delivers centimeter-level accuracy; a "float" solution hasn't fully resolved
+            it and can be off by decimeters or more. Never accept a float solution for control-quality work.</li>
+            <li><strong>RMS (Root Mean Square)</strong> — the reported precision estimate for a given
+            observation, shown by the receiver/data collector alongside HRMS (horizontal) and VRMS (vertical).</li>
+            <li><strong>Multipath</strong> — signal reflecting off nearby surfaces (pavement, structures,
+            vehicles, water) before reaching the antenna, corrupting the ranging measurement independent of
+            DOP. It's why shooting a point tight against a building or guardrail is riskier than one in open
+            ground even at identical PDOP.</li>
+            <li><strong>Satellite count &amp; elevation mask</strong> — more visible satellites generally
+            improve geometry; an elevation mask (commonly 10-15&deg;) excludes low-angle satellites whose
+            signals travel through more atmosphere and are more prone to multipath and obstruction.</li>
+          </ul>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common pitfall — trusting a fixed solution with bad geometry</div>
+            <p>A receiver can report a "fixed" RTK solution even while PDOP is elevated — fixed/float status
+            and DOP are separate signals. A fixed solution under tree canopy or next to a bridge abutment with
+            PDOP pushing 6-8 deserves a second look (or a re-shoot in better conditions) before it's trusted
+            for control-quality work, even though the data collector isn't throwing an outright error.</p>
+          </div>
+
+          <table>
+            <thead><tr><th>Work type</th><th>Typical horizontal tolerance</th><th>Typical vertical tolerance</th></tr></thead>
+            <tbody>
+              <tr><td>Primary control (OPUS static)</td><td>&le; 1-2 cm</td><td>&le; 2-4 cm</td></tr>
+              <tr><td>Secondary control (RTK, tied to primary)</td><td>&le; 2-3 cm</td><td>&le; 3-5 cm</td></tr>
+              <tr><td>Topographic mapping-grade shots</td><td>&le; 3-5 cm</td><td>&le; 5-8 cm</td></tr>
+            </tbody>
+          </table>
+          <p>Exact tolerances are governed by the project's controlling standards (TxDOT Survey Manual and
+          project-specific scope) — the figures above are typical working orders of magnitude, not a
+          substitute for the governing spec on a given job.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Trimble Field Workflow">Trimble Equipment &amp; Field Workflow</h2>
+          <p>Trimble GNSS receivers are the most common field hardware on TxDOT survey crews, used both for
+          RTK topo/stakeout work and for static observations destined for OPUS.</p>
+
+          <h3 data-toc="RTK Base/Rover Setup">Receiver Types &amp; RTK Base/Rover Setup</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">RTK Base &amp; Rover</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Base Receiver</div>
+                  <div class="sg-diagram-panel-sub">Set over a known or arbitrary fixed point</div>
+                </div>
+                <div class="sg-diagram-box">Tracks satellites, computes its own raw position</div>
+                <div class="sg-diagram-box accent center">
+                  <div class="sg-diagram-box-title accent-text">Broadcasts correction data</div>
+                  <div class="sg-diagram-box-sub">via UHF radio, cellular/NTRIP, or logs for PPK</div>
+                </div>
+              </div>
+              <div class="sg-diagram-arrow-right"><div class="arrow-glyph">&#8594;</div><div class="arrow-caption">correction<br>link</div></div>
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">Rover Receiver</div>
+                  <div class="sg-diagram-panel-sub">Carried to each point on a range pole</div>
+                </div>
+                <div class="sg-diagram-box">Applies the correction in real time</div>
+                <div class="sg-diagram-box tip center">
+                  <div class="sg-diagram-box-title">Fixed RTK solution — cm-level position</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <figure>
+            <img src="images/txdot-land-surveying/rtk-rover-gnss-receiver.jpg" alt="A surveyor holding a Trimble-style GNSS RTK rover on a range pole, operating a handheld data collector">
+            <figcaption>An RTK rover on a range pole with a handheld data collector — the standard field setup for topo shots, secondary control, and stakeout. Source: <a href="https://commons.wikimedia.org/wiki/File:Surveyor_Using_GNSS_Receiver_with_RTK_Solution.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Jacob Wysko (CC BY 4.0)</figcaption>
+          </figure>
+
+          <h3 data-toc="Correction Sources">Correction Sources</h3>
+          <table>
+            <thead><tr><th>Source</th><th>How it works</th><th>Range / limits</th></tr></thead>
+            <tbody>
+              <tr><td>UHF radio</td><td>Project's own base station broadcasts corrections directly to rovers on a licensed radio frequency</td><td>Several miles, line-of-sight/terrain dependent; no cellular coverage needed</td></tr>
+              <tr><td>Cellular / NTRIP</td><td>Rover pulls corrections over a cell data connection from a base or a network service</td><td>Unlimited range within cell coverage; fails in dead zones</td></tr>
+              <tr><td>VRS network (Virtual Reference Station)</td><td>A statewide/regional network of permanent stations computes a synthetic nearby "virtual" base for the rover</td><td>No project base station needed at all; requires cellular coverage and network subscription</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Trimble Access: Point Codes & Localization">Trimble Access: Point Codes &amp; Localization</h3>
+          <p>Field data collector software (commonly <strong>Trimble Access</strong>) is where feature codes
+          get assigned to each shot in real time, and where a critical setup step happens before any
+          production work: <strong>localization (site calibration)</strong> — tying the receiver's raw
+          global WGS84/ITRF solution to the project's local control network and coordinate system (Texas
+          State Plane, project datum) so every point collected lands in the same system the design will be
+          built in.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Localization is what makes GNSS agree with your control</div>
+            <p>Without a localization tied to the project's own control monuments, a rover's coordinates are
+            correct in a global sense but may not exactly match the project's adopted local control values —
+            small residual differences between the global GNSS solution and locally-observed control are
+            normal, and the localization computes a best-fit transformation (and reports residuals) rather
+            than assuming a perfect match.</p>
+          </div>
+
+          <h3 data-toc="Horizontal & Vertical Precision — HRMS/VRMS">Horizontal &amp; Vertical Precision in the Field — HRMS/VRMS</h3>
+          <p>Every RTK shot in Trimble Access reports <strong>HRMS</strong> (horizontal RMS) and
+          <strong>VRMS</strong> (vertical RMS) alongside the coordinates — the receiver's own real-time
+          precision estimate for that specific shot. A crew watches these live, not just PDOP, since HRMS/
+          VRMS reflect the actual solution quality (including multipath and signal strength) rather than
+          geometry alone.</p>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common pitfall — antenna height entry errors</div>
+            <p>The single most common blunder in GNSS fieldwork isn't a satellite problem at all — it's
+            entering the wrong <strong>antenna height</strong> (or the wrong measurement method: vertical
+            height to a reference mark vs. slant height to the edge of the ground plane) into the data
+            collector. A rover held at a fixed, known pole height removes this risk entirely for rover work;
+            for static/base setups where height is measured by hand, double-check and record the measurement
+            method used, not just the number.</p>
+          </div>
+
+          <h3 data-toc="Static Sessions for Control">Static Sessions Tied Into OPUS</h3>
+          <p>When a Trimble receiver is used to establish primary control rather than collect topo shots, it's
+          set up in <strong>static mode</strong> directly over the monument on a tripod and fixed-height
+          tripod adapter (removing pole-height error from the equation entirely), left logging raw
+          observations for the session length the required accuracy demands, then the resulting data is
+          exported and submitted to OPUS exactly as described in section 5.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Coordinate Systems & Datums">Coordinate Systems &amp; Datums for TxDOT Projects</h2>
+          <p>Texas is large enough that a single flat coordinate projection would introduce unacceptable
+          distortion statewide, so Texas State Plane is split into five zones, each minimizing distortion
+          within its own region.</p>
+
+          <h3 data-toc="Texas State Plane Zones">Texas State Plane Coordinate Zones</h3>
+          <table>
+            <thead><tr><th>Zone</th><th>General coverage</th></tr></thead>
+            <tbody>
+              <tr><td>North (4201)</td><td>Panhandle and northernmost counties</td></tr>
+              <tr><td>North Central (4202)</td><td>Dallas-Fort Worth and north-central Texas</td></tr>
+              <tr><td>Central (4203)</td><td>Austin, San Antonio, and central Texas</td></tr>
+              <tr><td>South Central (4204)</td><td>Houston and the southeast-central corridor</td></tr>
+              <tr><td>South (4205)</td><td>Rio Grande Valley and southernmost counties</td></tr>
+            </tbody>
+          </table>
+          <p>Horizontal control is referenced to <strong>NAD83</strong> (North American Datum of 1983, with
+          periodic realizations/adjustments), the datum State Plane itself is built on, and vertical control
+          to <strong>NAVD88</strong> as covered in section 4.</p>
+
+          <h3 data-toc="Surface vs. Grid Coordinates">Surface vs. Grid Coordinates — Combined Scale Factor</h3>
+          <p>State Plane coordinates are <strong>grid</strong> coordinates — projected onto a flat mapping
+          plane. A distance measured on the actual ground ("surface" or "ground" distance) differs slightly
+          from the equivalent grid distance because of both the map projection's scale distortion and the
+          elevation difference between the ground and the projection's reference ellipsoid.</p>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> Formula — combined scale factor</div>
+            <p><code>Combined Scale Factor = Grid Scale Factor &times; Elevation (Sea-Level) Factor</code></p>
+            <p>Multiplying a ground distance by the combined scale factor converts it to grid distance, and
+            dividing a grid distance by it recovers ground distance. TxDOT projects commonly define a project
+            datum (a single average combined scale factor, or a surface adjustment) so field crews and
+            designers can work directly in "surface" coordinates that read naturally against ground distances,
+            while still being traceable back to true State Plane grid values.</p>
+          </div>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common pitfall — mixing surface and grid distances</div>
+            <p>Stakeout distances computed on grid coordinates but laid out on the ground with a steel tape or
+            uncorrected total station (which measures true ground/surface distance) will be systematically
+            off by the scale factor — small on a short shot, but accumulating over a long corridor. Always
+            confirm which coordinate basis (surface or grid) a given dataset uses before mixing sources.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="QC & Common Pitfalls">Quality Control &amp; Common Pitfalls</h2>
+          <p>Good GNSS/survey practice is less about any single measurement and more about never trusting a
+          single measurement — every control-quality result should be independently checkable.</p>
+
+          <table>
+            <thead><tr><th>Stage</th><th>Check</th></tr></thead>
+            <tbody>
+              <tr><td>Before observing</td><td>Confirm current PDOP/satellite count for the planned window; check geoid model and coordinate system loaded in the data collector are current and correct for the project</td></tr>
+              <tr><td>On arrival at any existing control</td><td>Always observe and check into it before trusting it — never assume a prior crew's monument is undisturbed</td></tr>
+              <tr><td>During static sessions</td><td>Log session length, antenna height (and measurement method), and receiver/antenna model — all required for correct OPUS processing</td></tr>
+              <tr><td>During RTK work</td><td>Watch fixed/float status and HRMS/VRMS per shot, not just PDOP; re-shoot anything marginal</td></tr>
+              <tr><td>Closing out control</td><td>Every new point should be checked from at least one independent tie beyond the single observation that established it</td></tr>
+              <tr><td>Post-processing</td><td>Review the OPUS solution report's peak-to-peak error and observation count before adopting a coordinate as published control</td></tr>
+            </tbody>
+          </table>
+
+          <details class="sg-section">
+            <summary>Deeper dive — why redundancy catches what a single "good-looking" solution can't</summary>
+            <p>A fixed RTK solution or a clean-looking OPUS report can still be wrong in ways the receiver
+            itself has no way to detect — a monument that shifted slightly since it was last observed, an
+            antenna height typo that's internally consistent but simply wrong, or a rare multipath condition
+            that happened to still resolve to a plausible (but incorrect) fixed solution. None of these
+            trigger an error flag on their own. The only defense is structural: tie every point from more
+            than one independent source, and treat any disagreement between them — however small — as a real
+            signal to investigate rather than average away.</p>
+          </details>
+        </section>
+
+        <section>
+          <h2>Glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td><strong>ASCE 38</strong></td><td>ASCE/UESI/CI 38-22, <em>Standard Guideline for Investigating and Documenting Existing Utilities</em> — defines the utility quality levels D (records only) through A (test-hole verified).</td></tr>
+              <tr><td><strong>Benchmark (BM)</strong></td><td>A monument with a precisely known elevation, used as the vertical reference for a project.</td></tr>
+              <tr><td><strong>Combined Scale Factor</strong></td><td>The multiplier that converts between ground/surface distance and State Plane grid distance.</td></tr>
+              <tr><td><strong>CORS</strong></td><td>Continuously Operating Reference Station — a permanently operating GNSS receiver at a known location; the national network OPUS compares a submission against.</td></tr>
+              <tr><td><strong>DTM / TIN</strong></td><td>Digital Terrain Model / Triangulated Irregular Network — a 3D digital surface representing the ground, built from surveyed points.</td></tr>
+              <tr><td><strong>Fixed solution</strong></td><td>An RTK solution where the carrier-phase integer ambiguity has been resolved, giving centimeter-level accuracy.</td></tr>
+              <tr><td><strong>Float solution</strong></td><td>An RTK solution where the integer ambiguity has not been fully resolved — decimeter-level or worse; not control-quality.</td></tr>
+              <tr><td><strong>GDOP</strong></td><td>Geometric Dilution of Precision — the combined 3D position + receiver clock error DOP figure.</td></tr>
+              <tr><td><strong>Geoid</strong></td><td>A model of mean sea level used as the reference surface for orthometric (NAVD88) elevations.</td></tr>
+              <tr><td><strong>GNSS</strong></td><td>Global Navigation Satellite System — the umbrella term covering GPS, GLONASS, Galileo, BeiDou, etc.</td></tr>
+              <tr><td><strong>HDOP</strong></td><td>Horizontal Dilution of Precision.</td></tr>
+              <tr><td><strong>HRMS / VRMS</strong></td><td>Horizontal / Vertical Root Mean Square — a receiver's real-time precision estimate for a given shot.</td></tr>
+              <tr><td><strong>Localization (site calibration)</strong></td><td>Tying a GNSS receiver's global coordinate solution to a project's local control network and coordinate system.</td></tr>
+              <tr><td><strong>Monument</strong></td><td>A physical, recoverable marker (disk, capped rebar, nail) set at a control, benchmark, or boundary point.</td></tr>
+              <tr><td><strong>Multipath</strong></td><td>GNSS ranging error caused by a signal reflecting off a nearby surface before reaching the antenna.</td></tr>
+              <tr><td><strong>NAD83</strong></td><td>North American Datum of 1983 — the horizontal geodetic datum underlying State Plane and most U.S. coordinate systems.</td></tr>
+              <tr><td><strong>NAVD88</strong></td><td>North American Vertical Datum of 1988 — the standard U.S. orthometric elevation datum.</td></tr>
+              <tr><td><strong>NTRIP</strong></td><td>Networked Transport of RTCM via Internet Protocol — streams GNSS correction data over a cellular/internet connection.</td></tr>
+              <tr><td><strong>OPUS</strong></td><td>Online Positioning User Service — NOAA/NGS's free web service for post-processing static GNSS observations against CORS.</td></tr>
+              <tr><td><strong>PDOP</strong></td><td>Positional Dilution of Precision — the combined 3D position DOP figure most commonly watched in the field.</td></tr>
+              <tr><td><strong>PPK</strong></td><td>Post-Processed Kinematic — GNSS method where corrections are applied after the fact rather than live in the field.</td></tr>
+              <tr><td><strong>Primary control</strong></td><td>The highest-accuracy project control points, typically established with static GNSS and OPUS.</td></tr>
+              <tr><td><strong>RINEX</strong></td><td>Receiver Independent Exchange Format — the standard file format for exchanging raw GNSS observation data.</td></tr>
+              <tr><td><strong>ROW</strong></td><td>Right-of-Way — the legal land corridor a road and its appurtenances occupy.</td></tr>
+              <tr><td><strong>RTK</strong></td><td>Real-Time Kinematic — GNSS method using live correction data to compute a centimeter-level fix in real time.</td></tr>
+              <tr><td><strong>Secondary control</strong></td><td>Control points densifying a primary network, typically set by RTK or conventional traverse.</td></tr>
+              <tr><td><strong>State Plane Coordinate System</strong></td><td>A family of conformal map projections, split into zones by state, used for most U.S. local/regional coordinate work.</td></tr>
+              <tr><td><strong>Static (GNSS observation)</strong></td><td>A method where a receiver logs raw data at a fixed point over an extended session for later post-processing.</td></tr>
+              <tr><td><strong>SUE</strong></td><td>Subsurface Utility Engineering — investigating and depicting underground utility data to ASCE 38 quality levels.</td></tr>
+              <tr><td><strong>TBM</strong></td><td>Temporary Benchmark — a shorter-duration elevation reference point, not intended to be permanent.</td></tr>
+              <tr><td><strong>Topographic (topo) survey</strong></td><td>A survey documenting the physical features and elevations of the existing ground.</td></tr>
+              <tr><td><strong>UERE</strong></td><td>User Equivalent Range Error — the underlying per-satellite ranging error that DOP multiplies into final positional error.</td></tr>
+              <tr><td><strong>VDOP</strong></td><td>Vertical Dilution of Precision.</td></tr>
+              <tr><td><strong>VRS</strong></td><td>Virtual Reference Station — a network-computed synthetic base station providing RTK corrections without a project's own physical base.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Index &amp; Sources</h2>
+
+          <h3>Index</h3>
+          <h4>A</h4>
+          <ul>
+            <li>Antenna height — see <a href="#horizontal-vertical-precision-in-the-field-hrmsvrms">Horizontal &amp; Vertical Precision in the Field</a></li>
+            <li>ASCE 38 — see <a href="#what-gets-collected">What Gets Collected</a></li>
+          </ul>
+          <h4>B</h4>
+          <ul>
+            <li>Base station — see <a href="#receiver-types-rtk-baserover-setup">Receiver Types &amp; RTK Base/Rover Setup</a></li>
+            <li>Benchmarks — see <a href="#benchmarks-vertical-control">Benchmarks &amp; Vertical Control</a></li>
+          </ul>
+          <h4>C</h4>
+          <ul>
+            <li>Combined scale factor — see <a href="#surface-vs-grid-coordinates-combined-scale-factor">Surface vs. Grid Coordinates</a></li>
+            <li>Control, primary vs. secondary — see <a href="#control-network-hierarchy-primary-vs-secondary">Control Network Hierarchy</a></li>
+            <li>CORS — see <a href="#cors-the-reference-network">CORS — The Reference Network</a></li>
+            <li>Correction sources (radio, NTRIP, VRS) — see <a href="#correction-sources">Correction Sources</a></li>
+          </ul>
+          <h4>D</h4>
+          <ul>
+            <li>DTM / TIN — see <a href="#feature-coding-deliverables">Feature Coding &amp; Deliverables</a></li>
+          </ul>
+          <h4>F</h4>
+          <ul>
+            <li>Feature codes — see <a href="#feature-coding-deliverables">Feature Coding &amp; Deliverables</a></li>
+            <li>Fixed vs. float solution — see <a href="#other-quality-indicators">Other Quality Indicators</a></li>
+          </ul>
+          <h4>G</h4>
+          <ul>
+            <li>Geoid model (GEOID18) — see <a href="#datums-navd88-and-the-geoid">Datums: NAVD88 and the Geoid</a></li>
+            <li>GNSS observation methods (static/RTK/PPK) — see <a href="#observation-methods-static-rtk-and-ppk">Observation Methods</a></li>
+          </ul>
+          <h4>H</h4>
+          <ul>
+            <li>HRMS / VRMS — see <a href="#horizontal-vertical-precision-in-the-field-hrmsvrms">Horizontal &amp; Vertical Precision in the Field</a></li>
+          </ul>
+          <h4>L</h4>
+          <ul>
+            <li>Localization (site calibration) — see <a href="#trimble-access-point-codes-localization">Trimble Access: Point Codes &amp; Localization</a></li>
+          </ul>
+          <h4>M</h4>
+          <ul>
+            <li>Monumentation types — see <a href="#monumentation-types">Monumentation Types</a></li>
+            <li>Multipath — see <a href="#other-quality-indicators">Other Quality Indicators</a></li>
+          </ul>
+          <h4>N</h4>
+          <ul>
+            <li>NAD83 — see <a href="#texas-state-plane-coordinate-zones">Texas State Plane Coordinate Zones</a></li>
+            <li>NAVD88 — see <a href="#datums-navd88-and-the-geoid">Datums: NAVD88 and the Geoid</a></li>
+            <li>NTRIP — see <a href="#correction-sources">Correction Sources</a></li>
+          </ul>
+          <h4>O</h4>
+          <ul>
+            <li>OPUS — see <a href="#what-is-opus">What Is OPUS?</a></li>
+            <li>OPUS variants (S, RS, Projects, Share) — see <a href="#opus-variants">OPUS Variants</a></li>
+          </ul>
+          <h4>P</h4>
+          <ul>
+            <li>PDOP quality scale — see <a href="#pdop-quality-scale">PDOP Quality Scale</a></li>
+            <li>Placement criteria, control monuments — see <a href="#placement-criteria">Placement Criteria</a></li>
+          </ul>
+          <h4>Q</h4>
+          <ul>
+            <li>Quality control checklist — see <a href="#quality-control-common-pitfalls">Quality Control &amp; Common Pitfalls</a></li>
+          </ul>
+          <h4>R</h4>
+          <ul>
+            <li>ROW monuments vs. control monuments — see <a href="#survey-control-monuments-vs-rowboundary-monuments">Survey Control Monuments vs. ROW/Boundary Monuments</a></li>
+            <li>RTK — see <a href="#observation-methods-static-rtk-and-ppk">Observation Methods</a></li>
+          </ul>
+          <h4>S</h4>
+          <ul>
+            <li>Secondary control — see <a href="#control-network-hierarchy-primary-vs-secondary">Control Network Hierarchy</a></li>
+            <li>State Plane coordinate zones — see <a href="#texas-state-plane-coordinate-zones">Texas State Plane Coordinate Zones</a></li>
+            <li>Static GNSS sessions — see <a href="#static-sessions-tied-into-opus">Static Sessions Tied Into OPUS</a></li>
+            <li>SUE (Subsurface Utility Engineering) — see <a href="#what-gets-collected">What Gets Collected</a></li>
+          </ul>
+          <h4>T</h4>
+          <ul>
+            <li>Topographic survey — see <a href="#getting-data-on-the-existing-state-of-the-roadway">Getting Data on the Existing State of the Roadway</a></li>
+          </ul>
+          <h4>U</h4>
+          <ul>
+            <li>Utility evidence vs. utility location — see <a href="#what-gets-collected">What Gets Collected</a></li>
+          </ul>
+
+          <h3>Sources &amp; Further Reading</h3>
+          <ul>
+            <li>National Geodetic Survey — <a href="https://geodesy.noaa.gov/OPUS/" target="_blank" rel="noopener">OPUS: Online Positioning User Service</a></li>
+            <li>National Geodetic Survey — <a href="https://geodesy.noaa.gov/CORS/" target="_blank" rel="noopener">CORS Network</a></li>
+            <li>National Geodetic Survey — <a href="https://geodesy.noaa.gov/GEOID/GEOID18/geoid18_tech_details.shtml" target="_blank" rel="noopener">GEOID18 Technical Details</a></li>
+            <li>Texas Department of Transportation — <a href="https://www.txdot.gov/manuals/row/ess/index.html" target="_blank" rel="noopener">TxDOT Survey Manual</a></li>
+            <li>ASCE/UESI/CI 38-22 — <em>Standard Guideline for Investigating and Documenting Existing Utilities</em> (American Society of Civil Engineers)</li>
+          </ul>
+
+          <h3>Image Credits</h3>
+          <ul>
+            <li>Witness post protecting a geodetic control monument — photo by Tony Webster, <a href="https://commons.wikimedia.org/wiki/File:Geodetic_Survey_Marker_Northern_Minnesota_MnDOT_15807802015.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY-SA 4.0)</li>
+            <li>GNSS setup for road profile pickup — <a href="https://commons.wikimedia.org/wiki/File:COVEC_CHC_i80_GNSS_setup_for_Tambul-Mendi_road_profile.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY-SA 4.0)</li>
+            <li>RTK rover with data collector — photo by Jacob Wysko, <a href="https://commons.wikimedia.org/wiki/File:Surveyor_Using_GNSS_Receiver_with_RTK_Solution.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY 4.0)</li>
+          </ul>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>
