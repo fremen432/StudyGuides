@@ -1,7 +1,7 @@
 /*
   study-guide-maker shared script
   Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\script.js
-  Deployed copy (what guides actually link to): C:\vc\workshop\study-guides\assets\script.js
+  Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\script.js
   Vanilla JS, no dependencies, no network calls — every guide must open standalone via file://.
 */
 (function () {
