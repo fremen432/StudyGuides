@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Computer Networking Basics — Study Guide</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">Computer Networking Basics</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-17 &middot; A beginner-friendly tour of core networking concepts</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Standard Overview</span>
+                  <span class="sg-badge">Beginner</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>What Is a Computer Network?</h2>
+          <p>A computer network is just two or more devices connected so they can exchange data —
+          a laptop and a printer sharing a cable counts, and so does the entire internet. Every
+          network, no matter its size, is built from the same handful of pieces: <strong>nodes</strong>
+          (the devices — computers, phones, printers, servers), <strong>links</strong> (the physical or
+          wireless connections between them), and a shared set of <strong>protocols</strong> — agreed-upon
+          rules that let devices from different manufacturers understand each other.</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>Almost every acronym in networking describes either a <em>device</em> (router, switch),
+            a <em>protocol</em> (TCP, HTTP), or an <em>address</em> (IP, MAC). Sorting a new term into
+            one of those three buckets makes it much easier to remember what it's for.</p>
+          </div>
+
+          <h3 data-toc="Network Types by Size">Types of Networks by Size</h3>
+          <table>
+            <thead><tr><th>Type</th><th>Typical Range</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td>PAN — Personal Area Network</td><td>A few feet</td><td>Phone to wireless earbuds via Bluetooth</td></tr>
+              <tr><td>LAN — Local Area Network</td><td>One building/home</td><td>All the devices on your home Wi-Fi</td></tr>
+              <tr><td>MAN — Metropolitan Area Network</td><td>A city</td><td>A university connecting multiple campus buildings</td></tr>
+              <tr><td>WAN — Wide Area Network</td><td>Cities, countries, global</td><td>The internet itself; a company connecting offices in different states</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Client-Server vs. Peer-to-Peer</h3>
+          <p>These are the two basic ways devices on a network relate to each other.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Client-Server vs. Peer-to-Peer</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">Client-Server</div>
+                  <div class="sg-diagram-panel-sub">A central server provides resources; clients request them</div>
+                </div>
+                <div class="sg-diagram-box">Client A — requests a page</div>
+                <div class="sg-diagram-box">Client B — requests a page</div>
+                <div class="sg-diagram-arrow-down accent">&#8595;</div>
+                <div class="sg-diagram-box accent center">
+                  <div class="sg-diagram-box-title">Server</div>
+                  <div class="sg-diagram-box-sub">Hosts the website, stores the files, runs the database</div>
+                </div>
+              </div>
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">Peer-to-Peer (P2P)</div>
+                  <div class="sg-diagram-panel-sub">Every device can act as both client and server</div>
+                </div>
+                <div class="sg-diagram-box tip center">Peer A &#8646; Peer B</div>
+                <div class="sg-diagram-box tip center">Peer B &#8646; Peer C</div>
+                <div class="sg-diagram-box tip center">Peer A &#8646; Peer C</div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> Most everyday internet use — browsing, email, streaming — is client-server. File-sharing protocols like BitTorrent are classic peer-to-peer.</div>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="OSI &amp; TCP/IP Models">The OSI and TCP/IP Models</h2>
+          <p>These two models describe networking in <em>layers</em> — each layer has one job and only
+          talks to the layers directly above and below it. OSI is the 7-layer model everyone learns
+          and uses to describe problems ("that's a layer 2 issue"); TCP/IP is the simpler 4-layer
+          model the real internet is actually built on.</p>
+
+          <h3 data-toc="OSI vs. TCP/IP Layers">The Seven OSI Layers vs. the TCP/IP Model</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">The OSI Model vs. the TCP/IP Model</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">OSI Model (7 layers)</div>
+                  <div class="sg-diagram-panel-sub">The theoretical reference model</div>
+                </div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">7 &middot; Application</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">6 &middot; Presentation</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">5 &middot; Session</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">4 &middot; Transport</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">3 &middot; Network</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">2 &middot; Data Link</div></div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">1 &middot; Physical</div></div>
+              </div>
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">TCP/IP Model (4 layers)</div>
+                  <div class="sg-diagram-panel-sub">What the real internet runs on</div>
+                </div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Application</div><div class="sg-diagram-box-sub">&#8776; OSI layers 5&ndash;7</div></div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Transport</div><div class="sg-diagram-box-sub">&#8776; OSI layer 4</div></div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Internet</div><div class="sg-diagram-box-sub">&#8776; OSI layer 3</div></div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Network Access</div><div class="sg-diagram-box-sub">&#8776; OSI layers 1&ndash;2</div></div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> Four TCP/IP layers map cleanly onto the seven OSI ones — TCP/IP just merges Application/Presentation/Session into one layer and Physical/Data Link into one.</div>
+          </div>
+
+          <h3 data-toc="Encapsulation">Encapsulation: How Data Travels Down the Stack</h3>
+          <p>As data moves down the stack to be sent, each layer wraps it in its own header — a
+          process called <strong>encapsulation</strong>. The receiving device unwraps those headers in
+          reverse order, called <strong>decapsulation</strong>.</p>
+
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">Encapsulation: How Data Travels Down the Stack</div>
+            <div class="sg-diagram-flow-branches">
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">Data</div><div class="sg-diagram-box-sub">Application layer &mdash; e.g. an HTTP request</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Segment</div><div class="sg-diagram-box-sub">Transport layer adds a TCP/UDP header (ports)</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Packet</div><div class="sg-diagram-box-sub">Network layer adds an IP header (source/destination IP)</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Frame</div><div class="sg-diagram-box-sub">Data Link layer adds a MAC header and trailer</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box tip center"><div class="sg-diagram-box-title">Bits</div><div class="sg-diagram-box-sub">Physical layer sends it as electrical, optical, or radio signal</div></div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> "Packet" gets used loosely for all of this in casual speech, but each layer's unit technically has its own name — segment, packet, and frame are not interchangeable in precise usage.</div>
+          </div>
+        </section>
+
+        <section>
+          <h2>IP Addressing</h2>
+          <p>Every device on a network needs a unique address so traffic knows where to go — that's
+          an <strong>IP address</strong> (Internet Protocol address).</p>
+
+          <h3>IPv4 vs. IPv6</h3>
+          <table>
+            <thead><tr><th></th><th>IPv4</th><th>IPv6</th></tr></thead>
+            <tbody>
+              <tr><td>Format</td><td>4 numbers 0&ndash;255, e.g. <code>192.168.1.1</code></td><td>8 groups of hex digits, e.g. <code>2001:0db8::1</code></td></tr>
+              <tr><td>Address space</td><td>~4.3 billion addresses</td><td>~340 undecillion addresses</td></tr>
+              <tr><td>Why it exists</td><td>The original design (1981)</td><td>IPv4 ran out of addresses; IPv6 was built to never run out</td></tr>
+              <tr><td>Where you'll see it</td><td>Still the vast majority of everyday traffic</td><td>Growing steadily; most ISPs and phones now support it alongside IPv4</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Subnet Masks &amp; CIDR">Subnet Masks and CIDR Notation</h3>
+          <p>An IP address alone doesn't say which part identifies the network and which part
+          identifies the specific device — a <strong>subnet mask</strong> does that. CIDR (Classless
+          Inter-Domain Routing) notation writes the mask as a slash and a number instead of a full
+          second address.</p>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> Formula</div>
+            <p><code>/24 = 255.255.255.0</code> &mdash; the first 24 bits are the network, the last 8
+            bits are host addresses: 2<sup>8</sup> = 256 possible addresses, minus 2 reserved
+            (network address + broadcast address) = <strong>254 usable host addresses</strong>.</p>
+          </div>
+
+          <h3 data-toc="Public vs. Private IPs">Public vs. Private IP Addresses</h3>
+          <table>
+            <thead><tr><th>Range</th><th>CIDR</th><th>Use</th></tr></thead>
+            <tbody>
+              <tr><td>10.0.0.0 &ndash; 10.255.255.255</td><td>10.0.0.0/8</td><td>Private &mdash; large organizations</td></tr>
+              <tr><td>172.16.0.0 &ndash; 172.31.255.255</td><td>172.16.0.0/12</td><td>Private &mdash; medium networks</td></tr>
+              <tr><td>192.168.0.0 &ndash; 192.168.255.255</td><td>192.168.0.0/16</td><td>Private &mdash; most home routers default here</td></tr>
+              <tr><td>127.0.0.1</td><td>&mdash;</td><td>Loopback &mdash; "this device," used for local testing</td></tr>
+              <tr><td>Everything else</td><td>&mdash;</td><td>Public &mdash; globally unique, routable on the open internet</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common Pitfall</div>
+            <p>Private addresses aren't unique across the internet — your home network's <code>192.168.1.5</code>
+            is reused in millions of other homes. Your router's <strong>NAT</strong> (Network Address
+            Translation) is what lets all those private devices share one public IP without conflicting.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Core Networking Hardware</h2>
+          <p>Four devices show up in almost every network diagram. Knowing what each one actually
+          does — and doesn't do — clears up most beginner confusion.</p>
+
+          <h3 data-toc="Routers, Switches &amp; Hubs">Routers, Switches, and Hubs — What Each One Actually Does</h3>
+          <table>
+            <thead><tr><th>Device</th><th>OSI Layer</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td>Hub</td><td>1 (Physical)</td><td>Repeats every incoming signal out every port &mdash; no intelligence, mostly obsolete</td></tr>
+              <tr><td>Switch</td><td>2 (Data Link)</td><td>Learns which MAC address is on which port; sends traffic only where it needs to go</td></tr>
+              <tr><td>Router</td><td>3 (Network)</td><td>Connects separate networks together and directs traffic between them using IP addresses</td></tr>
+              <tr><td>Access Point</td><td>1&ndash;2</td><td>Extends a wired network's reach over Wi-Fi</td></tr>
+            </tbody>
+          </table>
+
+          <figure>
+            <img src="images/computer-networking-basics/network-switches.jpg" alt="Two network switches with several Cat5 Ethernet cables plugged in">
+            <figcaption>Two Ethernet switches with Cat5 patch cables. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Network_switches.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Jon 'ShakataGaNai' Davis (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>A cheap trick to keep switch vs. router straight: a <strong>switch</strong> connects
+            devices <em>within</em> one network; a <strong>router</strong> connects <em>different</em>
+            networks together (like your home network to your ISP's network).</p>
+          </div>
+
+          <h3>Modems and Access Points</h3>
+          <p>A <strong>modem</strong> (modulator-demodulator) converts the signal from your ISP —
+          cable, fiber, or DSL — into a format your router can use, and vice versa. Most home
+          "routers" today are actually a modem, router, switch, and wireless access point combined
+          into a single box.</p>
+
+          <figure>
+            <img src="images/computer-networking-basics/wifi-router.jpg" alt="A consumer wireless router with an external antenna">
+            <figcaption>A consumer 802.11 wireless router/access point. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Dlink_wireless_router.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Hellisp (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="DNS">DNS — Turning Names into Addresses</h2>
+          <p>Computers route traffic using IP addresses, but humans remember names. The <strong>Domain
+          Name System (DNS)</strong> is the internet's phone book — it translates a name like
+          <code>coolsite.com</code> into the IP address a browser actually needs to connect.</p>
+
+          <h3 data-toc="How DNS Lookups Work">How a DNS Lookup Actually Works</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">How a DNS Lookup Actually Works</div>
+            <div class="sg-diagram-flow-branches">
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">1. You type coolsite.com</div><div class="sg-diagram-box-sub">Browser and OS check their own local cache first</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">2. Recursive resolver</div><div class="sg-diagram-box-sub">Your ISP or a public resolver (e.g. 8.8.8.8) takes over the search</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">3. Root server</div><div class="sg-diagram-box-sub">"I don't know coolsite.com &mdash; ask a .com TLD server"</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">4. TLD server (.com)</div><div class="sg-diagram-box-sub">"Ask coolsite.com's authoritative name server"</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box tip center"><div class="sg-diagram-box-title">5. Authoritative name server</div><div class="sg-diagram-box-sub">Returns the actual IP address, e.g. 93.184.216.34</div></div>
+                <div class="sg-diagram-arrow-down accent">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">6. Browser connects</div><div class="sg-diagram-box-sub">Opens a connection to that IP and requests the page</div></div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> This whole chain usually finishes in milliseconds because results are cached at nearly every step along the way.</div>
+          </div>
+
+          <details class="sg-section">
+            <summary>Common DNS record types</summary>
+            <table>
+              <thead><tr><th>Record</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>A</td><td>Maps a name to an IPv4 address</td></tr>
+                <tr><td>AAAA</td><td>Maps a name to an IPv6 address</td></tr>
+                <tr><td>CNAME</td><td>Aliases one name to another name</td></tr>
+                <tr><td>MX</td><td>Points a domain to its mail server</td></tr>
+                <tr><td>TXT</td><td>Free-form text, often used for domain verification/security policies</td></tr>
+              </tbody>
+            </table>
+          </details>
+        </section>
+
+        <section>
+          <h2 data-toc="Core Protocols">Core Protocols You'll Run Into</h2>
+          <p>A protocol is just an agreed-upon set of rules for how two devices communicate. A
+          handful of protocols do almost all of the work on a typical network.</p>
+
+          <h3>TCP vs. UDP</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">TCP vs. UDP</div>
+            <div class="sg-diagram-row">
+              <div class="sg-diagram-panel accent">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title accent-text">TCP</div>
+                  <div class="sg-diagram-panel-sub">Transmission Control Protocol</div>
+                </div>
+                <div class="sg-diagram-box">Connection-oriented &mdash; three-way handshake before any data flows</div>
+                <div class="sg-diagram-box">Guarantees delivery and correct order; retransmits lost packets</div>
+                <div class="sg-diagram-box">Slower, more overhead</div>
+                <div class="sg-diagram-box accent center">Used for: web (HTTP/S), email, file transfer</div>
+              </div>
+              <div class="sg-diagram-panel tip">
+                <div class="sg-diagram-panel-header">
+                  <div class="sg-diagram-panel-title">UDP</div>
+                  <div class="sg-diagram-panel-sub">User Datagram Protocol</div>
+                </div>
+                <div class="sg-diagram-box">Connectionless &mdash; just sends, no handshake</div>
+                <div class="sg-diagram-box">No delivery guarantee; a dropped packet is simply gone</div>
+                <div class="sg-diagram-box">Faster, minimal overhead</div>
+                <div class="sg-diagram-box tip center">Used for: video/voice calls, live streaming, gaming, DNS</div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> TCP trades speed for reliability; UDP trades reliability for speed. Which one a given application uses depends on whether a late packet or a missing one is the bigger problem.</div>
+          </div>
+
+          <h3 data-toc="Common Ports">Common Ports Worth Memorizing</h3>
+          <table>
+            <thead><tr><th>Port</th><th>Protocol</th><th>Used for</th></tr></thead>
+            <tbody>
+              <tr><td>20 / 21</td><td>FTP</td><td>File transfer</td></tr>
+              <tr><td>22</td><td>SSH</td><td>Secure remote login</td></tr>
+              <tr><td>25 / 587</td><td>SMTP</td><td>Sending email</td></tr>
+              <tr><td>53</td><td>DNS</td><td>Name resolution</td></tr>
+              <tr><td>67 / 68</td><td>DHCP</td><td>Automatic IP address assignment</td></tr>
+              <tr><td>80</td><td>HTTP</td><td>Unencrypted web traffic</td></tr>
+              <tr><td>110 / 143</td><td>POP3 / IMAP</td><td>Retrieving email</td></tr>
+              <tr><td>443</td><td>HTTPS</td><td>Encrypted web traffic</td></tr>
+              <tr><td>3389</td><td>RDP</td><td>Remote desktop</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="HTTP &amp; HTTPS">HTTP, HTTPS, and the Web</h3>
+          <p><strong>HTTP</strong> (HyperText Transfer Protocol) is the protocol a browser uses to
+          request and receive web pages. <strong>HTTPS</strong> is the same thing wrapped in
+          <strong>TLS</strong> (Transport Layer Security) encryption, so a network in between can't
+          read or tamper with the traffic — it's why browsers flag plain HTTP sites as "Not Secure."</p>
+
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Tip</div>
+            <p>DHCP (Dynamic Host Configuration Protocol) is why you almost never type in an IP
+            address by hand — it's the protocol that automatically hands your device an address,
+            subnet mask, gateway, and DNS server the moment it joins a network.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Wireless Networking">Wireless Networking Basics</h2>
+          <p>Wi-Fi is just a wireless implementation of the same Ethernet ideas — it's governed by
+          the IEEE 802.11 family of standards, each generation faster and more efficient than the
+          last.</p>
+
+          <h3 data-toc="Wi-Fi Standards">Wi-Fi Standards at a Glance</h3>
+          <table>
+            <thead><tr><th>Marketing name</th><th>Standard</th><th>Band</th><th>Rough max speed</th></tr></thead>
+            <tbody>
+              <tr><td>Wi-Fi 4</td><td>802.11n</td><td>2.4 / 5 GHz</td><td>~600 Mbps</td></tr>
+              <tr><td>Wi-Fi 5</td><td>802.11ac</td><td>5 GHz</td><td>~3.5 Gbps</td></tr>
+              <tr><td>Wi-Fi 6</td><td>802.11ax</td><td>2.4 / 5 GHz</td><td>~9.6 Gbps</td></tr>
+              <tr><td>Wi-Fi 6E</td><td>802.11ax</td><td>adds 6 GHz</td><td>~9.6 Gbps, less congestion</td></tr>
+              <tr><td>Wi-Fi 7</td><td>802.11be</td><td>2.4 / 5 / 6 GHz</td><td>~46 Gbps (theoretical)</td></tr>
+            </tbody>
+          </table>
+
+          <h3 data-toc="Wi-Fi Security">SSIDs, Wi-Fi Security, and Common Pitfalls</h3>
+          <p>An <strong>SSID</strong> (Service Set Identifier) is just the network's name — what shows
+          up in the list of available Wi-Fi networks. The encryption protecting that network matters
+          far more than the name.</p>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common Pitfall</div>
+            <p>Always confirm a router is running <strong>WPA2</strong> or, ideally, <strong>WPA3</strong>
+            encryption. The older <strong>WEP</strong> and <strong>WPA</strong> standards can be broken
+            in minutes with freely available tools and should never be used.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Network Security">Network Security Fundamentals</h2>
+          <p>Security isn't a separate topic bolted onto networking — it's built into how traffic is
+          allowed to move at every layer already covered above.</p>
+
+          <h3 data-toc="Firewalls">Firewalls and the Network Perimeter</h3>
+          <div class="sg-diagram">
+            <div class="sg-diagram-title">A Typical Home/Small-Office Network Perimeter</div>
+            <div class="sg-diagram-flow-branches">
+              <div class="sg-diagram-flow-column">
+                <div class="sg-diagram-box center"><div class="sg-diagram-box-title">The Internet</div><div class="sg-diagram-box-sub">Untrusted &mdash; anyone can send traffic your way</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box warning center"><div class="sg-diagram-box-title">Firewall</div><div class="sg-diagram-box-sub">Inspects traffic; blocks anything not requested or explicitly allowed</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box accent center"><div class="sg-diagram-box-title">Router (with NAT)</div><div class="sg-diagram-box-sub">Translates your private addresses to one shared public IP</div></div>
+                <div class="sg-diagram-arrow-down">&#8595;</div>
+                <div class="sg-diagram-box tip center"><div class="sg-diagram-box-title">Your Devices</div><div class="sg-diagram-box-sub">Trusted internal network, e.g. 192.168.1.x</div></div>
+              </div>
+            </div>
+            <div class="sg-diagram-footer"><strong>Takeaway:</strong> The firewall and NAT together are why an unsolicited connection from the internet can't reach your laptop directly by default.</div>
+          </div>
+
+          <h3 data-toc="VPNs">VPNs in Plain Terms</h3>
+          <p>A <strong>VPN</strong> (Virtual Private Network) creates an encrypted tunnel between your
+          device and a VPN server, so traffic in between is unreadable to anyone on the network
+          path — useful on untrusted Wi-Fi, and for making it look like your traffic originates
+          somewhere else.</p>
+
+          <h3 data-toc="Common Threats">Common Threats to Know</h3>
+          <table>
+            <thead><tr><th>Threat</th><th>What it is</th></tr></thead>
+            <tbody>
+              <tr><td>Phishing</td><td>Fake messages tricking someone into revealing credentials or clicking a malicious link</td></tr>
+              <tr><td>Man-in-the-middle</td><td>An attacker secretly intercepts traffic between two parties, often on unsecured Wi-Fi</td></tr>
+              <tr><td>DDoS</td><td>Flooding a target with traffic from many sources to knock it offline</td></tr>
+              <tr><td>Malware</td><td>Malicious software &mdash; viruses, ransomware, spyware &mdash; that spreads or operates over the network</td></tr>
+              <tr><td>Packet sniffing</td><td>Passively capturing unencrypted traffic on a network to read its contents</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common Pitfall</div>
+            <p>"It's on my private network so it's safe" is a myth once a device is exposed via port
+            forwarding, UPnP, or a compromised device already inside the network — internal trust is
+            not the same thing as internal security.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Glossary">Glossary of Networking Terms &amp; Acronyms</h2>
+          <p>The core vocabulary from this guide, in one alphabetical place for quick lookup.</p>
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td>Bandwidth</td><td>The maximum amount of data a connection can carry per second</td></tr>
+              <tr><td>CIDR</td><td>Classless Inter-Domain Routing &mdash; the /24-style notation for expressing a subnet mask</td></tr>
+              <tr><td>DHCP</td><td>Dynamic Host Configuration Protocol &mdash; automatically assigns IP addresses and network settings to devices</td></tr>
+              <tr><td>DNS</td><td>Domain Name System &mdash; translates domain names into IP addresses</td></tr>
+              <tr><td>Encapsulation</td><td>Wrapping data in a header at each layer of the network stack as it's sent</td></tr>
+              <tr><td>Ethernet</td><td>The dominant wired LAN standard defining cabling, connectors, and frame format</td></tr>
+              <tr><td>Firewall</td><td>A device or software that inspects traffic and blocks what isn't explicitly allowed</td></tr>
+              <tr><td>Gateway</td><td>The device (usually a router) a network uses to reach devices outside itself</td></tr>
+              <tr><td>HTTP / HTTPS</td><td>HyperText Transfer Protocol (Secure) &mdash; the protocol browsers use to load web pages</td></tr>
+              <tr><td>IP Address</td><td>A unique numeric address identifying a device on a network</td></tr>
+              <tr><td>ISP</td><td>Internet Service Provider &mdash; the company that connects your network to the internet</td></tr>
+              <tr><td>LAN</td><td>Local Area Network &mdash; a network confined to one site, like a home or office</td></tr>
+              <tr><td>Latency</td><td>The delay between sending data and it arriving, usually measured in milliseconds</td></tr>
+              <tr><td>MAC Address</td><td>A hardware address burned into a network interface, unique to that physical device</td></tr>
+              <tr><td>NAT</td><td>Network Address Translation &mdash; lets many private devices share one public IP address</td></tr>
+              <tr><td>Node</td><td>Any device connected to a network</td></tr>
+              <tr><td>OSI Model</td><td>The 7-layer reference model used to describe how network communication is structured</td></tr>
+              <tr><td>Packet</td><td>A formatted unit of data with header information, sent across a network</td></tr>
+              <tr><td>Port</td><td>A number identifying which application/service on a device traffic is meant for</td></tr>
+              <tr><td>Protocol</td><td>An agreed-upon set of rules for how devices communicate</td></tr>
+              <tr><td>Router</td><td>A device that connects separate networks and directs traffic between them</td></tr>
+              <tr><td>SSID</td><td>Service Set Identifier &mdash; the broadcast name of a Wi-Fi network</td></tr>
+              <tr><td>Subnet</td><td>A logically segmented, smaller section of a larger network</td></tr>
+              <tr><td>Subnet Mask</td><td>Defines which part of an IP address is the network and which part is the host</td></tr>
+              <tr><td>Switch</td><td>A device connecting multiple devices within one network, forwarding traffic by MAC address</td></tr>
+              <tr><td>TCP</td><td>Transmission Control Protocol &mdash; reliable, connection-oriented data delivery</td></tr>
+              <tr><td>TLS</td><td>Transport Layer Security &mdash; the encryption underlying HTTPS</td></tr>
+              <tr><td>UDP</td><td>User Datagram Protocol &mdash; fast, connectionless data delivery with no delivery guarantee</td></tr>
+              <tr><td>VPN</td><td>Virtual Private Network &mdash; an encrypted tunnel for network traffic</td></tr>
+              <tr><td>WAN</td><td>Wide Area Network &mdash; a network spanning a large geographic area, e.g. the internet</td></tr>
+              <tr><td>Wi-Fi</td><td>The common name for wireless networking based on the IEEE 802.11 standards</td></tr>
+              <tr><td>WPA2 / WPA3</td><td>The current, secure Wi-Fi encryption standards (WEP and WPA are outdated and insecure)</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>
