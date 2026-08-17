@@ -338,6 +338,27 @@ mcp.run()</code></pre>
           read before pointing it at something sensitive.</p>
         </section>
 
+        <section>
+          <h2>Glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td>Client</td><td>The MCP-side connector inside a host application; one client instance manages the connection to one server.</td></tr>
+              <tr><td>Host</td><td>The end-user AI application (e.g. Claude Desktop, Claude Code) that embeds one or more MCP clients.</td></tr>
+              <tr><td>JSON-RPC 2.0</td><td>The message format MCP uses for every request/response between client and server, regardless of transport.</td></tr>
+              <tr><td>MCP (Model Context Protocol)</td><td>An open specification standardizing how AI applications connect to external tools and data sources.</td></tr>
+              <tr><td>Prompt (MCP primitive)</td><td>A reusable, server-defined prompt template a client can surface to the user, often parameterized.</td></tr>
+              <tr><td>Prompt injection</td><td>An attack where instructions hidden in a tool's return data attempt to manipulate the model, rather than the user, into unintended actions.</td></tr>
+              <tr><td>Resource</td><td>Read-only data an MCP server exposes for a client to fetch and hand to the model as context.</td></tr>
+              <tr><td>SDK (Software Development Kit)</td><td>A vendor- or community-maintained library (Python, TypeScript, etc.) for building an MCP server or client without hand-rolling the protocol.</td></tr>
+              <tr><td>Server</td><td>A process exposing tools, resources, and/or prompts to any MCP client that connects to it.</td></tr>
+              <tr><td>stdio</td><td>A local transport where client and server exchange JSON-RPC messages over the standard input/output of a subprocess.</td></tr>
+              <tr><td>Streamable HTTP</td><td>The transport for remote/hosted MCP servers, letting the server stream multiple messages back over an HTTP connection (successor to the original SSE-based transport).</td></tr>
+              <tr><td>Tool</td><td>A function an MCP server exposes that the model can actively call, typically with side effects.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
       </main>
     </div>
   </div>
