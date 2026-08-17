@@ -9,9 +9,9 @@ hosted on GitHub Pages, authored directly in this repo.
 
 Changed 2026-08-17: guides used to be authored privately in `C:\vc\workshop\study-guides\` and
 synced here on request. That's gone — this repo is now where guides get written in the first
-place. A guide goes live the moment it's committed and pushed here (see "Why public" below for
-what that trade-off means). Older guides may still have a frozen, un-synced duplicate sitting in
-`workshop\study-guides\` from before this repo existed; that copy is historical only.
+place, and the old `workshop\study-guides\` folder has been deleted entirely (its full history
+is still in `vc-workshop`'s git log if ever needed). A guide goes live the moment it's committed
+and pushed here — see "Why public" below for what that trade-off means.
 
 Adding a brand-new guide needs one manual step beyond writing the file: add a card for it to
 `index.html`'s `.card-grid` — a guide file existing in the repo doesn't put it on the homepage on
