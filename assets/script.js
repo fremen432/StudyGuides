@@ -12,7 +12,11 @@
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, "")
-      .replace(/\s+/g, "-");
+      .replace(/\s+/g, "-")
+      // A heading that ends (or starts) with a stripped character -- an emoji is the common
+      // case -- leaves a dangling "-" once the surrounding whitespace collapses (e.g.
+      // "Milan 🏛️" -> "milan-"). Still a technically-valid id, but sloppy; trim it.
+      .replace(/^-+|-+$/g, "");
   }
 
   // Heading text for nav/slug purposes, excluding decorative inline elements (level badges
