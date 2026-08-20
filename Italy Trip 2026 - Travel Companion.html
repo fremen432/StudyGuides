@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Italy Trip 2026 — Travel Companion</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    /* Italy-inspired palette for this guide only — shared template variables overridden
+       here, not in assets/style.css, so every other guide in the repo keeps the default green
+       theme. Same scoping technique as Scout User Guide's blue accent override. */
+    :root {
+      --bg: #faf5ea;
+      --bg-elevated: #fffdf7;
+      --text: #2b2015;
+      --text-dim: #7a6a54;
+      --border: #e3d6bd;
+      --accent: #a8442b;
+      --accent-soft: #f5e3d8;
+      --accent-contrast: #fffdf7;
+      --code-bg: #f1e7d4;
+      --tip-bg: #dcedf3;
+      --tip-border: #3d84a8;
+      --formula-bg: #fbf1d3;
+      --formula-border: #c9a227;
+      --warning-bg: #f6e3e0;
+      --warning-border: #8f3b3b;
+      --shadow: 0 1px 3px rgba(80, 40, 10, 0.12);
+    }
+    :root[data-theme="dark"] {
+      --bg: #1c1712;
+      --bg-elevated: #2a2119;
+      --text: #efe2c9;
+      --text-dim: #af9c80;
+      --border: #46392a;
+      --accent: #e8873f;
+      --accent-soft: #3a2a1c;
+      --accent-contrast: #1c1712;
+      --code-bg: #2e2519;
+      --tip-bg: #16232e;
+      --tip-border: #4f8fb0;
+      --formula-bg: #2e2412;
+      --formula-border: #c9a227;
+      --warning-bg: #2e1a18;
+      --warning-border: #a85448;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #1c1712;
+        --bg-elevated: #2a2119;
+        --text: #efe2c9;
+        --text-dim: #af9c80;
+        --border: #46392a;
+        --accent: #e8873f;
+        --accent-soft: #3a2a1c;
+        --accent-contrast: #1c1712;
+        --code-bg: #2e2519;
+        --tip-bg: #16232e;
+        --tip-border: #4f8fb0;
+        --formula-bg: #2e2412;
+        --formula-border: #c9a227;
+        --warning-bg: #2e1a18;
+        --warning-border: #a85448;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      }
+    }
+  </style>
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-circle" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">Italy Trip 2026 🇮🇹🍷 — Travel Companion</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-20 &middot; Companion to the Sept 27 &ndash; Oct 22, 2026 Northern Italy itinerary</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Lake Como &rarr; Milan</span>
+                  <span class="sg-badge">25 Days, 7 Home Bases</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+<section>
+<h2>Contents</h2>
+<ul>
+<li><a href="#welcome-to-the-trip">Welcome to the Trip</a>
+</li>
+<li><a href="#trip-at-a-glance">Trip at a Glance</a>
+</li>
+<li><a href="#lake-como-bellagio">Lake Como & Bellagio</a>
+<ul>
+<li><a href="#sights-experiences-bellagio">Sights & Experiences — Bellagio</a></li>
+<li><a href="#where-youre-eating-bellagio">Where You're Eating — Bellagio</a></li>
+</ul>
+</li>
+<li><a href="#ortisei-the-dolomites">Ortisei & the Dolomites</a>
+<ul>
+<li><a href="#sights-experiences-ortisei">Sights & Experiences — Ortisei</a></li>
+<li><a href="#where-youre-eating-ortisei">Where You're Eating — Ortisei</a></li>
+</ul>
+</li>
+<li><a href="#venice">Venice</a>
+<ul>
+<li><a href="#sights-experiences-venice">Sights & Experiences — Venice</a></li>
+<li><a href="#where-youre-eating-venice">Where You're Eating — Venice</a></li>
+</ul>
+</li>
+<li><a href="#florence">Florence</a>
+<ul>
+<li><a href="#sights-experiences-florence">Sights & Experiences — Florence</a></li>
+<li><a href="#where-youre-eating-florence">Where You're Eating — Florence</a></li>
+</ul>
+</li>
+<li><a href="#tuscany">Tuscany</a>
+<ul>
+<li><a href="#sights-experiences-tuscany">Sights & Experiences — Tuscany</a></li>
+<li><a href="#where-youre-eating-tuscany">Where You're Eating — Tuscany</a></li>
+</ul>
+</li>
+<li><a href="#cinque-terre-portovenere">Cinque Terre & Portovenere</a>
+<ul>
+<li><a href="#sights-experiences-portovenere">Sights & Experiences — Portovenere</a></li>
+<li><a href="#where-youre-eating-portovenere">Where You're Eating — Portovenere</a></li>
+</ul>
+</li>
+<li><a href="#milan">Milan</a>
+<ul>
+<li><a href="#sights-experiences-milan">Sights & Experiences — Milan</a></li>
+</ul>
+</li>
+<li><a href="#glossary">Glossary</a>
+</li>
+<li><a href="#index-sources">Index & Sources</a>
+<ul>
+<li><a href="#index">Index</a></li>
+<li><a href="#sources-further-reading">Sources & Further Reading</a></li>
+</ul>
+</li>
+</ul>
+</section>
+
+<section>
+<h2>Welcome to the Trip</h2>
+<p>This is the companion volume to the Miller family's 25-day Northern Italy itinerary — Lake Como
+to the Dolomites to Venice, Florence, Tuscany, the Cinque Terre, and Milan, September 27 through
+October 22, 2026. The itinerary tells you <em>where</em> to be and <em>when</em>. This guide fills
+in the <em>why it's worth it</em>: the history behind each villa and piazza, what makes each
+restaurant's reservation worth the effort, and where to wander if there's a spare hour before the
+next thing starts.</p>
+<p>Every hotel, restaurant, and sight named in the itinerary gets its own entry below, organized by
+home base in the order you'll visit them. Each one carries a working <strong>Google Maps</strong>
+link — tap it and it opens straight into Maps or your browser, no searching required. Sprinkled
+throughout are <strong>Nearby &amp; Worth a Look</strong> boxes: cafés,
+trattorias, and viewpoints close to each stop that aren't on the official schedule but are worth
+knowing about if there's a gap in the day or a reservation falls through.</p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> How to use this on the road</div>
+<p>This file works completely offline once it's open in a browser — no signal needed to read it.
+The Google Maps links do need a connection to actually load the map, so it's worth opening the
+next day's links over hotel Wi-Fi the night before if data is tight.</p>
+</div>
+</section>
+
+
+<section>
+<h2>Trip at a Glance</h2>
+<p>Twenty-five days, six home bases, one very long dinner reservation list. Here's the whole arc in
+one table before the day-by-day detail below.</p>
+<table>
+<thead><tr><th>Day</th><th>Date</th><th>Base</th><th>Headline</th></tr></thead>
+<tbody>
+<tr><td>Day 0</td><td>Sun 9/27</td><td>In transit</td><td>San Antonio → Philadelphia → Milan (overnight flight)</td></tr>
+<tr><td>Day 1</td><td>Mon 9/28</td><td>Bellagio</td><td>Arrive Milan, private transfer to Lake Como; dinner at Ristorante Altavista</td></tr>
+<tr><td>Day 2</td><td>Tue 9/29</td><td>Bellagio</td><td>Boat lunch at Isola Comacina; Villa Melzi Gardens &amp; Punta Spartivento</td></tr>
+<tr><td>Day 3</td><td>Wed 9/30</td><td>Bellagio</td><td>Free day — ferry to Varenna, Villa Monastero, Passeggiata degli Innamorati</td></tr>
+<tr><td>Day 4</td><td>Thu 10/1</td><td>Bellagio</td><td>Villa Balbianello tour; aperitivo &amp; dinner on the hotel terrace</td></tr>
+<tr><td>Day 5</td><td>Fri 10/2</td><td>Ortisei</td><td>Transfer to the Dolomites via Verona and Lake Carezza</td></tr>
+<tr><td>Day 6</td><td>Sat 10/3</td><td>Ortisei</td><td>Bullaccia &amp; Alpe di Siusi e-bike tour; dinner at Tubladel</td></tr>
+<tr><td>Day 7</td><td>Sun 10/4</td><td>Ortisei</td><td>Seceda cable car &amp; ridgeline hike; Val Gardena Folklore Festival</td></tr>
+<tr><td>Day 8</td><td>Mon 10/5</td><td>Ortisei</td><td>Private guided hike from San Giacomo to the Sëurasas meadows</td></tr>
+<tr><td>Day 9</td><td>Tue 10/6</td><td>Venice</td><td>Transfer to Venice; Dorsoduro stroll, gondola ride at sunset</td></tr>
+<tr><td>Day 10</td><td>Wed 10/7</td><td>Venice</td><td>St. Mark's Basilica &amp; Doge's Palace; dinner at Osteria Bancogiro</td></tr>
+<tr><td>Day 11</td><td>Thu 10/8</td><td>Venice</td><td>Free day — Murano/Burano, a cicchetti crawl, or a quiet canal ride</td></tr>
+<tr><td>Day 12</td><td>Fri 10/9</td><td>Florence</td><td>Train to Florence; sunset cruise &amp; dinner along the Oltrarno</td></tr>
+<tr><td>Day 13</td><td>Sat 10/10</td><td>Florence</td><td>Private tour of the Accademia (David) &amp; the Uffizi</td></tr>
+<tr><td>Day 14</td><td>Sun 10/11</td><td>Florence</td><td>Duomo dome &amp; bell tower climb; dinner at Osteria Vecchio Cancello</td></tr>
+<tr><td>Day 15</td><td>Mon 10/12</td><td>Tuscany</td><td>Pick up rental car; San Gimignano, then Mormoraia wine tasting</td></tr>
+<tr><td>Day 16</td><td>Tue 10/13</td><td>Tuscany</td><td>Private tour of Siena; wine dinner at Fattoria San Donato</td></tr>
+<tr><td>Day 17</td><td>Wed 10/14</td><td>Tuscany</td><td>Chianti e-bike tour with tasting &amp; picnic lunch</td></tr>
+<tr><td>Day 18</td><td>Thu 10/15</td><td>Cinque Terre</td><td>Pisa's Leaning Tower en route; check in at Portovenere</td></tr>
+<tr><td>Day 19</td><td>Fri 10/16</td><td>Cinque Terre</td><td>Guided hike &amp; wine tour, Manarola to Corniglia to Vernazza</td></tr>
+<tr><td>Day 20</td><td>Sat 10/17</td><td>Cinque Terre</td><td>Palmaria Island by foot; sunset dinner cruise</td></tr>
+<tr><td>Day 21</td><td>Sun 10/18</td><td>Cinque Terre</td><td>Monterosso→Vernazza classic hike; village-hopping by train</td></tr>
+<tr><td>Day 22</td><td>Mon 10/19</td><td>Milan</td><td>Train to Milan; check in at Park Hyatt Milan</td></tr>
+<tr><td>Day 23</td><td>Tue 10/20</td><td>Milan</td><td>Free day in the city</td></tr>
+<tr><td>Day 24</td><td>Wed 10/21</td><td>Milan</td><td>The Last Supper &amp; Duomo tour</td></tr>
+<tr><td>Day 25</td><td>Thu 10/22</td><td>Home</td><td>Fly Milan → San Antonio</td></tr>
+</tbody>
+</table>
+</section>
+
+
+<section>
+<h2>Lake Como &amp; Bellagio <span class="sg-level-badge">Days 1&ndash;4</span></h2>
+<p>Lake Como is shaped like an upside-down Y, and Bellagio sits right at the point where its three
+arms meet — which is exactly why the town has been called <em>"the Pearl of Lake Como"</em> since
+the 19th century. Wisteria-draped stepped lanes, ferry horns, and lake breezes with the specific
+smell of cypress and wet stone. This is the jet-lag-recovery leg of the trip, and it's built that
+way on purpose: slow mornings, boat rides instead of trains, and nothing that starts before 9 AM.</p>
+
+<h4>Hotel Il Perlo Panorama — hotel</h4>
+<p>A small family-run hotel on the Perlo promontory, 3 km outside central Bellagio — named for the little creek and hillside hamlet it sits above. It was built in 1922 as a modest farmhouse renting basic rooms to the servants of aristocrats visiting Bellagio's grand villas; the current building still looks close to a 1939 photo of it. It now sits directly on the legendary Passo di Ghisallo cycling climb, a pilgrimage site for road cyclists (the chapel at the summit is dedicated to cyclists and holds jerseys donated by Giro d'Italia champions).</p>
+<p><strong>Good to know:</strong> Junior Studio Suites run about 430 sq ft with lake-view terraces — request one facing the water at check-in if it isn't already confirmed. The hotel's own restaurant, Altavista, has a panoramic terrace worth booking even on a night without a formal reservation.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Il+Perlo+Panorama%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Bellagio</h3>
+
+<h4>Isola Comacina &amp; La Tirlindana — boat lunch</h4>
+<p>Lake Como's only island has one of Italy's stranger legends attached to it: after Frederick Barbarossa's forces destroyed the island's town in 1169, the Bishop of Como cursed it in 1175 — no bells would ever ring there again, no stone would ever be set on stone. The curse held for nearly 800 years; nothing was rebuilt until the 20th century. The island's own restaurant, Locanda dell'Isola, still burns brandy in a pot at the end of every meal in a ritual meant to symbolically ward off that old excommunication — ask about it if it comes up at lunch. La Tirlindana, where your Tenon boat lunch is booked, sits across the bay in Ossuccio, looking straight across at the island.</p>
+<p><strong>Good to know:</strong> If anyone in the group is curious, the Locanda's fixed nine-vegetable, cold-meats-and-trout menu hasn't changed since 1948 — it's one of the most consistent restaurant traditions on the whole lake.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=La+Tirlindana%2C+Ossuccio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Villa Melzi Gardens — garden villa</h4>
+<p>Built in the early 1800s for Francesco Melzi d'Eril — Napoleon's vice president of the Italian Republic — this is the Lake Como villa garden against which every other one gets measured. English-style landscaping, a lakeside avenue of plane trees, camellias and azaleas, sculpture, and a small Moorish-style pavilion. It set the template Lake Como's other grand gardens (Balbianello included) followed afterward.</p>
+<p><strong>Good to know:</strong> The lakeside path is flat and easy — allow the full 1.5–2 hours the itinerary sets aside; it rewards a slow pace more than most gardens on the lake.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Villa+Melzi+Gardens%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Punta Spartivento — viewpoint</h4>
+<p>The name literally means "the point that divides the wind" — this is the exact spot where Lake Como's three branches (toward Como, toward Lecco, and north toward Colico) meet. On a clear day it's the single best panoramic view on the lake, and there's a lakeside restaurant of the same name right at the tip if a coffee or spritz break is in order.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Punta+Spartivento%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Bellagio's Historic Lanes — walk</h4>
+<p>The stepped stone alleys — Salita Serbelloni, Via Garibaldi, Via Roma — are what put Bellagio on postcards. They were built steep on purpose, following the natural slope down to the harbor, and are lined with the same small shops and cafés that have operated there for generations.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Salita+Serbelloni%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Varenna &amp; Villa Monastero — day trip (Day 3)</h4>
+<p>Across the lake from Bellagio, Varenna trades Bellagio's polish for something quieter. The Passeggiata degli Innamorati ("Lovers' Walk") is a boardwalk cantilevered right off the cliffside above the water — genuinely one of the most photogenic short walks in the Lakes region. Villa Monastero began life as a 12th-century Cistercian convent before being converted into a private villa in the 1600s; its terraced botanical gardens run right along the shoreline. If there's energy left afterward, the 20–30 minute uphill walk to Castello di Vezio is worth it for the falconry displays and one of the widest lake panoramas anywhere on Como.</p>
+<p><strong>Good to know:</strong> Villa and gardens are open 9:30 AM–7:30 PM; tickets were already purchased for this date. The ferry from Bellagio takes about 20 minutes — buy walk-up tickets at the dock.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Villa+Monastero%2C+Varenna%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Villa del Balbianello — villa tour (Day 4)</h4>
+<p>Built in the late 1700s by Cardinal Angelo Maria Durini on the ruins of a Franciscan monastery, this is the most famous silhouette on Lake Como — a stepped loggia jutting into the water on its own wooded point. If the terrace looks familiar, it's because it played Planet Naboo for Anakin and Padmé's secret wedding in <em>Star Wars: Attack of the Clones</em>, and stood in as Bond's recovery villa in <em>Casino Royale</em>. It's owned today by FAI, Italy's national trust, which is why the gardens are so meticulously kept.</p>
+<p><strong>Good to know:</strong> Access is boat-only or a short walk from the closest car park — the Tenon tour handles the logistics, but don't expect to just walk up.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Villa+del+Balbianello%2C+Lenno%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Bellagio</h3>
+
+<h4>Ristorante Altavista — dinner — Days 1 &amp; 4</h4>
+<p>The hotel's own restaurant, with a Terrazza Panoramica that lives up to the name. Booked twice on this leg (Day 1 and the celebratory Day 4 dinner after Balbianello) — a sign of how good the view-plus-food combination is right at the hotel.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Ristorante+Altavista+Bellagio+Il+Perlo%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Trattoria San Giacomo — dinner/aperitivo option — Day 2</h4>
+<p>An unpretentious, deeply local Bellagio trattoria that famously does not take reservations — arrive and wait, or come early. Lake fish and simple Lombard cooking is the draw, not polish.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Trattoria+San+Giacomo%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Ristorante Bilacus — dinner — Day 3</h4>
+<p>Tucked on one of Bellagio's stepped lanes with outdoor terrace seating. Reservation was made with a credit card hold — a no-show inside 48 hours triggers an 80€ charge, so a quick cancellation call is worth remembering if plans shift.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Ristorante+Bilacus%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Lake Como</div>
+<ul>
+<li><strong>Bar Rossi</strong> — Bellagio's oldest café, on the lakefront since 1848 — an easy espresso-and-people-watching stop between activities. <a href="https://www.google.com/maps/search/?api=1&query=Bar+Rossi%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>La Punta Restaurant</strong> — Right at Punta Spartivento itself, with an unobstructed view down all three arms of the lake — a strong lunch or golden-hour drink option. <a href="https://www.google.com/maps/search/?api=1&query=La+Punta+Restaurant%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Grand Hotel Villa Serbelloni</strong> — The grande-dame hotel on Bellagio's waterfront — its terrace bar is a classic aperitivo spot even if you're not a guest. <a href="https://www.google.com/maps/search/?api=1&query=Grand+Hotel+Villa+Serbelloni%2C+Bellagio%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Ristorante La Vista (Albergo Milano)</strong> — Lakefront dining in Varenna with a wide-open sunset view over the water — a strong alternative if Al Prato or Il Cavatappi are booked up. <a href="https://www.google.com/maps/search/?api=1&query=Ristorante+La+Vista+Varenna+Albergo+Milano%2C+Varenna%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Castello di Vezio</strong> — The falconry-show castle above Varenna, reachable by the uphill walk mentioned above — check show times before making the climb. <a href="https://www.google.com/maps/search/?api=1&query=Castello+di+Vezio%2C+Varenna%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Ortisei &amp; the Dolomites <span class="sg-level-badge">Days 5&ndash;8</span></h2>
+<p>Val Gardena is Ladin-speaking territory — Ladin is a Romance language predating both Italian and
+German in this valley, and Ortisei (Urtijëi in Ladin, St. Ulrich in German) still runs on all
+three. Road signs, menus, and church services alternate between them. This is also where the trip
+changes register completely: from lake water to jagged limestone. The Dolomites were a seabed 250
+million years ago, which is why the peaks are pale and vertical instead of the rounded granite of
+the Alps further west — you're looking at fossilized coral reef standing on end.</p>
+
+<h4>En Route: Verona &amp; Lake Carezza — transfer stop — Day 5</h4>
+<p>The transfer day breaks up a long drive with two very different stops. Verona's Piazza delle Erbe occupies the footprint of the old Roman forum — it's been the town's market square for roughly two thousand years continuously. The Verona Arena, just off Piazza Bra, is a 1st-century Roman amphitheater still in use today as one of the world's great open-air opera venues. Later, Lake Carezza (Karersee) is nicknamed the "Rainbow Lake" for the mineral-rich water that shifts through turquoise and emerald depending on the light — it's usually the first "we're really in the Dolomites now" moment of the trip, with the jagged Latemar range reflected straight off the surface.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Lake+Carezza%2C+Nova+Levante%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Hotel Luna Mondschein — hotel</h4>
+<p>One of the oldest hotels in Val Gardena, sitting directly on Ortisei's pedestrian main street (Strada Rezia / Via Rezia). Its name is bilingual by design — <em>Luna</em> in Italian, <em>Mondschein</em> ("moonshine"/moonlight) in German — a small daily reminder of the valley's three-language identity.</p>
+<p><strong>Good to know:</strong> Being right on Strada Rezia means the evening paseggiata — shops, gelato, the church, the folklore festival — is a genuine two-minute walk from the door, not a taxi ride.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Luna+Mondschein%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Ortisei</h3>
+
+<h4>Culinarium Ortisei — festival, through Oct 11</h4>
+<p>A multi-week culinary festival spanning your entire Ortisei stay — restaurants around town run special Val Gardena/South Tyrolean tasting menus built around mountain cheese, cured meat, game, and the local Lagrein and Gewürztraminer wines. Worth asking any restaurant you're at whether they're running a Culinarium menu that night.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Bullaccia (Puflatsch) &amp; Alpe di Siusi — e-bike tour — Day 6</h4>
+<p>Alpe di Siusi (Seiser Alm) is the largest high-altitude alpine meadow in Europe and part of the Dolomites' UNESCO World Heritage listing — a genuinely huge rolling plateau of pasture with the Sassolungo and Sciliar peaks as a backdrop. Bullaccia, the rounded summit above it, carries a local legend about the Hexenbänke — "witches' benches," strange wind-and-frost-carved rock formations locals once explained as seating for witches' gatherings.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Alpe+di+Siusi%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Seceda &amp; the Odle Ridgeline — cable car &amp; hike — Day 7</h4>
+<p>This is the single most photographed view in the Dolomites, and once you're standing there it's obvious why: a sheer green ridge dropping away on one side, and directly across it the jagged limestone spires of the Odle/Geisler group (part of the Puez-Odle Nature Park) tearing straight up out of the pasture. The route up is itself part of the experience — gondola from Ortisei to Furnes, then a second cable car from Furnes to the 2,519 m summit. On the ridgeline, Baita Sofie sits just a couple of minutes from the top station, while Baita Troier is a further 20-minute walk beneath the Odle peaks themselves and is the better stop for a real sit-down plate of South Tyrolean mountain food.</p>
+<p><strong>Good to know:</strong> Order the speck platter or a Kaiserschmarrn (shredded caramelized pancake, usually served with stewed fruit) at whichever hut you land at — both are Alto Adige staples, not tourist menu filler.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Seceda%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Val Gardena Folklore Festival — festival — 4 PM, Day 7</h4>
+<p>A Ladin cultural tradition on full display: traditional Tyrolean folk music, accordion, folk dance troupes in trachten (regional dress), all in Ortisei's pedestrian center. It runs seasonally and this date lines up with it directly — arrive by 3:45 PM for a decent viewing spot, as the itinerary notes.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>San Giacomo &amp; the Sëurasas Hike — private guided hike — Day 8</h4>
+<p>San Giacomo (St. Jakob) is a tiny hamlet reached on foot from Ortisei via the Path of Dialogue (Sentiero del Dialogo), known for its small, charming parish church. From there, the circular hike to the Sëurasas meadows — about 7 km, 450 m of vertical gain, roughly 4 hours — reaches one of Val Gardena's most acclaimed viewpoints: a bowl of quiet high pasture with the Odle peaks framing the skyline, usually far less crowded than Seceda.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=San+Giacomo%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Ortisei</h3>
+
+<h4>Mauriz Keller — dinner — Day 5</h4>
+<p>A traditional South Tyrolean cellar-style restaurant — think stone vaults, wood paneling, and hearty Alpine plates — right after check-in on the transfer day.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Mauriz+Keller%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Tubladel — dinner — Day 6</h4>
+<p>Consistently one of the highest-rated tables in Ortisei; a name that comes up often in regional "best of Val Gardena" lists for its refined take on South Tyrolean cuisine.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Tubladel%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Turonda — dinner — Day 7</h4>
+<p>Ranked #1 of 56 Ortisei restaurants on Tripadvisor at 4.7/5 when this reservation was made — booked deliberately for the Folklore Festival night, so plan the walk over from the festival with a little buffer.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Turonda%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Ustaria da Checco — dinner — Day 8</h4>
+<p>"Ustaria" is simply Ladin for "osteria" — a small linguistic reminder of exactly where you are. Costamula is the backup option a short taxi ride away if this one falls through.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Ustaria+da+Checco%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Val Gardena</div>
+<ul>
+<li><strong>Gourmet-Restaurant Anna Stuben</strong> — A Michelin-starred stube in Ortisei for a splurge night — refined Alpine cooking in a classic wood-paneled dining room. <a href="https://www.google.com/maps/search/?api=1&query=Anna+Stuben%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Café Restaurant Val d'Anna</strong> — A locally loved café known for homemade cakes and South Tyrolean plates — an easy mid-morning stop on Strada Rezia. <a href="https://www.google.com/maps/search/?api=1&query=Val+d%27Anna%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Rifugio Firenze (Regensburger Hütte)</strong> — A further stop past Baita Troier on the Odle ridgeline trail — good option if the group wants to push the Seceda hike a bit longer. <a href="https://www.google.com/maps/search/?api=1&query=Rifugio+Firenze%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Zicoria Brasserie</strong> — A more contemporary cocktail-and-bistro option in town if a change of pace from stube dining sounds good one night. <a href="https://www.google.com/maps/search/?api=1&query=Zicoria+Brasserie%2C+Ortisei%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Venice <span class="sg-level-badge">Days 9&ndash;11</span></h2>
+<p>Venice is built on roughly 118 small islands linked by some 400 bridges, all sitting on wooden
+piles driven into the lagoon mud centuries ago — the city is, structurally, standing on an upside-
+down forest. There are no cars anywhere in the historic center, which is the single biggest reason
+it feels unlike anywhere else on this trip: every sound is a footstep, an oar, or a bell.</p>
+
+<h4>Hotel Palazzo Veneziano — hotel</h4>
+<p>A boutique hotel in Dorsoduro, the university/artsy sestiere (district) of Venice — quieter and more residential than the San Marco side, but still an easy walk to the Accademia bridge and the Grand Canal.</p>
+<p><strong>Good to know:</strong> Water taxi is the arrival method here, not a car — the private transfer from the train station is doing real logistical work getting luggage across the lagoon.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Palazzo+Veneziano%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Venice</h3>
+
+<h4>Dorsoduro &amp; the Zattere — walk — Day 9</h4>
+<p>Fondamenta delle Zattere is Venice's longest uninterrupted waterfront promenade, facing the wide Giudecca Canal instead of a narrow inner one — which means real sunset light and open water views, plus boat traffic to watch from a café table. The Basilica di Santa Maria della Salute anchors the point where Dorsoduro meets the Grand Canal: it was built as a votive offering after the plague of 1630 killed roughly a third of the city's population, and its great white dome is one of the defining silhouettes of the whole city.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Basilica+di+Santa+Maria+della+Salute%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Gondola Ride — tour, 30 min — Day 9</h4>
+<p>Gondolas have been Venice's signature boat for roughly a thousand years, and the trade is still tightly regulated — gondoliers train for years and the number of licenses is capped. Most tours depart from near Piazza San Marco or the Rialto Bridge; allow the 45–60 minutes the itinerary sets aside just to walk there through the evening crowds.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Bacino+Orseolo+Gondola+Station%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>St. Mark's Basilica &amp; Doge's Palace — tour, 4 hrs — Day 10</h4>
+<p>St. Mark's is built in Byzantine style, covered inside with roughly 8,000 square meters of gold mosaic — a direct architectural echo of Venice's centuries of trade with Constantinople. The four bronze horses on its facade are copies; the originals (looted from Constantinople in 1204 during the Fourth Crusade) are preserved inside the basilica's museum. Next door, the Doge's Palace was the seat of the Venetian Republic's government for centuries — Gothic on the outside, lavishly frescoed within, and connected to the old prisons by the enclosed Bridge of Sighs, said to be named for the sound condemned prisoners made catching their last glimpse of daylight through its windows.</p>
+<p><strong>Good to know:</strong> Four hours is a real commitment — wear comfortable shoes and expect a lot of standing; both sites get crowded fast once tour groups arrive after 10 AM.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=St.+Mark%27s+Basilica%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Murano &amp; Burano — free-day option — Day 11</h4>
+<p>Two very different islands a vaporetto ride apart. Murano has been Venice's glassmaking center since 1291, when the Republic ordered all glass furnaces moved there over fire risk to the wooden city center — you can still watch live glassblowing demonstrations. Burano is famous for lace-making and, more visibly, for houses painted in intensely saturated colors — legend says the palette let fishermen spot their own homes through fog from the water.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Burano%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Venice</h3>
+
+<h4>Osteria Bancogiro — dinner — Day 10</h4>
+<p>Right by the Rialto Bridge with terrace seating over the Grand Canal — the reservation specifically requested that terrace table, confirmed by email in advance, so it's worth reconfirming it's held on arrival.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Osteria+Bancogiro%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Corte Sconta — dinner — Day 11</h4>
+<p>A well-regarded seafood trattoria in Castello, a bit off the main tourist track. Address: Calle del Pestrin 3886 — cancellation window is 7 PM the night before if plans change.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Corte+Sconta%2C+Calle+del+Pestrin+3886%2C+Venice%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Venice</div>
+<ul>
+<li><strong>Cantina Do Mori</strong> — Claims to be Venice's oldest bacaro, open since 1462 — dark, standing-room-only, and about as authentic a cicchetti stop as exists near the Rialto. <a href="https://www.google.com/maps/search/?api=1&query=Cantina+Do+Mori%2C+Venice%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Al Mercà</strong> — A tiny bacaro right by the Rialto fish market — mini sandwiches and spritzes, popular for a quick pre-dinner stop. <a href="https://www.google.com/maps/search/?api=1&query=Al+Merca%2C+Venice%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Cantine del Vino già Schiavi</strong> — The Dorsoduro cicchetti institution locals call "il bottegon" — a short walk from Hotel Palazzo Veneziano, famous for its tuna-and-cocoa crostini. <a href="https://www.google.com/maps/search/?api=1&query=Cantine+del+Vino+gia+Schiavi%2C+Venice%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Caffè Florian</strong> — Opened in 1720 in Piazza San Marco, one of the oldest cafés in the world and a genuine slice of Venetian history — worth one overpriced espresso just to sit where Casanova and Byron once did. <a href="https://www.google.com/maps/search/?api=1&query=Caffe+Florian%2C+Venice%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Florence <span class="sg-level-badge">Days 12&ndash;14</span></h2>
+<p>Florence is a small city that happens to hold an outsized share of the Western art canon —
+the Renaissance essentially started here in the early 1400s, funded by Medici banking money and a
+cluster of artists (Brunelleschi, Donatello, Botticelli, Michelangelo, Leonardo) who mostly knew
+each other personally. Everything below is walkable; the historic center is barely over a mile
+across.</p>
+
+<h4>Hotel Degli Orafi — hotel</h4>
+<p>The name means "hotel of the goldsmiths" — a direct nod to the Ponte Vecchio just outside its door, whose bridge shops have been occupied by goldsmiths and jewelers since the Medici evicted the original butchers and tanners in 1593 (the smell, reportedly, was the problem). Several rooms and the rooftop terrace look straight over the Arno at the bridge itself.</p>
+<p><strong>Good to know:</strong> Ask about rooftop terrace access even if it's not a room feature — it's one of the better sunset views over the Arno in the city, and dinner reservations elsewhere shouldn't stop a quick visit beforehand.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Degli+Orafi%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Florence</h3>
+
+<h4>Oltrarno Sunset Cruise — dinner cruise — Day 12</h4>
+<p>Oltrarno means "beyond the Arno" — the artisan side of the river, historically home to leatherworkers, woodcarvers, and framers rather than the grand palazzos across the water. It's noticeably less touristy than the Duomo side, which is exactly why a sunset boat tour through it, with food tastings along the way, works well as a low-key first evening.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Oltrarno%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Accademia Gallery &amp; the Uffizi — private tour, 4 hrs — Day 13</h4>
+<p>The Accademia's main draw is Michelangelo's David (1504), carved from a single block of marble that two earlier sculptors had already rejected as flawed — Michelangelo was 26. The Uffizi, a few minutes' walk away, is one of the oldest public art museums in the world (it opened its collection to visitors in 1765) and holds Botticelli's <em>The Birth of Venus</em> and <em>Primavera</em> among a staggering concentration of Renaissance masterworks under one roof.</p>
+<p><strong>Good to know:</strong> Four hours across two major museums is genuinely a lot of standing and looking — a slow coffee break between the two isn't wasted time, it's necessary.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Uffizi+Gallery%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Florence Duomo, Dome &amp; Bell Tower — tour, 3 hrs — Day 14</h4>
+<p>Santa Maria del Fiore's dome, completed in 1436, is still the largest brick dome ever built — Filippo Brunelleschi invented new construction techniques and machinery specifically to build it, since nobody in Europe had built anything like it since antiquity and no one else knew how. Climbing it (463 steps) means walking between its inner and outer shells, which is where his engineering trick becomes visible firsthand. Giotto's adjacent bell tower, a separate climb, gives the more classic postcard view — because the Duomo itself isn't in the frame.</p>
+<p><strong>Good to know:</strong> The dome and tower are two separate climbs with two separate stair sets — budget energy for both if the tour includes them.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Florence+Cathedral+Duomo%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Florence</h3>
+
+<h4>Antico Bottaio e Osteria — dinner — Day 13</h4>
+<p>The itinerary lists a long backup bench for this night (Il Vivandiere, La Buchetta, Dagaridbardi, and several more) — a sign this particular evening was left flexible on purpose. Whichever one it ends up being, save room: Vivoli, a legendary Florence gelateria operating since the 1930s, is close by for an after-dinner affogato (gelato drowned in hot espresso) — genuinely one of the best versions of that dessert in the city.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Vivoli+Gelateria%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Osteria Vecchio Cancello — dinner — Day 14</h4>
+<p>A neighborhood osteria for the Duomo-tour night — solid, unfussy Florentine cooking after a long day of stairs.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Osteria+Vecchio+Cancello%2C+Florence%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Florence</div>
+<ul>
+<li><strong>Trattoria Cammillo</strong> — A Borgo San Jacopo institution near Ponte Vecchio, loved by locals for classic Florentine plates in an unpretentious room. <a href="https://www.google.com/maps/search/?api=1&query=Trattoria+Cammillo%2C+Florence%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Il Santo Bevitore</strong> — A Santo Spirito favorite for creative, seasonal Tuscan cooking — book ahead, it's popular for a reason. <a href="https://www.google.com/maps/search/?api=1&query=Il+Santo+Bevitore%2C+Florence%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Trattoria La Casalinga</strong> — Budget-friendly, hearty Florentine home cooking (think ribollita and peposo) a few streets from the hotel. <a href="https://www.google.com/maps/search/?api=1&query=Trattoria+La+Casalinga%2C+Florence%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Mercato Centrale</strong> — A two-story food hall near San Lorenzo — good for a fast, varied lunch between museum stops without a full sit-down commitment. <a href="https://www.google.com/maps/search/?api=1&query=Mercato+Centrale+Firenze%2C+Florence%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Tuscany <span class="sg-level-badge">Days 15&ndash;17</span></h2>
+<p>This is the rental-car leg — the only stretch of the trip where you're driving yourselves,
+which is exactly right for Tuscany's back roads between hill towns, vineyards, and cypress-lined
+farm lanes. San Gimignano and Siena are both proudly independent hill towns with centuries of
+rivalry between them and, historically, with Florence — the local wine, food, and even flag
+symbols still carry that old rivalry.</p>
+
+<h4>San Gimignano — town visit — Day 15</h4>
+<p>Nicknamed "Medieval Manhattan" for its skyline — 14 stone towers still stand out of roughly 72 originally built, as rival noble families in the 12th–13th centuries competed to build the tallest private tower on their family palazzo, part status symbol and part actual defensive stronghold during family feuds. It's a UNESCO World Heritage site as a result. Torre Grossa, the tallest surviving tower, is climbable for a rooftop view over the towers and the surrounding Tuscan countryside.</p>
+<p><strong>Good to know:</strong> Gelateria Dondoli, on Piazza della Cisterna, isn't just a good gelato stop — its owner has won the World Gelato Championship multiple times. It's worth the inevitable line.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Piazza+della+Cisterna%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Mormoraia Agriturismo — hotel &amp; wine estate</h4>
+<p>A working wine estate turned agriturismo in the hills outside San Gimignano, producing Vernaccia di San Gimignano — Tuscany's only DOCG-rated white wine (DOCG is Italy's strictest wine classification, guaranteeing origin and production method). The CRU Experience tasting booked here walks through the estate's single-vineyard bottlings side by side.</p>
+<p><strong>Good to know:</strong> Cancellation on the CRU tasting closes at 4 PM on October 10 — worth flagging on a shared calendar given how far out that deadline sits from the actual date.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Mormoraia+Agriturismo%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Tuscany</h3>
+
+<h4>Siena — private tour, 2 hrs — Day 16</h4>
+<p>Siena's Piazza del Campo is one of the great medieval squares in Europe — a shell-shaped brick plaza that hosts the Palio, a bareback horse race run twice a year around its perimeter since the Middle Ages, still raced by the city's historic contrade (neighborhoods). Siena's striped Duomo, all black-and-white marble, was originally meant to be even larger before the Black Death in 1348 halted an ambitious expansion partway through construction — you can still see the unfinished walls of what would have been the new nave.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Piazza+del+Campo%2C+Siena%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Fattoria San Donato — wine tasting dinner — Day 16</h4>
+<p>A Chianti-region wine estate for an evening tasting-and-dinner pairing — Chianti's Sangiovese-based reds are the backbone of the region's wine identity, historically marked by the Gallo Nero (black rooster) symbol from the medieval Chianti League's rivalry with Siena.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Fattoria+San+Donato%2C+Tuscany%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Chianti E-Bike Tour — 5 hrs with tasting &amp; picnic — Day 17</h4>
+<p>An e-bike route through the actual Chianti countryside — vineyards, olive groves, and stone farmhouses — with a wine tasting and Tuscan picnic lunch built into the day. A genuinely different way to see the landscape than from a car window.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Chianti%2C+Tuscany%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Tuscany</h3>
+
+<h4>Il Fienile (Mormoraia) — dinner — Day 15</h4>
+<p>The estate's own restaurant — "Fienile" means "hay barn," a nod to the building's original agricultural use before its conversion.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Mormoraia+Agriturismo%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Le Vecchie Mura — dinner option — Day 17</h4>
+<p>A San Gimignano terrace restaurant built into the old town walls ("vecchie mura" = "old walls"), looking straight out over the Tuscan hills for sunset. A bottle of Vernaccia here is as on-theme as it gets. Fattoria Poggio Alloro and Fuoriluogo are the backup options if this one is full.</p>
+<p><strong>Good to know:</strong> Call ahead for the terrace specifically: +39 0577 940270.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Le+Vecchie+Mura%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Tuscany</div>
+<ul>
+<li><strong>DiVinorum Enoteca</strong> — A well-stocked wine bar right on Piazza della Cisterna in San Gimignano with over 200 labels — a good spot for a pre-dinner glass of Vernaccia. <a href="https://www.google.com/maps/search/?api=1&query=DiVinorum+Enoteca%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Gustavo Mescita Vini</strong> — A small, expertly run San Gimignano wine bar pairing local pours with Tuscan cheese and salumi boards. <a href="https://www.google.com/maps/search/?api=1&query=Gustavo+Mescita+Vini%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Torre Grossa</strong> — The climbable tower on Piazza del Duomo in San Gimignano — worth the stairs for the rooftop panorama over the other towers. <a href="https://www.google.com/maps/search/?api=1&query=Torre+Grossa%2C+San+Gimignano%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Truffle Hunting Experience</strong> — A guided truffle hunt with dogs through the Tuscan woods is a well-regarded alternative activity if there's a free window — book ahead, it fills up. <a href="https://www.google.com/maps/search/?api=1&query=San+Gimignano%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Cinque Terre &amp; Portovenere <span class="sg-level-badge">Days 18&ndash;21</span></h2>
+<p>The whole coastline here — Portovenere, the five Cinque Terre villages, and the islands offshore
+— is a single UNESCO World Heritage Site, protected specifically because it's one of the last
+stretches of Ligurian coast where centuries-old terraced vineyards, pastel fishing villages, and
+cliffside trails have survived essentially intact. There are no real beaches to speak of; the whole
+point is the vertical drama of village meeting cliff meeting sea.</p>
+
+<h4>Leaning Tower of Pisa — tour, 2 hrs — Day 18 (en route)</h4>
+<p>The tower started leaning during construction in the 1170s, after only three of its eight stories were built — the soft, unstable subsoil beneath Piazza dei Miracoli simply couldn't support it evenly. Construction paused for nearly a century (partly due to wars), which accidentally let the ground partially settle before building resumed; engineers in the 1990s later stabilized the tilt at a permanent, safe 3.97 degrees rather than trying to fully correct it — the lean is now the point.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Leaning+Tower+of+Pisa%2C+Pisa%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Grand Hotel Portovenere — hotel</h4>
+<p>A waterfront hotel right on Portovenere's harbor, looking straight across the Gulf of Poets — so named because Lord Byron, Percy Shelley, and other Romantic-era writers were drawn to this exact stretch of coast in the early 1800s.</p>
+<p><strong>Good to know:</strong> Rooms and the restaurant terrace both face the water — ask for a harbor-facing room if it isn't already assigned; the sunsets here are one of the trip's recurring highlights.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Grand+Hotel+Portovenere%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Portovenere</h3>
+
+<h4>Doria Castle &amp; the Medieval Lanes — walk — Day 18</h4>
+<p>A medieval fortress above Portovenere's rooftops, built by the Genoese Doria family as part of the town's coastal defenses. The stone stairways and lanes between the castle and San Pietro are genuinely worth the unhurried 30–45 minutes the itinerary allows — this isn't a walk to rush.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Doria+Castle%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Church of San Pietro &amp; Byron's Grotto — sunset walk — Day 18</h4>
+<p>San Pietro is a Gothic-Romanesque church built right on a rocky point jutting into the sea — arguably the single most photographed sunset spot on this whole coastline. Byron's Grotto, literally steps away, is the sea cave from which Lord Byron reportedly swam across the entire gulf to visit Shelley at Lerici — a swim of several miles that has been semi-mythologized ever since.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Chiesa+di+San+Pietro%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Manarola, Corniglia &amp; Vernazza Hike — guided hike &amp; wine tour — Day 19</h4>
+<p>Manarola is arguably the most-photographed of the five villages, its pastel houses stacked straight up a ravine to the water. Corniglia is the outlier of the five — the only one not directly on the sea, perched instead on a headland 100 meters up (there's no ferry stop here for that reason). The hike typically pairs local Cinque Terre wine with fresh focaccia along the way — Liguria's other great culinary export besides pesto.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Manarola%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Palmaria Island — hike — Day 20</h4>
+<p>The largest of the three small islands off Portovenere, a five-minute boat ride away and part of the same UNESCO listing. The coastal trail passes limestone cliffs, old WWII-era bunkers, and quiet coves — a genuinely different, much less crowded feel than the Cinque Terre villages themselves, even in high season.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Palmaria+Island%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Monterosso to Vernazza Hike — classic hike, ~2 hrs — Day 21</h4>
+<p>This stretch (about 2 miles) is the most famous section of the Sentiero Azzurro ("Blue Trail") connecting all five villages, and the source of most of the iconic Cinque Terre photographs — cliffside vineyard terraces on one side, open sea on the other. The Via dell'Amore ("Lovers' Lane") between Riomaggiore and Manarola is a shorter, flatter cliffside walkway with its own long-standing romantic reputation, popular for exactly that name.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Vernazza%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Where You're Eating">Where You're Eating — Portovenere</h3>
+
+<h4>Palmaria Restaurant (Grand Hotel Portovenere) — dinner — Day 18</h4>
+<p>The hotel's in-house restaurant, confirmed directly through Tenon — a low-effort, high-view way to end the Pisa transfer day.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Grand+Hotel+Portovenere%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Corniglia Wine &amp; Focaccia Stop — lunch — Day 19</h4>
+<p>Local Cinque Terre wines (keep an eye out for Sciacchetrà, a sweet dessert wine made from sun-dried grapes and something of a regional specialty) paired with fresh-baked focaccia and savory vegetable cakes — a Ligurian classic snack-lunch combo, not a formal sit-down meal.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Corniglia%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Trattoria Tre Torri — dinner — Day 19</h4>
+<p>Booked in Portovenere via WhatsApp — a good reminder that many small-town Italian restaurants now take reservations that way as readily as by phone.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Trattoria+Tre+Torri%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Sunset Dinner Cruise — cruise, 3 hrs — Day 20</h4>
+<p>Dinner and aperitivo afloat, timed for sunset over the gulf — a genuinely strong way to close out the Portovenere/Palmaria day, exactly as suggested in the itinerary's own trip-planning notes.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Portovenere%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Il Porticciolo (Manarola) — dinner option — Day 21</h4>
+<p>Right near Manarola's small harbor, no long climb involved, with outdoor seating and fresh seafood and pizza — the itinerary's pick if dinner ends up in Manarola rather than back in Portovenere.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Il+Porticciolo%2C+Manarola%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Cinque Terre &amp; Portovenere</div>
+<ul>
+<li><strong>Locanda Lorena</strong> — On Palmaria Island with genuine sea views — a strong lunch option while exploring the island's coastal trail. <a href="https://www.google.com/maps/search/?api=1&query=Locanda+Lorena%2C+Palmaria+Island%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Belforte</strong> — A Ligurian seafood restaurant in Portovenere built into the old fortifications, with sweeping gulf views from its terrace. <a href="https://www.google.com/maps/search/?api=1&query=Belforte+Ristorante%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Ristorante Portivene</strong> — A well-liked Portovenere option along the harborfront if Tre Torri or the hotel restaurant aren't available. <a href="https://www.google.com/maps/search/?api=1&query=Ristorante+Portivene%2C+Portovenere%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Nessun Dorma</strong> — A famously scenic (and famously crowded) bruschetta-and-wine terrace above Manarola's harbor — go early or expect a wait. <a href="https://www.google.com/maps/search/?api=1&query=Nessun+Dorma%2C+Manarola%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Milan <span class="sg-level-badge">Days 22&ndash;24</span></h2>
+<p>Milan closes the loop where it opened — back to the city you flew into, but with almost three
+weeks of context behind you. It's Italy's financial and fashion capital rather than its historical
+showpiece, which makes it a good decompression stop: fewer must-see checkboxes, more just being in
+a great European city for a couple of days before the flight home.</p>
+
+<h4>Park Hyatt Milan — hotel</h4>
+<p>A five-star hotel a short walk from the Duomo and the Galleria, occupying a restored early-20th-century building — the kind of central, walk-everywhere location that makes a car genuinely unnecessary for these three days.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Park+Hyatt+Milan%2C+Milan%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+
+<h3 data-toc="Sights &amp; Experiences">Sights &amp; Experiences — Milan</h3>
+
+<h4>The Last Supper &amp; Duomo Tour — tour — Day 24</h4>
+<p>Leonardo da Vinci painted <em>The Last Supper</em> directly onto the refectory wall of Santa Maria delle Grazie between 1495 and 1498, using an experimental technique instead of traditional fresco — which let him work more slowly and with richer detail, but also meant the paint began flaking within his own lifetime. It's been restored multiple times since; timed-entry tickets in small groups are mandatory today specifically to protect what's left of the original surface. The Duomo itself took nearly 600 years to complete from its 1386 start, and is the third- or fourth-largest church in the world depending on how it's measured — its rooftop, with 135 marble spires, is walkable and gives a close-up look at detail invisible from street level.</p>
+<p><strong>Good to know:</strong> The Last Supper viewing window is short (usually 15 minutes) and heavily timed — don't plan anything tight immediately beforehand in case of a line.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Santa+Maria+delle+Grazie%2C+Milan%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<h4>Galleria Vittorio Emanuele II — walk</h4>
+<p>One of the world's oldest shopping arcades, opened in 1877 — a glass-domed cross of grand cafés and luxury storefronts connecting the Duomo to La Scala opera house. It's as much an architectural landmark as a place to shop.</p>
+<p class="sg-map-link">📍 <a href="https://www.google.com/maps/search/?api=1&query=Galleria+Vittorio+Emanuele+II%2C+Milan%2C+Italy" target="_blank" rel="noopener">Open in Google Maps</a></p>
+<div class="sg-callout tip">
+<div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Nearby &amp; Worth a Look — Milan</div>
+<ul>
+<li><strong>Camparino in Galleria</strong> — Opened by Gaspare Campari himself in 1867 right where the Galleria meets Piazza Duomo — the birthplace of the Milanese aperitivo tradition, with original Liberty-style mosaics still intact. <a href="https://www.google.com/maps/search/?api=1&query=Camparino+in+Galleria%2C+Milan%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Pasticceria Cova</strong> — A historic Milanese pastry shop and café dating to 1817 — a classic stop for a proper cappuccino and pastry away from the Duomo crowds. <a href="https://www.google.com/maps/search/?api=1&query=Pasticceria+Cova%2C+Milan%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Navigli District</strong> — Milan's old canal district, a short taxi ride from the Duomo — lined with bars and restaurants and one of the best areas for an evening aperitivo crawl on a free day. <a href="https://www.google.com/maps/search/?api=1&query=Navigli%2C+Milan%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+<li><strong>Sforza Castle</strong> — A 15th-century Sforza-family fortress turned museum complex — a good option for the free day if a change of pace from shopping streets sounds good. <a href="https://www.google.com/maps/search/?api=1&query=Sforza+Castle%2C+Milan%2C+Italy" target="_blank" rel="noopener">(map)</a></li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Glossary</h2>
+<table>
+<thead><tr><th>Term</th><th>Definition</th></tr></thead>
+<tbody>
+<tr><td>Agriturismo</td><td>A working farm or wine estate offering guest lodging — Mormoraia (Tuscany) is this trip's example.</td></tr>
+<tr><td>Bacaro</td><td>A small, informal Venetian wine bar serving cicchetti; the Venetian equivalent of a tapas bar.</td></tr>
+<tr><td>Cicchetti</td><td>Venetian small-plate bar snacks — crostini, fried seafood, mini sandwiches — traditionally eaten standing at a bacaro.</td></tr>
+<tr><td>Contrade</td><td>The 17 historic neighborhood districts of Siena, each with its own colors, symbol, and horse in the twice-yearly Palio race.</td></tr>
+<tr><td>DOCG</td><td><em>Denominazione di Origine Controllata e Garantita</em> — Italy's strictest wine classification, guaranteeing origin, grape variety, and production method. Vernaccia di San Gimignano is Tuscany's only DOCG white.</td></tr>
+<tr><td>Ladin</td><td>A Romance language native to parts of the Dolomites, including Val Gardena — older than either Italian or German in this specific valley and still spoken alongside both.</td></tr>
+<tr><td>Palio</td><td>Siena's bareback horse race around Piazza del Campo, run twice a year (July 2 and August 16) by the city's contrade, with roots going back to the Middle Ages.</td></tr>
+<tr><td>Sciacchetrà</td><td>A sweet Ligurian dessert wine made from sun-dried Cinque Terre grapes — a regional specialty worth seeking out.</td></tr>
+<tr><td>Sentiero Azzurro</td><td>The "Blue Trail," the classic coastal hiking path connecting all five Cinque Terre villages.</td></tr>
+<tr><td>Sestiere</td><td>One of Venice's six historic administrative districts (Dorsoduro, San Marco, Castello, Cannaregio, San Polo, Santa Croce).</td></tr>
+<tr><td>Stube / Stuben</td><td>A traditional wood-paneled Alpine dining room, common in South Tyrol restaurant names (e.g., Anna Stuben).</td></tr>
+<tr><td>Trachten</td><td>Traditional regional folk dress worn in Tyrolean/South Tyrolean cultural festivals, such as the Val Gardena Folklore Festival.</td></tr>
+<tr><td>Vaporetto</td><td>Venice's public water-bus system — the everyday equivalent of a city bus, running fixed routes along the canals.</td></tr>
+</tbody>
+</table>
+</section>
+
+
+<section>
+<h2>Index &amp; Sources</h2>
+<h3>Index</h3>
+<h4>A</h4><ul>
+<li><a href="#florence">Accademia Gallery</a></li>
+<li><a href="#ortisei-the-dolomites">Alpe di Siusi</a></li>
+<li><a href="#ortisei-the-dolomites">Anna Stuben</a></li>
+</ul>
+<h4>B</h4><ul>
+<li><a href="#lake-como-bellagio">Bellagio</a></li>
+<li><a href="#cinque-terre-portovenere">Byron's Grotto</a></li>
+<li><a href="#lake-como-bellagio">Bar Rossi</a></li>
+</ul>
+<h4>C</h4><ul>
+<li><a href="#lake-como-bellagio">Castello di Vezio</a></li>
+<li><a href="#tuscany">Chianti</a></li>
+<li><a href="#cinque-terre-portovenere">Cinque Terre villages</a></li>
+<li><a href="#venice">Corte Sconta</a></li>
+</ul>
+<h4>D</h4><ul>
+<li><a href="#venice">Doge's Palace</a></li>
+<li><a href="#cinque-terre-portovenere">Doria Castle</a></li>
+<li><a href="#florence">Duomo, Florence</a></li>
+<li><a href="#milan">Duomo, Milan</a></li>
+</ul>
+<h4>G</h4><ul>
+<li><a href="#milan">Galleria Vittorio Emanuele II</a></li>
+<li><a href="#tuscany">Gelateria Dondoli</a></li>
+<li><a href="#cinque-terre-portovenere">Grand Hotel Portovenere</a></li>
+</ul>
+<h4>H</h4><ul>
+<li><a href="#florence">Hotel Degli Orafi</a></li>
+<li><a href="#lake-como-bellagio">Hotel Il Perlo Panorama</a></li>
+<li><a href="#ortisei-the-dolomites">Hotel Luna Mondschein</a></li>
+<li><a href="#venice">Hotel Palazzo Veneziano</a></li>
+</ul>
+<h4>I</h4><ul>
+<li><a href="#lake-como-bellagio">Isola Comacina</a></li>
+</ul>
+<h4>L</h4><ul>
+<li><a href="#milan">Last Supper, The</a></li>
+<li><a href="#cinque-terre-portovenere">Leaning Tower of Pisa</a></li>
+</ul>
+<h4>M</h4><ul>
+<li><a href="#cinque-terre-portovenere">Manarola</a></li>
+<li><a href="#tuscany">Mormoraia Agriturismo</a></li>
+<li><a href="#venice">Murano &amp; Burano</a></li>
+</ul>
+<h4>P</h4><ul>
+<li><a href="#cinque-terre-portovenere">Palmaria Island</a></li>
+<li><a href="#milan">Park Hyatt Milan</a></li>
+<li><a href="#lake-como-bellagio">Punta Spartivento</a></li>
+</ul>
+<h4>S</h4><ul>
+<li><a href="#tuscany">San Gimignano</a></li>
+<li><a href="#ortisei-the-dolomites">Seceda</a></li>
+<li><a href="#tuscany">Siena</a></li>
+<li><a href="#venice">St. Mark's Basilica</a></li>
+</ul>
+<h4>T</h4><ul>
+<li><a href="#ortisei-the-dolomites">Turonda</a></li>
+</ul>
+<h4>U</h4><ul>
+<li><a href="#florence">Uffizi Gallery</a></li>
+</ul>
+<h4>V</h4><ul>
+<li><a href="#lake-como-bellagio">Varenna</a></li>
+<li><a href="#lake-como-bellagio">Villa Balbianello</a></li>
+<li><a href="#lake-como-bellagio">Villa Melzi Gardens</a></li>
+<li><a href="#lake-como-bellagio">Villa Monastero</a></li>
+</ul>
+
+<h3>Sources &amp; Further Reading</h3>
+<ul>
+<li><a href="https://www.comacina.it/en/history.php" target="_blank" rel="noopener">Isola Comacina — official history &amp; the 1175 excommunication legend</a></li>
+<li><a href="https://www.jamesbondlifestyle.com/product/villa-del-balbianello-lenno-como-italy" target="_blank" rel="noopener">Villa del Balbianello — film locations (Bond Lifestyle)</a></li>
+<li><a href="https://www.val-gardena.com/en/dolomites/geisler-mountain-group/" target="_blank" rel="noopener">The Geisler/Odle Mountain Group — Val Gardena official site</a></li>
+<li><a href="https://www.camparino.com/history/" target="_blank" rel="noopener">Camparino in Galleria — official history</a></li>
+<li><a href="https://pezcyclingnews.com/travel/meet-il-perlo-panorama/" target="_blank" rel="noopener">Il Perlo Panorama — hotel history</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Cinque_Terre" target="_blank" rel="noopener">Cinque Terre — UNESCO World Heritage background</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Florence_Cathedral" target="_blank" rel="noopener">Florence Cathedral (Duomo) — Brunelleschi's dome</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Palio_di_Siena" target="_blank" rel="noopener">Palio di Siena — history &amp; the contrade</a></li>
+<li>Original source: the Miller family's Northern Italy trip itinerary document, provided by the user.</li>
+</ul>
+</section>
+
+</main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js"></script>
+</body>
+</html>

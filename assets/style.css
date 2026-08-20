@@ -431,6 +431,11 @@ html.sg-toc-pref-collapsed #sg-toc-toggle .sg-btn-label { display: none; }
   color: #fff;
   vertical-align: middle;
   margin-left: 0.5rem;
+  /* Fallback background for plain (unmodified) usage — e.g. a date-range badge on a trip-guide
+     heading, not a beginner/intermediate/expert label. Without this, color:#fff on no
+     background at all is nearly invisible in light mode. The modifier rules below still win
+     via higher specificity (two classes) when one is present. */
+  background: var(--accent);
 }
 .sg-level-badge.beginner { background: var(--badge-beginner); }
 .sg-level-badge.intermediate { background: var(--badge-intermediate); }
