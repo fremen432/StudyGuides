@@ -6,62 +6,66 @@
   <title>Italy Trip 2026 — Travel Companion</title>
   <link rel="stylesheet" href="assets/style.css">
   <style>
-    /* Italy-inspired palette for this guide only — shared template variables overridden
+    /* Italy-flag-inspired palette for this guide only — shared template variables overridden
        here, not in assets/style.css, so every other guide in the repo keeps the default green
-       theme. Same scoping technique as Scout User Guide's blue accent override. */
+       theme. Same scoping technique as Scout User Guide's blue accent override.
+       Green / white / red, per the tricolore — but muted, sophisticated tones rather than the
+       flag's literal saturated primaries: a deep pine green as the accent color (links, badges,
+       buttons, tip callouts), a clean warm white/cream base, and a toned-down brick red reserved
+       for warning callouts (a natural semantic fit) and the formula callout family. */
     :root {
-      --bg: #faf5ea;
-      --bg-elevated: #fffdf7;
-      --text: #2b2015;
-      --text-dim: #7a6a54;
-      --border: #e3d6bd;
-      --accent: #a8442b;
-      --accent-soft: #f5e3d8;
-      --accent-contrast: #fffdf7;
-      --code-bg: #f1e7d4;
-      --tip-bg: #dcedf3;
-      --tip-border: #3d84a8;
-      --formula-bg: #fbf1d3;
-      --formula-border: #c9a227;
-      --warning-bg: #f6e3e0;
-      --warning-border: #8f3b3b;
-      --shadow: 0 1px 3px rgba(80, 40, 10, 0.12);
+      --bg: #f7f8f4;
+      --bg-elevated: #ffffff;
+      --text: #1c2620;
+      --text-dim: #5c6b60;
+      --border: #dde3d8;
+      --accent: #0b6e4f;
+      --accent-soft: #e1f0e6;
+      --accent-contrast: #ffffff;
+      --code-bg: #edf2ec;
+      --tip-bg: #e6f3ea;
+      --tip-border: #2e8b57;
+      --formula-bg: #fdf1f0;
+      --formula-border: #b5453d;
+      --warning-bg: #fbe7e5;
+      --warning-border: #b3261e;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
     :root[data-theme="dark"] {
-      --bg: #1c1712;
-      --bg-elevated: #2a2119;
-      --text: #efe2c9;
-      --text-dim: #af9c80;
-      --border: #46392a;
-      --accent: #e8873f;
-      --accent-soft: #3a2a1c;
-      --accent-contrast: #1c1712;
-      --code-bg: #2e2519;
-      --tip-bg: #16232e;
-      --tip-border: #4f8fb0;
-      --formula-bg: #2e2412;
-      --formula-border: #c9a227;
-      --warning-bg: #2e1a18;
-      --warning-border: #a85448;
+      --bg: #141c17;
+      --bg-elevated: #1c2820;
+      --text: #eef2ec;
+      --text-dim: #a3b0a8;
+      --border: #33453b;
+      --accent: #4caf7a;
+      --accent-soft: #1f3a2c;
+      --accent-contrast: #0d1712;
+      --code-bg: #223027;
+      --tip-bg: #1c3427;
+      --tip-border: #4caf7a;
+      --formula-bg: #3a2320;
+      --formula-border: #c0645c;
+      --warning-bg: #3a1e1b;
+      --warning-border: #e0685c;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
     }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --bg: #1c1712;
-        --bg-elevated: #2a2119;
-        --text: #efe2c9;
-        --text-dim: #af9c80;
-        --border: #46392a;
-        --accent: #e8873f;
-        --accent-soft: #3a2a1c;
-        --accent-contrast: #1c1712;
-        --code-bg: #2e2519;
-        --tip-bg: #16232e;
-        --tip-border: #4f8fb0;
-        --formula-bg: #2e2412;
-        --formula-border: #c9a227;
-        --warning-bg: #2e1a18;
-        --warning-border: #a85448;
+        --bg: #141c17;
+        --bg-elevated: #1c2820;
+        --text: #eef2ec;
+        --text-dim: #a3b0a8;
+        --border: #33453b;
+        --accent: #4caf7a;
+        --accent-soft: #1f3a2c;
+        --accent-contrast: #0d1712;
+        --code-bg: #223027;
+        --tip-bg: #1c3427;
+        --tip-border: #4caf7a;
+        --formula-bg: #3a2320;
+        --formula-border: #c0645c;
+        --warning-bg: #3a1e1b;
+        --warning-border: #e0685c;
         --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
       }
     }
