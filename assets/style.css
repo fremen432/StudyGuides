@@ -863,14 +863,19 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
        backdrop bleeds straight through the "drawer" and visually overlaps its nav text (caught
        by an actual rendered screenshot, not by reading the CSS — see workflow notes). */
     background: var(--bg);
-    box-shadow: 6px 0 20px rgba(0, 0, 0, 0.3);
     transform: translateX(-100%);
-    transition: transform 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
+  /* box-shadow only while the drawer is actually open. It used to sit on the base rule above
+     and render unconditionally — box-shadow isn't clipped by the element's own transform, so
+     with the drawer translated fully off-screen (translateX(-100%)) its blur/offset still
+     bled a faint vertical glow in at the viewport's left edge even while "closed". Scoped here
+     instead, it only exists once the drawer has actually translated back on-screen to cast it. */
   .sg-toc.sg-toc-mobile-open,
   .sg-toc.sg-toc-collapsed.sg-toc-mobile-open,
   html.sg-toc-pref-collapsed .sg-toc.sg-toc-mobile-open {
     transform: translateX(0);
+    box-shadow: 6px 0 20px rgba(0, 0, 0, 0.3);
   }
   .sg-toc-body,
   .sg-toc.sg-toc-collapsed .sg-toc-body,
