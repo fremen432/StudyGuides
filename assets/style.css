@@ -1043,6 +1043,16 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
   gap: 1rem;
   padding: 3.5rem 1.25rem 1.5rem;
   box-sizing: border-box;
+  /* Each slide is a <figure>, which also matches the generic figure{} rule elsewhere in this
+     file (margin: 1.5rem auto; max-width: 640px). That rule doesn't set flex/padding/etc., so
+     it doesn't lose the cascade outright -- but it DOES still win on the properties it sets and
+     this rule doesn't override: max-width and margin. The result on any viewport wider than
+     640px: flex-basis 100% first resolves against the true viewport width, then max-width caps
+     the rendered slide back down to 640px anyway, so 3 slides of 640px each fit side by side in
+     a 1280px+ viewport instead of one filling the screen -- exactly the "images overlap" bug
+     Clayton caught. Reset both explicitly so nothing leaks in from the unrelated base rule. */
+  max-width: none;
+  margin: 0;
 }
 .sg-lightbox-img {
   max-width: 92vw;
@@ -1050,6 +1060,9 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
   object-fit: contain;
   border-radius: 6px;
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  /* Otherwise inherits cursor:zoom-in from the base figure img{} rule (correct out in the
+     article, wrong here — this image is already maximized, clicking it closes/zooms out). */
+  cursor: zoom-out;
 }
 .sg-lightbox-caption {
   color: #f0f0f0;
