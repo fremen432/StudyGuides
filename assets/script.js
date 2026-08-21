@@ -1,8 +1,10 @@
 /*
-  study-guide-maker shared script
-  Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\script.js
-  Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\script.js
-  Vanilla JS, no dependencies, no network calls — every guide must open standalone via file://.
+  StudyGuides shared script — this file IS the source (no separate master copy elsewhere).
+  Every guide in this repo links here via assets/script.js; edit this file directly and every
+  existing guide gets the change at once. Vanilla JS, no dependencies, no network calls — every
+  guide must open standalone via file://. (Originally scaffolded from the study-guide-maker
+  skill's own template; that skill's copy is no longer kept in sync as of the 2026-08-17 move to
+  authoring guides directly in this repo — see README.md.)
 */
 (function () {
   "use strict";
@@ -428,6 +430,95 @@
   }
 
   // ---------- Back-to-top ----------
+  // Tap/click any content photo to open it full-screen. Scoped to `.sg-main img` rather than
+  // just `figure img` so it also catches any stray content image that isn't figure-wrapped —
+  // deliberately NOT scoped to the header/sidebar/icon-sprite, none of which live inside
+  // .sg-main. One overlay element, reused for every image (built once, not per-photo), matching
+  // the existing info-popover/mobile-drawer pattern of a single shared DOM node toggled open.
+  function initLightbox() {
+    var images = document.querySelectorAll(".sg-main img");
+    if (!images.length) return;
+
+    var overlay = document.createElement("div");
+    overlay.className = "sg-lightbox-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-hidden", "true");
+    // Plain "×" glyph rather than the #icon-x sprite symbol — this script is shared across every
+    // guide and not every guide's inline sprite defines icon-x (only the newer mobile-drawer
+    // guides do), so relying on it here would render a blank button on the older ones.
+    overlay.innerHTML =
+      '<button type="button" class="sg-lightbox-close" aria-label="Close">×</button>' +
+      '<img class="sg-lightbox-img" alt="">' +
+      '<div class="sg-lightbox-caption"></div>';
+    document.body.appendChild(overlay);
+
+    var imgEl = overlay.querySelector(".sg-lightbox-img");
+    var capEl = overlay.querySelector(".sg-lightbox-caption");
+    var closeBtn = overlay.querySelector(".sg-lightbox-close");
+    var lastFocused = null;
+
+    function open(src, alt, captionText) {
+      lastFocused = document.activeElement;
+      imgEl.src = src;
+      imgEl.alt = alt || "";
+      capEl.textContent = captionText || "";
+      capEl.style.display = captionText ? "" : "none";
+      overlay.classList.add("sg-lightbox-open");
+      overlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+    function close() {
+      overlay.classList.remove("sg-lightbox-open");
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      imgEl.src = "";
+      if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+    }
+
+    // Click anywhere in the overlay (backdrop OR the enlarged image itself) closes it — the
+    // simplest no-dead-zone lightbox pattern, and it's why the overlay's own cursor is
+    // zoom-out. The caption text stays selectable/clickable without closing (e.g. its Wikimedia
+    // Commons source link), so that one element opts out via stopPropagation on its own clicks.
+    overlay.addEventListener("click", close);
+    capEl.addEventListener("click", function (e) { e.stopPropagation(); });
+    closeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      close();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && overlay.classList.contains("sg-lightbox-open")) close();
+    });
+
+    images.forEach(function (img) {
+      img.setAttribute("tabindex", "0");
+      img.setAttribute("role", "button");
+      img.setAttribute("aria-label", "View full-screen: " + (img.alt || "image"));
+      img.addEventListener("click", function () {
+        var fig = img.closest("figure");
+        var caption = fig ? fig.querySelector("figcaption") : null;
+        var captionText = "";
+        if (caption) {
+          // Drop the "- Source: ..." attribution link from the spoken/lightbox caption text —
+          // it stays as a real link right below the thumbnail in the article itself; repeating
+          // it as plain unclickable text over a photo just adds noise.
+          var clone = caption.cloneNode(true);
+          var sourceEl = clone.querySelector(".sg-figure-source");
+          if (sourceEl) sourceEl.remove();
+          captionText = clone.textContent.trim();
+        }
+        open(img.currentSrc || img.src, img.alt, captionText);
+      });
+      img.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          img.click();
+        }
+      });
+    });
+  }
+
   function initBackToTop() {
     var btn = document.getElementById("sg-back-to-top");
     if (!btn) return;
@@ -449,5 +540,6 @@
     initMobileToc();
     initControlsRelocation();
     initBackToTop();
+    initLightbox();
   });
 })();

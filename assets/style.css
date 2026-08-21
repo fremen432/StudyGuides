@@ -1,8 +1,9 @@
 /*
-  study-guide-maker shared stylesheet
-  Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\style.css
-  Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\style.css
-  Edit the master, then re-copy over the deployed copy so every existing guide re-themes at once.
+  StudyGuides shared stylesheet — this file IS the source (no separate master copy elsewhere).
+  Every guide in this repo links here via assets/style.css; edit this file directly and every
+  existing guide re-themes/re-behaves at once. (Originally scaffolded from the study-guide-maker
+  skill's own template; that skill's copy is no longer kept in sync as of the 2026-08-17 move to
+  authoring guides directly in this repo — see README.md.)
 */
 
 :root {
@@ -507,6 +508,7 @@ figure img {
   border-radius: 8px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  cursor: zoom-in;
 }
 figcaption {
   font-size: 0.85rem;
@@ -921,8 +923,67 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
   .sg-figure-row { flex-direction: column; align-items: center; }
 }
 
+/* Tap-to-fullscreen lightbox for content photos (initLightbox() in script.js, wired to every
+   img inside .sg-main). Deliberately theme-independent — a near-opaque black backdrop regardless
+   of light/dark mode is the standard lightbox convention and gives the photo maximum contrast
+   either way, so this block reads off plain white/black rather than the --bg/--text variables
+   the rest of the page uses. */
+.sg-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3.5rem 1.25rem 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  cursor: zoom-out;
+}
+.sg-lightbox-overlay.sg-lightbox-open {
+  opacity: 1;
+  visibility: visible;
+}
+.sg-lightbox-img {
+  max-width: 92vw;
+  max-height: 78vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+.sg-lightbox-caption {
+  color: #f0f0f0;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  max-width: 640px;
+  cursor: auto;
+}
+.sg-lightbox-close {
+  position: fixed;
+  top: 0.9rem;
+  right: 1rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.sg-lightbox-close:hover { background: rgba(255, 255, 255, 0.22); }
+
 @media print {
-  .sg-toc, .sg-controls, .sg-back-to-top { display: none !important; }
+  .sg-toc, .sg-controls, .sg-back-to-top, .sg-lightbox-overlay { display: none !important; }
   .sg-header { position: static; box-shadow: none; }
   .sg-main { padding: 0; }
   a { color: inherit; text-decoration: none; }
