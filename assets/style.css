@@ -548,6 +548,81 @@ figcaption a { color: var(--text-dim); }
 }
 .sg-figure-row figure { flex: 1 1 260px; max-width: 360px; }
 
+/* ---------- Swipeable photo carousel (3-5 photos per POI) ---------- */
+/* One <figure> per photo, same markup a single-image POI already uses — just wrapped in
+   .sg-carousel > .sg-carousel-track instead of standing alone. CSS scroll-snap does the actual
+   swipe/drag behavior natively (real touch momentum, no JS gesture math to get wrong); JS
+   (initCarousels() in script.js) only handles the dot indicators, the prev/next buttons, and
+   feeding the whole image set into the tap-to-fullscreen lightbox at the tapped index — see
+   initLightbox()'s groupFor() there for how a carousel's slides become one lightbox group
+   instead of the single-image case's group-of-one. */
+.sg-carousel {
+  position: relative;
+  margin: 1.5rem auto;
+  max-width: 640px;
+}
+.sg-carousel-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.sg-carousel-track::-webkit-scrollbar { display: none; }
+/* Reuses the plain <figure>/figcaption rules above for everything except sizing — a slide needs
+   to fill the track's full width and stop scaling/centering itself the way a standalone figure
+   does, since the track (not the figure) now owns the carousel's overall width. */
+.sg-carousel-track > figure {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  margin: 0;
+  max-width: none;
+  box-sizing: border-box;
+  padding: 0 2px;
+}
+.sg-carousel-track > figure img { max-width: 100%; width: 100%; object-fit: contain; }
+.sg-carousel-arrow {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  opacity: 0.9;
+}
+.sg-carousel-arrow:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+.sg-carousel-arrow.sg-carousel-prev { left: -4px; }
+.sg-carousel-arrow.sg-carousel-next { right: -4px; }
+.sg-carousel-arrow:disabled { opacity: 0.25; cursor: default; }
+.sg-carousel-arrow:disabled:hover { border-color: var(--border); color: var(--text); }
+.sg-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+.sg-carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: var(--border);
+  cursor: pointer;
+}
+.sg-carousel-dot.active { background: var(--accent); }
+
 /* ---------- HTML/CSS diagram components ---------- */
 /* Prefer these over hand-coded SVG for any box/arrow/panel-shaped diagram — comparisons,
    layered relationships, simple flows. Flexbox auto-sizes every box to its content and
@@ -926,26 +1001,48 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
    img inside .sg-main). Deliberately theme-independent — a near-opaque black backdrop regardless
    of light/dark mode is the standard lightbox convention and gives the photo maximum contrast
    either way, so this block reads off plain white/black rather than the --bg/--text variables
-   the rest of the page uses. */
+   the rest of the page uses.
+
+   Built as a one-slide-or-many scroll-snap track (same swipe mechanism as the inline
+   .sg-carousel above, just full-screen), not a single fixed <img> — a single-photo POI is simply
+   a track with one slide (dots/arrows hidden via [data-count="1"]), so this is one mechanism
+   for both cases, not two. */
 .sg-lightbox-overlay {
   position: fixed;
   inset: 0;
   z-index: 300;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+.sg-lightbox-overlay.sg-lightbox-open {
+  opacity: 1;
+  visibility: visible;
+}
+.sg-lightbox-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: zoom-out;
+}
+.sg-lightbox-track::-webkit-scrollbar { display: none; }
+.sg-lightbox-slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   padding: 3.5rem 1.25rem 1.5rem;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s ease;
-  cursor: zoom-out;
-}
-.sg-lightbox-overlay.sg-lightbox-open {
-  opacity: 1;
-  visibility: visible;
+  box-sizing: border-box;
 }
 .sg-lightbox-img {
   max-width: 92vw;
@@ -962,6 +1059,50 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
   max-width: 640px;
   cursor: auto;
 }
+.sg-lightbox-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 301;
+}
+.sg-lightbox-arrow:hover { background: rgba(255, 255, 255, 0.22); }
+.sg-lightbox-arrow.sg-lightbox-prev { left: 1rem; }
+.sg-lightbox-arrow.sg-lightbox-next { right: 1rem; }
+.sg-lightbox-overlay[data-count="1"] .sg-lightbox-arrow,
+.sg-lightbox-overlay[data-count="1"] .sg-lightbox-dots {
+  display: none;
+}
+.sg-lightbox-dots {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+  z-index: 301;
+}
+.sg-lightbox-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+}
+.sg-lightbox-dot.active { background: #fff; }
 .sg-lightbox-close {
   position: fixed;
   top: 0.9rem;

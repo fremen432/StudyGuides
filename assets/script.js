@@ -428,11 +428,16 @@
   }
 
   // ---------- Back-to-top ----------
-  // Tap/click any content photo to open it full-screen. Scoped to `.sg-main img` rather than
-  // just `figure img` so it also catches any stray content image that isn't figure-wrapped —
-  // deliberately NOT scoped to the header/sidebar/icon-sprite, none of which live inside
-  // .sg-main. One overlay element, reused for every image (built once, not per-photo), matching
-  // the existing info-popover/mobile-drawer pattern of a single shared DOM node toggled open.
+  // Tap/click any content photo to open it full-screen — one photo, or (inside a .sg-carousel)
+  // swipe through the whole set. Scoped to `.sg-main img` rather than just `figure img` so it
+  // also catches any stray content image that isn't figure-wrapped — deliberately NOT scoped to
+  // the header/sidebar/icon-sprite, none of which live inside .sg-main. One overlay element,
+  // reused for every image/group (built once, not per-photo), matching the existing
+  // info-popover/mobile-drawer pattern of a single shared DOM node toggled open.
+  //
+  // The lightbox is itself a scroll-snap track (same swipe mechanism as the inline
+  // .sg-carousel, just full-screen) — a single-photo POI is simply a track with one slide, not
+  // a separate code path, so single- and multi-photo POIs share this one implementation.
   function initLightbox() {
     var images = document.querySelectorAll(".sg-main img");
     if (!images.length) return;
@@ -442,51 +447,146 @@
     overlay.setAttribute("role", "dialog");
     overlay.setAttribute("aria-modal", "true");
     overlay.setAttribute("aria-hidden", "true");
-    // Plain "×" glyph rather than the #icon-x sprite symbol — this script is shared across every
-    // guide and not every guide's inline sprite defines icon-x (only the newer mobile-drawer
-    // guides do), so relying on it here would render a blank button on the older ones.
+    // Plain "×"/"‹"/"›" glyphs rather than sprite symbols — this script is shared across every
+    // guide and not every guide's inline sprite defines the icons a lightbox would want (only
+    // the newer mobile-drawer guides carry icon-x, and none carry chevrons), so relying on the
+    // sprite here would render blank buttons on older guides.
     overlay.innerHTML =
       '<button type="button" class="sg-lightbox-close" aria-label="Close">×</button>' +
-      '<img class="sg-lightbox-img" alt="">' +
-      '<div class="sg-lightbox-caption"></div>';
+      '<button type="button" class="sg-lightbox-arrow sg-lightbox-prev" aria-label="Previous photo">‹</button>' +
+      '<button type="button" class="sg-lightbox-arrow sg-lightbox-next" aria-label="Next photo">›</button>' +
+      '<div class="sg-lightbox-track"></div>' +
+      '<div class="sg-lightbox-dots"></div>';
     document.body.appendChild(overlay);
 
-    var imgEl = overlay.querySelector(".sg-lightbox-img");
-    var capEl = overlay.querySelector(".sg-lightbox-caption");
+    var trackEl = overlay.querySelector(".sg-lightbox-track");
+    var dotsEl = overlay.querySelector(".sg-lightbox-dots");
     var closeBtn = overlay.querySelector(".sg-lightbox-close");
+    var prevBtn = overlay.querySelector(".sg-lightbox-prev");
+    var nextBtn = overlay.querySelector(".sg-lightbox-next");
     var lastFocused = null;
+    var slideEls = [];
+    var activeIndex = 0;
+    var observer = null;
 
-    function open(src, alt, captionText) {
+    function captionTextFor(img) {
+      var fig = img.closest("figure");
+      var caption = fig ? fig.querySelector("figcaption") : null;
+      if (!caption) return "";
+      // Drop the "- Source: ..." attribution link from the lightbox caption text — it stays as
+      // a real link right below the thumbnail in the article itself; repeating it as plain
+      // unclickable text over a photo just adds noise.
+      var clone = caption.cloneNode(true);
+      var sourceEl = clone.querySelector(".sg-figure-source");
+      if (sourceEl) sourceEl.remove();
+      return clone.textContent.trim();
+    }
+
+    // A clicked image's "group" is every sibling slide in the same .sg-carousel-track (a
+    // multi-photo POI), or just that one image on its own (a plain standalone <figure> — the
+    // overwhelming majority of POIs, one photo each). Same open()/track code renders both; a
+    // group of one just has its dots/arrows hidden (style.css's [data-count="1"] rule).
+    function groupFor(img) {
+      var track = img.closest(".sg-carousel-track");
+      if (track) return Array.prototype.slice.call(track.querySelectorAll("img"));
+      return [img];
+    }
+
+    function setActive(index) {
+      activeIndex = index;
+      var dots = dotsEl.querySelectorAll(".sg-lightbox-dot");
+      dots.forEach(function (dot, i) { dot.classList.toggle("active", i === index); });
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === slideEls.length - 1;
+    }
+
+    function goTo(index, smooth) {
+      index = Math.max(0, Math.min(slideEls.length - 1, index));
+      var slide = slideEls[index];
+      if (!slide) return;
+      slide.scrollIntoView({ behavior: smooth ? "smooth" : "auto", inline: "center", block: "nearest" });
+    }
+
+    function open(imgs, startIndex) {
       lastFocused = document.activeElement;
-      imgEl.src = src;
-      imgEl.alt = alt || "";
-      capEl.textContent = captionText || "";
-      capEl.style.display = captionText ? "" : "none";
+      trackEl.innerHTML = "";
+      dotsEl.innerHTML = "";
+      slideEls = [];
+
+      imgs.forEach(function (srcImg, i) {
+        var slide = document.createElement("figure");
+        slide.className = "sg-lightbox-slide";
+        var im = document.createElement("img");
+        im.className = "sg-lightbox-img";
+        im.src = srcImg.currentSrc || srcImg.src;
+        im.alt = srcImg.alt || "";
+        slide.appendChild(im);
+
+        var capText = captionTextFor(srcImg);
+        if (capText) {
+          var cap = document.createElement("figcaption");
+          cap.className = "sg-lightbox-caption";
+          cap.textContent = capText;
+          cap.addEventListener("click", function (e) { e.stopPropagation(); });
+          slide.appendChild(cap);
+        }
+        trackEl.appendChild(slide);
+        slideEls.push(slide);
+
+        if (imgs.length > 1) {
+          var dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "sg-lightbox-dot";
+          dot.setAttribute("aria-label", "Photo " + (i + 1) + " of " + imgs.length);
+          dot.addEventListener("click", function (e) {
+            e.stopPropagation();
+            goTo(i, true);
+          });
+          dotsEl.appendChild(dot);
+        }
+      });
+
+      overlay.setAttribute("data-count", String(imgs.length));
       overlay.classList.add("sg-lightbox-open");
       overlay.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+      goTo(startIndex, false);
+      setActive(startIndex);
       closeBtn.focus();
+
+      if (observer) observer.disconnect();
+      observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setActive(slideEls.indexOf(entry.target));
+          });
+        },
+        { root: trackEl, threshold: 0.6 }
+      );
+      slideEls.forEach(function (s) { observer.observe(s); });
     }
+
     function close() {
       overlay.classList.remove("sg-lightbox-open");
       overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
-      imgEl.src = "";
+      if (observer) { observer.disconnect(); observer = null; }
+      trackEl.innerHTML = "";
       if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
     }
 
     // Click anywhere in the overlay (backdrop OR the enlarged image itself) closes it — the
-    // simplest no-dead-zone lightbox pattern, and it's why the overlay's own cursor is
-    // zoom-out. The caption text stays selectable/clickable without closing (e.g. its Wikimedia
-    // Commons source link), so that one element opts out via stopPropagation on its own clicks.
+    // simplest no-dead-zone lightbox pattern. Captions, dots, arrows, and the close button all
+    // opt out via stopPropagation on their own click handlers.
     overlay.addEventListener("click", close);
-    capEl.addEventListener("click", function (e) { e.stopPropagation(); });
-    closeBtn.addEventListener("click", function (e) {
-      e.stopPropagation();
-      close();
-    });
+    closeBtn.addEventListener("click", function (e) { e.stopPropagation(); close(); });
+    prevBtn.addEventListener("click", function (e) { e.stopPropagation(); goTo(activeIndex - 1, true); });
+    nextBtn.addEventListener("click", function (e) { e.stopPropagation(); goTo(activeIndex + 1, true); });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && overlay.classList.contains("sg-lightbox-open")) close();
+      if (!overlay.classList.contains("sg-lightbox-open")) return;
+      if (e.key === "Escape") { close(); return; }
+      if (e.key === "ArrowLeft") { goTo(activeIndex - 1, true); return; }
+      if (e.key === "ArrowRight") { goTo(activeIndex + 1, true); return; }
     });
 
     images.forEach(function (img) {
@@ -494,19 +594,8 @@
       img.setAttribute("role", "button");
       img.setAttribute("aria-label", "View full-screen: " + (img.alt || "image"));
       img.addEventListener("click", function () {
-        var fig = img.closest("figure");
-        var caption = fig ? fig.querySelector("figcaption") : null;
-        var captionText = "";
-        if (caption) {
-          // Drop the "- Source: ..." attribution link from the spoken/lightbox caption text —
-          // it stays as a real link right below the thumbnail in the article itself; repeating
-          // it as plain unclickable text over a photo just adds noise.
-          var clone = caption.cloneNode(true);
-          var sourceEl = clone.querySelector(".sg-figure-source");
-          if (sourceEl) sourceEl.remove();
-          captionText = clone.textContent.trim();
-        }
-        open(img.currentSrc || img.src, img.alt, captionText);
+        var group = groupFor(img);
+        open(group, group.indexOf(img));
       });
       img.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.key === " ") {
@@ -514,6 +603,72 @@
           img.click();
         }
       });
+    });
+  }
+
+  // ---------- Inline swipeable photo carousel (.sg-carousel, 2+ photos per POI) ----------
+  // The actual swipe/drag comes free from CSS scroll-snap on .sg-carousel-track (real touch
+  // momentum, no JS gesture math). This just wires up the dot indicators (via
+  // IntersectionObserver, same technique as the lightbox above) and the prev/next buttons.
+  function initCarousels() {
+    var carousels = document.querySelectorAll(".sg-carousel");
+    carousels.forEach(function (carousel) {
+      var track = carousel.querySelector(".sg-carousel-track");
+      var slides = Array.prototype.slice.call(track.querySelectorAll("figure"));
+      if (slides.length < 2) return; // a lone photo needs no dots/arrows/observer at all
+
+      var dotsEl = document.createElement("div");
+      dotsEl.className = "sg-carousel-dots";
+      var prevBtn = document.createElement("button");
+      prevBtn.type = "button";
+      prevBtn.className = "sg-carousel-arrow sg-carousel-prev";
+      prevBtn.setAttribute("aria-label", "Previous photo");
+      prevBtn.textContent = "‹";
+      var nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "sg-carousel-arrow sg-carousel-next";
+      nextBtn.setAttribute("aria-label", "Next photo");
+      nextBtn.textContent = "›";
+      carousel.appendChild(prevBtn);
+      carousel.appendChild(nextBtn);
+      carousel.appendChild(dotsEl);
+
+      var activeIndex = 0;
+      slides.forEach(function (_, i) {
+        var dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "sg-carousel-dot";
+        dot.setAttribute("aria-label", "Photo " + (i + 1) + " of " + slides.length);
+        dot.addEventListener("click", function () { goTo(i, true); });
+        dotsEl.appendChild(dot);
+      });
+
+      function setActive(index) {
+        activeIndex = index;
+        dotsEl.querySelectorAll(".sg-carousel-dot").forEach(function (dot, i) {
+          dot.classList.toggle("active", i === index);
+        });
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === slides.length - 1;
+      }
+      function goTo(index, smooth) {
+        index = Math.max(0, Math.min(slides.length - 1, index));
+        slides[index].scrollIntoView({ behavior: smooth ? "smooth" : "auto", inline: "center", block: "nearest" });
+      }
+
+      prevBtn.addEventListener("click", function () { goTo(activeIndex - 1, true); });
+      nextBtn.addEventListener("click", function () { goTo(activeIndex + 1, true); });
+
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) setActive(slides.indexOf(entry.target));
+          });
+        },
+        { root: track, threshold: 0.6 }
+      );
+      slides.forEach(function (s) { observer.observe(s); });
+      setActive(0);
     });
   }
 
@@ -538,6 +693,7 @@
     initMobileToc();
     initControlsRelocation();
     initBackToTop();
+    initCarousels();
     initLightbox();
   });
 })();
