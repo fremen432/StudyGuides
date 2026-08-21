@@ -1,10 +1,8 @@
 /*
-  StudyGuides shared script — this file IS the source (no separate master copy elsewhere).
-  Every guide in this repo links here via assets/script.js; edit this file directly and every
-  existing guide gets the change at once. Vanilla JS, no dependencies, no network calls — every
-  guide must open standalone via file://. (Originally scaffolded from the study-guide-maker
-  skill's own template; that skill's copy is no longer kept in sync as of the 2026-08-17 move to
-  authoring guides directly in this repo — see README.md.)
+  study-guide-maker shared script
+  Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\script.js
+  Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\script.js
+  Vanilla JS, no dependencies, no network calls — every guide must open standalone via file://.
 */
 (function () {
   "use strict";

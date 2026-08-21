@@ -5,13 +5,22 @@ hosted on GitHub Pages, authored directly in this repo.
 
 **Live site:** https://fremen432.github.io/StudyGuides/
 
-## This repo is the source, not a mirror
+## Guide content is authored here — the shared template is not
 
 Changed 2026-08-17: guides used to be authored privately in `C:\vc\workshop\study-guides\` and
-synced here on request. That's gone — this repo is now where guides get written in the first
-place, and the old `workshop\study-guides\` folder has been deleted entirely (its full history
-is still in `vc-workshop`'s git log if ever needed). A guide goes live the moment it's committed
-and pushed here — see "Why public" below for what that trade-off means.
+synced here on request. That's gone — this repo is now where guide *content* gets written in the
+first place, and the old `workshop\study-guides\` folder has been deleted entirely (its full
+history is still in `vc-workshop`'s git log if ever needed). A guide goes live the moment it's
+committed and pushed here — see "Why public" below for what that trade-off means.
+
+**One deliberate exception: `assets/style.css`, `assets/script.js`, and `template.html`.** Those
+three have a master copy in the `study-guide-maker` Claude Code skill
+(`C:\vc\config\claude\skills\study-guide-maker\assets\`), which is `vc-config`, a separate repo —
+`style.css`/`script.js` here are a hand-maintained deployed copy of that master, kept in sync via
+a `cp` step documented in the skill itself (`SKILL.md`'s "Where things live" section is the
+authoritative version of this note; if the two ever disagree, that one wins). Every guide's own
+`*.html` file, and every image under `images/`, has no such master — this repo is the only copy
+of those, full stop.
 
 Adding a brand-new guide needs one manual step beyond writing the file: add a card for it to
 `index.html`'s `.card-grid` — a guide file existing in the repo doesn't put it on the homepage on
@@ -22,9 +31,9 @@ its own.
 | Path | Purpose |
 |---|---|
 | `index.html` | Landing page — card grid linking to every guide |
-| `*.html` | The guides themselves, one file each |
-| `assets/` | Shared `style.css` / `script.js` every guide links to |
-| `images/` | Supporting photos/diagrams, one subfolder per guide |
+| `*.html` | The guides themselves, one file each — sole copy, authored here |
+| `assets/` | Shared `style.css` / `script.js` every guide links to — deployed copy, see note above; edit the master in the `study-guide-maker` skill (`vc-config`) first, then `cp` here |
+| `images/` | Supporting photos/diagrams, one subfolder per guide — sole copy, authored here |
 
 ## Why public
 

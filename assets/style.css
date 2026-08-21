@@ -1,9 +1,8 @@
 /*
-  StudyGuides shared stylesheet — this file IS the source (no separate master copy elsewhere).
-  Every guide in this repo links here via assets/style.css; edit this file directly and every
-  existing guide re-themes/re-behaves at once. (Originally scaffolded from the study-guide-maker
-  skill's own template; that skill's copy is no longer kept in sync as of the 2026-08-17 move to
-  authoring guides directly in this repo — see README.md.)
+  study-guide-maker shared stylesheet
+  Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\style.css
+  Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\style.css
+  Edit the master, then re-copy over the deployed copy so every existing guide re-themes at once.
 */
 
 :root {
