@@ -6,70 +6,67 @@
   <title>China Trip 2026 — Itinerary Companion</title>
   <link rel="stylesheet" href="assets/style.css">
   <style>
-    /* China-inspired palette for this guide only — shared template variables overridden here,
-       not in assets/style.css, so every other guide in the repo keeps the default green theme.
+    /* China-flag palette for this guide only — shared template variables overridden here, not
+       in assets/style.css, so every other guide in the repo keeps the default green theme.
        Same scoping technique as the Italy guide's tricolore override.
-       Deliberately NOT the literal PRC flag (red field + gold stars) — instead drawn from three
-       distinct traditional-China material palettes so each callout family reads as its own
-       thing: a burnished imperial gold/ochre as the accent (links, badges, buttons — the color
-       reserved for the emperor alone under the Qing), jade green for tip callouts (jade carving
-       is one of the oldest continuous Chinese art forms), porcelain blue-and-white for formula
-       callouts, and cinnabar red held back for warnings only, the same "red as alarm, not
-       wallpaper" restraint the Italy guide used for its brick red. */
+       Literal PRC flag colors this time: red field as the dominant accent (links, buttons,
+       badges, and the formula/warning families in darker and bolder shades of the same red),
+       gold reserved for tip callouts — the flag's own balance of mostly red with gold used
+       sparingly, not spread evenly. */
     :root {
-      --bg: #f9f6ef;
+      --bg: #fff8ec;
       --bg-elevated: #ffffff;
-      --text: #241f18;
-      --text-dim: #6e6355;
-      --border: #e6ddc9;
-      --accent: #96650f;
-      --accent-soft: #f2e6c6;
+      --text: #2a1210;
+      --text-dim: #7a5a52;
+      --border: #f0ddb8;
+      --accent: #de2910;
+      --accent-soft: #fbe0da;
       --accent-contrast: #ffffff;
-      --code-bg: #f1ead9;
-      --tip-bg: #e2f0ea;
-      --tip-border: #1f7a63;
-      --formula-bg: #eef1f3;
-      --formula-border: #46637a;
-      --warning-bg: #fbe8e3;
-      --warning-border: #a83e2c;
+      --code-bg: #f7ecd6;
+      --tip-bg: #fdecc7;
+      --tip-border: #c89b0c;
+      --formula-bg: #fbe0da;
+      --formula-border: #b5231a;
+      --warning-bg: #fbd6d0;
+      --warning-border: #a8180c;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
     :root[data-theme="dark"] {
-      --bg: #1c1712;
-      --bg-elevated: #26201a;
-      --text: #f2ece0;
-      --text-dim: #b5a993;
-      --border: #3d3527;
-      --accent: #d9a54a;
-      --accent-soft: #3a2d16;
-      --accent-contrast: #1c1712;
-      --code-bg: #2c2419;
-      --tip-bg: #16332a;
-      --tip-border: #3fae8c;
-      --formula-bg: #202b33;
-      --formula-border: #7ea3bd;
-      --warning-bg: #3a1f19;
-      --warning-border: #e2795f;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      --bg: #1a0f0d;
+      --bg-elevated: #24140f;
+      --text: #f7ece0;
+      --text-dim: #c9a99a;
+      --border: #4a2620;
+      --accent: #ff5b3d;
+      --accent-soft: #3d1a14;
+      --accent-contrast: #1a0f0d;
+      --code-bg: #2c1a13;
+      --tip-bg: #3a2c0d;
+      --tip-border: #e8b923;
+      --formula-bg: #3d1a14;
+      --formula-border: #e8695a;
+      --warning-bg: #3d1310;
+      --warning-border: #ff7a63;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
     }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
-        --bg: #1c1712;
-        --bg-elevated: #26201a;
-        --text: #f2ece0;
-        --text-dim: #b5a993;
-        --border: #3d3527;
-        --accent: #d9a54a;
-        --accent-soft: #3a2d16;
-        --accent-contrast: #1c1712;
-        --code-bg: #2c2419;
-        --tip-bg: #16332a;
-        --tip-border: #3fae8c;
-        --formula-bg: #202b33;
-        --formula-border: #7ea3bd;
-        --warning-bg: #3a1f19;
-        --warning-border: #e2795f;
-        --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+        --bg: #1a0f0d;
+        --bg-elevated: #24140f;
+        --text: #f7ece0;
+        --text-dim: #c9a99a;
+        --border: #4a2620;
+        --accent: #ff5b3d;
+        --accent-soft: #3d1a14;
+        --accent-contrast: #1a0f0d;
+        --code-bg: #2c1a13;
+        --tip-bg: #3a2c0d;
+        --tip-border: #e8b923;
+        --formula-bg: #3d1a14;
+        --formula-border: #e8695a;
+        --warning-bg: #3d1310;
+        --warning-border: #ff7a63;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
       }
     }
   </style>
