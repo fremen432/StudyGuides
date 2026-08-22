@@ -95,6 +95,28 @@
     }
     .sg-tripmap-legend { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.85rem; color: var(--text-dim); }
     .sg-tripmap-legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .sg-tripmap-toolbar-actions { display: flex; align-items: center; gap: 0.4rem; flex: none; }
+    /* Legend chips double as filter toggles — real <button>s (not <span>s) so they're
+       keyboard/screen-reader operable, reset to plain text-button chrome, with a dimmed
+       "--off" state that mirrors visually what's currently hidden on the map itself. */
+    .sg-tripmap-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: none;
+      margin: -0.2rem -0.35rem;
+      padding: 0.2rem 0.35rem;
+      border-radius: 6px;
+      font: inherit;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: opacity 0.15s ease, background 0.15s ease;
+    }
+    .sg-tripmap-filter:hover { background: var(--accent-soft); }
+    .sg-tripmap-filter[aria-pressed="false"] { opacity: 0.4; }
+    .sg-tripmap-filter[aria-pressed="false"] .sg-tripmap-swatch { filter: grayscale(1); }
     .sg-tripmap-swatch {
       width: 20px;
       height: 20px;
@@ -117,20 +139,36 @@
       box-shadow: var(--shadow);
       background: var(--code-bg);
     }
-    .sg-tripmap:fullscreen,
-    .sg-tripmap:-webkit-full-screen {
+    /* Leaflet's own panes/controls run z-index up to 1000 (leaflet.css), and .leaflet-container
+       is only position:relative with no z-index of its own — so without this, those panes
+       aren't trapped in a local stacking context and escape straight into the page's root
+       stacking order, rendering above the mobile TOC drawer (z-index 60) whenever it's open.
+       Giving the container an explicit z-index (any value, including 0) makes it establish its
+       own stacking context, containing everything Leaflet draws inside it. */
+    #sg-tripmap-canvas.leaflet-container { z-index: 0; }
+    /* "Fullscreen" is a CSS-only fixed-position overlay, not the real Fullscreen API — iOS
+       Safari doesn't implement Element.requestFullscreen at all (only <video> can go
+       fullscreen there), so a native-API button silently did nothing on iPhone. This class
+       toggle covers the viewport identically on every platform instead. */
+    .sg-tripmap.sg-tripmap--fs {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 0.75rem 1rem;
+      height: 100dvh;
+      margin: 0;
+      padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+        max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
       background: var(--bg-elevated);
     }
-    .sg-tripmap:fullscreen .sg-tripmap-canvas,
-    .sg-tripmap:-webkit-full-screen .sg-tripmap-canvas {
+    .sg-tripmap.sg-tripmap--fs .sg-tripmap-canvas {
       flex: 1 1 auto;
       height: auto;
       min-height: 0;
     }
+    body.sg-tripmap-fs-lock { overflow: hidden; }
     .sg-tripmap-hint { color: var(--text-dim); font-size: 0.9rem; }
 
     .sg-tripmap-pin {
@@ -245,6 +283,11 @@
     <symbol id="icon-arrow-narrow-up" viewBox="0 0 24 24">
       <path d="M12 20V4" /><path d="m5 11 7-7 7 7" />
     </symbol>
+    <symbol id="icon-focus" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" />
+      <path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+    </symbol>
   </svg>
 
   <div class="sg-layout">
@@ -319,14 +362,19 @@
           city, in the order you'll travel it: Shanghai &rarr; Changzhou &rarr; Xi'an &rarr; Beijing.</p>
           <div class="sg-tripmap" id="sg-tripmap">
             <div class="sg-tripmap-toolbar">
-              <div class="sg-tripmap-legend">
-                <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span>Where you're staying</span>
-                <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span>Restaurants &amp; food</span>
-                <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span>Sights &amp; points of interest</span>
+              <div class="sg-tripmap-legend" role="group" aria-label="Show or hide pin types">
+                <button type="button" class="sg-tripmap-filter" data-kind="stay" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span>Where you're staying</button>
+                <button type="button" class="sg-tripmap-filter" data-kind="restaurant" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span>Restaurants &amp; food</button>
+                <button type="button" class="sg-tripmap-filter" data-kind="poi" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span>Sights &amp; points of interest</button>
               </div>
-              <button class="sg-btn sg-btn-icon sg-tripmap-fullscreen-btn" id="sg-tripmap-fullscreen" type="button" title="View map fullscreen" aria-label="View map fullscreen">
-                <svg class="sg-icon" aria-hidden="true"><use href="#icon-maximize"></use></svg>
-              </button>
+              <div class="sg-tripmap-toolbar-actions">
+                <button class="sg-btn sg-btn-icon" id="sg-tripmap-fit" type="button" title="Zoom to fit all pins" aria-label="Zoom to fit all pins">
+                  <svg class="sg-icon" aria-hidden="true"><use href="#icon-focus"></use></svg>
+                </button>
+                <button class="sg-btn sg-btn-icon sg-tripmap-fullscreen-btn" id="sg-tripmap-fullscreen" type="button" title="View map fullscreen" aria-label="View map fullscreen">
+                  <svg class="sg-icon" aria-hidden="true"><use href="#icon-maximize"></use></svg>
+                </button>
+              </div>
             </div>
             <div class="sg-tripmap-canvas" id="sg-tripmap-canvas" role="img" aria-label="Map of every location mentioned in this guide, from Shanghai to Beijing"></div>
           </div>
@@ -1103,7 +1151,12 @@
       var KIND_LABEL = { stay: "🏠 Where you're staying", restaurant: "🍴 Restaurant / food stop", poi: "👁️ Sight / point of interest" };
 
       var allLatLngs = [];
-      var markerLayer = L.layerGroup();
+      // One layer group per pin kind (not one shared group) so the legend chips can show/hide
+      // an entire category by adding/removing its group — cheaper and simpler than walking
+      // every marker on every toggle. Every group starts added to the map (all pins visible on
+      // load); nothing here is persisted across a refresh, so a reload always comes back to
+      // this same all-visible default regardless of what was toggled off before.
+      var LAYERS = { stay: L.layerGroup(), restaurant: L.layerGroup(), poi: L.layerGroup() };
 
       points.forEach(function (p) {
         var ll = [p.lat, p.lon];
@@ -1121,9 +1174,31 @@
           stopNote +
           '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
         marker.bindPopup(popupHtml);
-        markerLayer.addLayer(marker);
+        (LAYERS[p.kind] || LAYERS.poi).addLayer(marker);
       });
-      markerLayer.addTo(map);
+      Object.keys(LAYERS).forEach(function (kind) { LAYERS[kind].addTo(map); });
+
+      // Legend chips double as filter toggles.
+      document.querySelectorAll(".sg-tripmap-filter").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var kind = btn.dataset.kind;
+          var layer = LAYERS[kind];
+          if (!layer) return;
+          var showing = btn.getAttribute("aria-pressed") === "true";
+          var next = !showing;
+          btn.setAttribute("aria-pressed", String(next));
+          if (next) map.addLayer(layer); else map.removeLayer(layer);
+        });
+      });
+
+      // Zoom-to-fit button — always fits every pin regardless of which kinds are currently
+      // toggled off, so it doubles as a "reset the view" control.
+      var fitBtn = document.getElementById("sg-tripmap-fit");
+      if (fitBtn) {
+        fitBtn.addEventListener("click", function () {
+          if (allLatLngs.length) map.fitBounds(L.latLngBounds(allLatLngs), { padding: [28, 28] });
+        });
+      }
 
       // Dashed route line city-to-city, in travel order, with a small rotated chevron at each
       // segment's midpoint pointing toward the next stop. Uses routeWaypoints (city-level
@@ -1172,33 +1247,28 @@
       map.on("blur", function () { map.scrollWheelZoom.disable(); });
 
       // ---------- Fullscreen toggle ----------
+      // CSS-class overlay rather than the real Fullscreen API — see the .sg-tripmap--fs CSS
+      // comment for why (iOS Safari has no Element.requestFullscreen).
       var wrap = document.getElementById("sg-tripmap");
       var fsBtn = document.getElementById("sg-tripmap-fullscreen");
-      function requestFs(el) {
-        var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
-        if (fn) fn.call(el);
+      var fsActive = false;
+
+      function setFullscreen(active) {
+        fsActive = active;
+        wrap.classList.toggle("sg-tripmap--fs", active);
+        document.body.classList.toggle("sg-tripmap-fs-lock", active);
+        if (fsBtn) {
+          fsBtn.querySelector("use").setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
+          fsBtn.title = active ? "Exit fullscreen" : "View map fullscreen";
+        }
+        setTimeout(function () { map.invalidateSize(); }, 80);
       }
-      function exitFs() {
-        var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
-        if (fn) fn.call(document);
-      }
-      function fsElement() {
-        return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-      }
+
       if (fsBtn) {
-        fsBtn.addEventListener("click", function () {
-          if (fsElement()) exitFs(); else requestFs(wrap);
-        });
+        fsBtn.addEventListener("click", function () { setFullscreen(!fsActive); });
       }
-      ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach(function (evt) {
-        document.addEventListener(evt, function () {
-          var active = fsElement() === wrap;
-          if (fsBtn) {
-            fsBtn.querySelector("use").setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
-            fsBtn.title = active ? "Exit fullscreen" : "View map fullscreen";
-          }
-          setTimeout(function () { map.invalidateSize(); }, 80);
-        });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && fsActive) setFullscreen(false);
       });
     })();
   </script>
