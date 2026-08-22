@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Italy Trip 2026 — Travel Companion</title>
   <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     /* Italy-flag-inspired palette for this guide only — shared template variables overridden
        here, not in assets/style.css, so every other guide in the repo keeps the default green
@@ -30,6 +32,11 @@
       --warning-bg: #fbe7e5;
       --warning-border: #b3261e;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      /* Trip Map marker colors — stays reuse --accent so the route line and the "home base"
+         pins read as one family; food and sights get their own hues so the three icon kinds
+         are tellable apart at a glance even before you read the legend. */
+      --map-food: #b9791f;
+      --map-poi: #3c6ea5;
     }
     :root[data-theme="dark"] {
       --bg: #141c17;
@@ -48,6 +55,8 @@
       --warning-bg: #3a1e1b;
       --warning-border: #e0685c;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      --map-food: #d9a54c;
+      --map-poi: #7ea3d9;
     }
     @media (prefers-color-scheme: dark) {
       :root:not([data-theme="light"]) {
@@ -67,9 +76,102 @@
         --warning-bg: #3a1e1b;
         --warning-border: #e0685c;
         --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+        --map-food: #d9a54c;
+        --map-poi: #7ea3d9;
       }
     }
+
+    /* ---------- Trip Map (GIS-style overview map, "Trip Map" section) ---------- */
+    /* Scoped to this guide's own <style> block rather than assets/style.css because it's the
+       first guide to carry an interactive map — once a second guide wants one, promote this
+       whole block (unchanged) up into the shared stylesheet. */
+    .sg-tripmap { margin-top: 1rem; }
+    .sg-tripmap-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+    .sg-tripmap-legend { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.85rem; color: var(--text-dim); }
+    .sg-tripmap-legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .sg-tripmap-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex: none;
+    }
+    .sg-tripmap-swatch .sg-icon { width: 0.7em; height: 0.7em; stroke-width: 2.75; }
+    .sg-tripmap-swatch--stay { background: var(--accent); }
+    .sg-tripmap-swatch--restaurant { background: var(--map-food); }
+    .sg-tripmap-swatch--poi { background: var(--map-poi); }
+    .sg-tripmap-canvas {
+      width: 100%;
+      height: clamp(360px, 55vh, 560px);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: var(--code-bg);
+    }
+    .sg-tripmap:fullscreen,
+    .sg-tripmap:-webkit-full-screen {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 0.75rem 1rem;
+      background: var(--bg-elevated);
+    }
+    .sg-tripmap:fullscreen .sg-tripmap-canvas,
+    .sg-tripmap:-webkit-full-screen .sg-tripmap-canvas {
+      flex: 1 1 auto;
+      height: auto;
+      min-height: 0;
+    }
+    .sg-tripmap-hint { color: var(--text-dim); font-size: 0.9rem; }
+
+    /* Marker pins — plain circular badges (anchor = exact center) rather than teardrop pins, so
+       there's no anchor-offset math to get wrong. Stays are drawn larger and given a heavier
+       white ring so the 7 "spine" points of the route stand out from the ~78 stops around them. */
+    .sg-tripmap-pin {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+    .sg-tripmap-pin .sg-icon { stroke-width: 2.5; }
+    .sg-tripmap-pin--stay { background: var(--accent); width: 34px; height: 34px; border-width: 3px; }
+    .sg-tripmap-pin--stay .sg-icon { width: 18px; height: 18px; }
+    .sg-tripmap-pin--restaurant { background: var(--map-food); width: 24px; height: 24px; }
+    .sg-tripmap-pin--restaurant .sg-icon { width: 13px; height: 13px; }
+    .sg-tripmap-pin--poi { background: var(--map-poi); width: 22px; height: 22px; }
+    .sg-tripmap-pin--poi .sg-icon { width: 12px; height: 12px; }
+    .sg-tripmap-arrow { color: var(--accent); filter: drop-shadow(0 0 2px var(--bg-elevated)); }
+    .sg-tripmap-arrow svg { width: 18px; height: 18px; }
+
+    /* Leaflet's own popup chrome ships light-mode-only inline colors — retheme it to match
+       the guide instead of leaving a white card floating in dark mode. */
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow); }
+    .leaflet-popup-content { margin: 0.75rem 0.9rem; min-width: 180px; }
+    .sg-tripmap-popup-kind { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); }
+    .sg-tripmap-popup-name { font-weight: 700; margin: 0.15rem 0 0.3rem; }
+    .sg-tripmap-popup-city { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+    .sg-tripmap-popup-link { font-size: 0.85rem; }
+    .leaflet-container { background: var(--code-bg); font-family: inherit; }
+    .leaflet-control-attribution { background: var(--bg-elevated); color: var(--text-dim); }
+    .leaflet-control-attribution a { color: var(--text-dim); }
+    .leaflet-control-zoom a { background: var(--bg-elevated); color: var(--text); border-color: var(--border) !important; }
+    .leaflet-control-zoom a:hover { background: var(--accent-soft); }
+    .sg-tripmap-fullscreen-btn.sg-btn { background: var(--bg-elevated); }
   </style>
+
   <script>
     (function () {
       try {
@@ -126,6 +228,29 @@
     </symbol>
     <symbol id="icon-x" viewBox="0 0 24 24">
       <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+    <symbol id="icon-home" viewBox="0 0 24 24">
+      <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+      <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    </symbol>
+    <symbol id="icon-utensils" viewBox="0 0 24 24">
+      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /><path d="M7 2v20" />
+      <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+    </symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24">
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+      <circle cx="12" cy="12" r="3" />
+    </symbol>
+    <symbol id="icon-maximize" viewBox="0 0 24 24">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3" /><path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+      <path d="M3 16v3a2 2 0 0 0 2 2h3" /><path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+    </symbol>
+    <symbol id="icon-minimize" viewBox="0 0 24 24">
+      <path d="M8 3v3a2 2 0 0 1-2 2H3" /><path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+      <path d="M3 16h3a2 2 0 0 1 2 2v3" /><path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+    </symbol>
+    <symbol id="icon-arrow-narrow-up" viewBox="0 0 24 24">
+      <path d="M12 20V4" /><path d="m5 11 7-7 7 7" />
     </symbol>
   </svg>
 
@@ -188,6 +313,8 @@
 <section>
 <h2>Contents</h2>
 <ul>
+<li><a href="#trip-map">Trip Map 🗺️</a>
+</li>
 <li><a href="#welcome-to-the-trip">Welcome to the Trip 🇮🇹</a>
 </li>
 <li><a href="#trip-at-a-glance">Trip at a Glance 🗓️</a>
@@ -245,6 +372,33 @@
 </section>
 
 <section>
+<h2>Trip Map 🗺️</h2>
+<p>Every stop in this guide, plotted at once — zoomed way out from the day-by-day detail below.
+<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span></span>House pins are
+where you're sleeping each night; <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span></span>fork-and-knife pins are restaurants and food stops;
+<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span></span>eye pins are everything else worth seeing. The dashed green line traces the route between home
+bases, in the order you'll actually travel it.</p>
+<div class="sg-tripmap" id="sg-tripmap">
+  <div class="sg-tripmap-toolbar">
+    <div class="sg-tripmap-legend">
+      <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span>Where you're staying</span>
+      <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span>Restaurants &amp; food</span>
+      <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span>Sights &amp; points of interest</span>
+    </div>
+    <button class="sg-btn sg-btn-icon sg-tripmap-fullscreen-btn" id="sg-tripmap-fullscreen" type="button" title="View map fullscreen" aria-label="View map fullscreen">
+      <svg class="sg-icon" aria-hidden="true"><use href="#icon-maximize"></use></svg>
+    </button>
+  </div>
+  <div class="sg-tripmap-canvas" id="sg-tripmap-canvas" role="img" aria-label="Map of every location mentioned in this guide, from Lake Como to Milan"></div>
+</div>
+<p class="sg-tripmap-hint">💡 Tap or click any pin for what it is and a link straight into Google
+Maps. Pinch or scroll to zoom, drag to pan, and use the
+<svg class="sg-icon" aria-hidden="true" style="width:0.9em;height:0.9em;vertical-align:-0.1em"><use href="#icon-maximize"></use></svg>
+button for a fullscreen view. This part of the page needs a connection to load the map tiles —
+see the offline note below.</p>
+</section>
+
+<section>
 <h2>Welcome to the Trip 🇮🇹</h2>
 <p>This is the companion volume to the Miller family's 25-day Northern Italy itinerary — Lake Como
 to the Dolomites to Venice, Florence, Tuscany, the Cinque Terre, and Milan, September 27 through
@@ -269,7 +423,7 @@ next day's links over hotel Wi-Fi the night before if data is tight.</p>
 
 <section>
 <h2>Trip at a Glance 🗓️</h2>
-<p>Twenty-five days, six home bases, one very long dinner reservation list. Here's the whole arc in
+<p>Twenty-five days, seven home bases, one very long dinner reservation list. Here's the whole arc in
 one table before the day-by-day detail below.</p>
 <table>
 <thead><tr><th>Day</th><th>Date</th><th>Base</th><th>Headline</th></tr></thead>
@@ -1511,5 +1665,191 @@ just being in a great European city for a couple of days before the flight home 
     <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
   </button>
   <script src="assets/script.js"></script>
+
+  <!-- ---------- Trip Map (GIS-style overview, "Trip Map" section) ---------- -->
+  <script type="application/json" id="sg-tripmap-data">
+[{"name":"Hotel Il Perlo Panorama","kind":"stay","city":"Lake Como & Bellagio","lat":45.967691,"lon":9.252664,"mapsQuery":"Il Perlo Panorama, Bellagio, Italy"},{"name":"Isola Comacina & La Tirlindana","kind":"poi","city":"Lake Como & Bellagio","lat":45.971657,"lon":9.179624,"mapsQuery":"La Tirlindana, Ossuccio, Italy"},{"name":"Villa Melzi Gardens","kind":"poi","city":"Lake Como & Bellagio","lat":45.980035,"lon":9.254043,"mapsQuery":"Villa Melzi Gardens, Bellagio, Italy"},{"name":"Punta Spartivento","kind":"poi","city":"Lake Como & Bellagio","lat":45.991278,"lon":9.265527,"mapsQuery":"Punta Spartivento, Bellagio, Italy"},{"name":"Bellagio's Historic Lanes","kind":"poi","city":"Lake Como & Bellagio","lat":45.986597,"lon":9.261601,"mapsQuery":"Salita Serbelloni, Bellagio, Italy"},{"name":"Varenna & Villa Monastero","kind":"poi","city":"Lake Como & Bellagio","lat":46.007662,"lon":9.288004,"mapsQuery":"Villa Monastero, Varenna, Italy"},{"name":"Villa del Balbianello","kind":"poi","city":"Lake Como & Bellagio","lat":45.965088,"lon":9.202502,"mapsQuery":"Villa del Balbianello, Lenno, Italy"},{"name":"Ristorante Altavista","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.967691,"lon":9.252664,"mapsQuery":"Ristorante Altavista Bellagio Il Perlo, Bellagio, Italy"},{"name":"Trattoria San Giacomo","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.990201,"lon":9.263329,"mapsQuery":"Trattoria San Giacomo, Bellagio, Italy"},{"name":"Ristorante Bilacus","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.986513,"lon":9.261916,"mapsQuery":"Ristorante Bilacus, Bellagio, Italy"},{"name":"Bar Rossi","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.987262,"lon":9.260765,"mapsQuery":"Bar Rossi, Bellagio, Italy"},{"name":"La Punta Restaurant","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.990883,"lon":9.26448,"mapsQuery":"La Punta Restaurant, Bellagio, Italy"},{"name":"Grand Hotel Villa Serbelloni","kind":"restaurant","city":"Lake Como & Bellagio","lat":45.988827,"lon":9.261163,"mapsQuery":"Grand Hotel Villa Serbelloni, Bellagio, Italy"},{"name":"Ristorante La Vista (Albergo Milano)","kind":"restaurant","city":"Lake Como & Bellagio","lat":46.007662,"lon":9.288004,"mapsQuery":"Ristorante La Vista Varenna Albergo Milano, Varenna, Italy"},{"name":"Castello di Vezio","kind":"poi","city":"Lake Como & Bellagio","lat":46.010821,"lon":9.286088,"mapsQuery":"Castello di Vezio, Varenna, Italy"},{"name":"En Route: Verona & Lake Carezza","kind":"poi","city":"Ortisei & the Dolomites","lat":46.409311,"lon":11.575868,"mapsQuery":"Lake Carezza, Nova Levante, Italy"},{"name":"Hotel Luna Mondschein","kind":"stay","city":"Ortisei & the Dolomites","lat":46.574634,"lon":11.664705,"mapsQuery":"Hotel Luna Mondschein, Ortisei, Italy"},{"name":"Culinarium Ortisei","kind":"poi","city":"Ortisei & the Dolomites","lat":46.575208,"lon":11.672138,"mapsQuery":"Ortisei, Italy"},{"name":"Bullaccia (Puflatsch) & Alpe di Siusi","kind":"poi","city":"Ortisei & the Dolomites","lat":46.531056,"lon":11.624709,"mapsQuery":"Alpe di Siusi, Italy"},{"name":"Seceda & the Odle Ridgeline","kind":"poi","city":"Ortisei & the Dolomites","lat":46.577043,"lon":11.673924,"mapsQuery":"Seceda, Ortisei, Italy"},{"name":"Val Gardena Folklore Festival","kind":"poi","city":"Ortisei & the Dolomites","lat":46.575208,"lon":11.672138,"mapsQuery":"Ortisei, Italy"},{"name":"San Giacomo & the Sëurasas Hike","kind":"poi","city":"Ortisei & the Dolomites","lat":46.571021,"lon":11.690405,"mapsQuery":"San Giacomo, Ortisei, Italy"},{"name":"Mauriz Keller","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.575208,"lon":11.672138,"mapsQuery":"Mauriz Keller, Ortisei, Italy"},{"name":"Tubladel","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.570633,"lon":11.678906,"mapsQuery":"Tubladel, Ortisei, Italy"},{"name":"Turonda","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.574866,"lon":11.670517,"mapsQuery":"Turonda, Ortisei, Italy"},{"name":"Ustaria da Checco","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.573783,"lon":11.675584,"mapsQuery":"Ustaria da Checco, Ortisei, Italy"},{"name":"Gourmet-Restaurant Anna Stuben","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.572208,"lon":11.673568,"mapsQuery":"Anna Stuben, Ortisei, Italy"},{"name":"Café Restaurant Val d'Anna","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.577323,"lon":11.677188,"mapsQuery":"Val d'Anna, Ortisei, Italy"},{"name":"Rifugio Firenze (Regensburger Hütte)","kind":"poi","city":"Ortisei & the Dolomites","lat":46.531056,"lon":11.624709,"mapsQuery":"Rifugio Firenze, Ortisei, Italy"},{"name":"Zicoria Brasserie","kind":"restaurant","city":"Ortisei & the Dolomites","lat":46.572178,"lon":11.6766,"mapsQuery":"Zicoria Brasserie, Ortisei, Italy"},{"name":"Hotel Palazzo Veneziano","kind":"stay","city":"Venice","lat":45.439912,"lon":12.324528,"mapsQuery":"Hotel Palazzo Veneziano, Venice, Italy"},{"name":"Dorsoduro & the Zattere","kind":"poi","city":"Venice","lat":45.430573,"lon":12.334732,"mapsQuery":"Basilica di Santa Maria della Salute, Venice, Italy"},{"name":"Gondola Ride","kind":"poi","city":"Venice","lat":45.434265,"lon":12.336942,"mapsQuery":"Bacino Orseolo Gondola Station, Venice, Italy"},{"name":"St. Mark's Basilica & Doge's Palace","kind":"poi","city":"Venice","lat":45.434548,"lon":12.339822,"mapsQuery":"St. Mark's Basilica, Venice, Italy"},{"name":"Murano & Burano","kind":"poi","city":"Venice","lat":45.485356,"lon":12.417538,"mapsQuery":"Burano, Venice, Italy"},{"name":"Osteria Bancogiro","kind":"restaurant","city":"Venice","lat":45.438847,"lon":12.335316,"mapsQuery":"Osteria Bancogiro, Venice, Italy"},{"name":"Corte Sconta","kind":"restaurant","city":"Venice","lat":45.43488,"lon":12.348054,"mapsQuery":"Corte Sconta, Calle del Pestrin 3886, Venice, Italy"},{"name":"Cantina Do Mori","kind":"restaurant","city":"Venice","lat":45.438956,"lon":12.333963,"mapsQuery":"Cantina Do Mori, Venice, Italy"},{"name":"Al Mercà","kind":"restaurant","city":"Venice","lat":45.415026,"lon":12.369793,"mapsQuery":"Al Merca, Venice, Italy"},{"name":"Cantine del Vino già Schiavi","kind":"restaurant","city":"Venice","lat":45.430573,"lon":12.334732,"mapsQuery":"Cantine del Vino gia Schiavi, Venice, Italy"},{"name":"Caffè Florian","kind":"restaurant","city":"Venice","lat":45.433601,"lon":12.338283,"mapsQuery":"Caffe Florian, Venice, Italy"},{"name":"Hotel Degli Orafi","kind":"stay","city":"Florence","lat":43.768114,"lon":11.254518,"mapsQuery":"Hotel Degli Orafi, Florence, Italy"},{"name":"Oltrarno Sunset Cruise","kind":"poi","city":"Florence","lat":43.766103,"lon":11.250474,"mapsQuery":"Oltrarno, Florence, Italy"},{"name":"Accademia Gallery & the Uffizi","kind":"poi","city":"Florence","lat":43.768313,"lon":11.255801,"mapsQuery":"Uffizi Gallery, Florence, Italy"},{"name":"Florence Duomo, Dome & Bell Tower","kind":"poi","city":"Florence","lat":43.773102,"lon":11.256574,"mapsQuery":"Florence Cathedral Duomo, Florence, Italy"},{"name":"Antico Bottaio e Osteria","kind":"restaurant","city":"Florence","lat":43.769939,"lon":11.260106,"mapsQuery":"Vivoli Gelateria, Florence, Italy"},{"name":"Osteria Vecchio Cancello","kind":"restaurant","city":"Florence","lat":43.778897,"lon":11.251683,"mapsQuery":"Osteria Vecchio Cancello, Florence, Italy"},{"name":"Trattoria Cammillo","kind":"restaurant","city":"Florence","lat":43.768108,"lon":11.250023,"mapsQuery":"Trattoria Cammillo, Florence, Italy"},{"name":"Il Santo Bevitore","kind":"poi","city":"Florence","lat":43.769037,"lon":11.24676,"mapsQuery":"Il Santo Bevitore, Florence, Italy"},{"name":"Trattoria La Casalinga","kind":"restaurant","city":"Florence","lat":43.766648,"lon":11.248466,"mapsQuery":"Trattoria La Casalinga, Florence, Italy"},{"name":"Mercato Centrale","kind":"restaurant","city":"Florence","lat":43.776585,"lon":11.253209,"mapsQuery":"Mercato Centrale Firenze, Florence, Italy"},{"name":"San Gimignano","kind":"poi","city":"Tuscany","lat":43.467376,"lon":11.043726,"mapsQuery":"Piazza della Cisterna, San Gimignano, Italy"},{"name":"Mormoraia Agriturismo","kind":"stay","city":"Tuscany","lat":43.467799,"lon":11.043211,"mapsQuery":"Mormoraia Agriturismo, San Gimignano, Italy"},{"name":"Siena","kind":"poi","city":"Tuscany","lat":43.318321,"lon":11.332021,"mapsQuery":"Piazza del Campo, Siena, Italy"},{"name":"Fattoria San Donato","kind":"poi","city":"Tuscany","lat":43.440657,"lon":11.01829,"mapsQuery":"Fattoria San Donato, Tuscany, Italy"},{"name":"Chianti E-Bike Tour","kind":"poi","city":"Tuscany","lat":43.606945,"lon":11.332008,"mapsQuery":"Chianti, Tuscany, Italy"},{"name":"Il Fienile (Mormoraia)","kind":"restaurant","city":"Tuscany","lat":43.467799,"lon":11.043211,"mapsQuery":"Mormoraia Agriturismo, San Gimignano, Italy"},{"name":"Le Vecchie Mura","kind":"restaurant","city":"Tuscany","lat":43.466895,"lon":11.0451,"mapsQuery":"Le Vecchie Mura, San Gimignano, Italy"},{"name":"DiVinorum Enoteca","kind":"restaurant","city":"Tuscany","lat":43.467376,"lon":11.043726,"mapsQuery":"DiVinorum Enoteca, San Gimignano, Italy"},{"name":"Gustavo Mescita Vini","kind":"restaurant","city":"Tuscany","lat":43.468563,"lon":11.042625,"mapsQuery":"Gustavo Mescita Vini, San Gimignano, Italy"},{"name":"Torre Grossa","kind":"poi","city":"Tuscany","lat":43.46763,"lon":11.042922,"mapsQuery":"Torre Grossa, San Gimignano, Italy"},{"name":"Truffle Hunting Experience","kind":"poi","city":"Tuscany","lat":43.467799,"lon":11.043211,"mapsQuery":"San Gimignano, Italy"},{"name":"Leaning Tower of Pisa","kind":"poi","city":"Cinque Terre & Portovenere","lat":43.723016,"lon":10.396632,"mapsQuery":"Leaning Tower of Pisa, Pisa, Italy"},{"name":"Grand Hotel Portovenere","kind":"stay","city":"Cinque Terre & Portovenere","lat":44.051966,"lon":9.835972,"mapsQuery":"Grand Hotel Portovenere, Portovenere, Italy"},{"name":"Doria Castle & the Medieval Lanes","kind":"poi","city":"Cinque Terre & Portovenere","lat":44.051137,"lon":9.832765,"mapsQuery":"Doria Castle, Portovenere, Italy"},{"name":"Church of San Pietro & Byron's Grotto","kind":"poi","city":"Cinque Terre & Portovenere","lat":44.04819,"lon":9.832471,"mapsQuery":"Chiesa di San Pietro, Portovenere, Italy"},{"name":"Manarola, Corniglia & Vernazza Hike","kind":"poi","city":"Cinque Terre & Portovenere","lat":44.106326,"lon":9.727481,"mapsQuery":"Manarola, Italy"},{"name":"Palmaria Island","kind":"poi","city":"Cinque Terre & Portovenere","lat":44.042386,"lon":9.844707,"mapsQuery":"Palmaria Island, Portovenere, Italy"},{"name":"Monterosso to Vernazza Hike","kind":"poi","city":"Cinque Terre & Portovenere","lat":44.134941,"lon":9.682776,"mapsQuery":"Vernazza, Italy"},{"name":"Palmaria Restaurant (Grand Hotel Portovenere)","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.051966,"lon":9.835972,"mapsQuery":"Grand Hotel Portovenere, Portovenere, Italy"},{"name":"Corniglia Wine & Focaccia Stop","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.119961,"lon":9.708687,"mapsQuery":"Corniglia, Italy"},{"name":"Trattoria Tre Torri","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.051956,"lon":9.834271,"mapsQuery":"Trattoria Tre Torri, Portovenere, Italy"},{"name":"Sunset Dinner Cruise","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.05066,"lon":9.834459,"mapsQuery":"Portovenere, Italy"},{"name":"Il Porticciolo (Manarola)","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.106746,"lon":9.727771,"mapsQuery":"Il Porticciolo, Manarola, Italy"},{"name":"Locanda Lorena","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.046673,"lon":9.846163,"mapsQuery":"Locanda Lorena, Palmaria Island, Italy"},{"name":"Belforte","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.05066,"lon":9.834459,"mapsQuery":"Belforte Ristorante, Portovenere, Italy"},{"name":"Ristorante Portivene","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.050028,"lon":9.834032,"mapsQuery":"Ristorante Portivene, Portovenere, Italy"},{"name":"Nessun Dorma","kind":"restaurant","city":"Cinque Terre & Portovenere","lat":44.10724,"lon":9.72922,"mapsQuery":"Nessun Dorma, Manarola, Italy"},{"name":"Park Hyatt Milan","kind":"stay","city":"Milan","lat":45.465541,"lon":9.189144,"mapsQuery":"Park Hyatt Milan, Milan, Italy"},{"name":"The Last Supper & Duomo Tour","kind":"poi","city":"Milan","lat":45.465976,"lon":9.171132,"mapsQuery":"Santa Maria delle Grazie, Milan, Italy"},{"name":"Galleria Vittorio Emanuele II","kind":"poi","city":"Milan","lat":45.46568,"lon":9.190027,"mapsQuery":"Galleria Vittorio Emanuele II, Milan, Italy"},{"name":"Camparino in Galleria","kind":"restaurant","city":"Milan","lat":45.46492,"lon":9.189878,"mapsQuery":"Camparino in Galleria, Milan, Italy"},{"name":"Pasticceria Cova","kind":"restaurant","city":"Milan","lat":45.468111,"lon":9.19549,"mapsQuery":"Pasticceria Cova, Milan, Italy"},{"name":"Navigli District","kind":"restaurant","city":"Milan","lat":45.450176,"lon":9.170897,"mapsQuery":"Navigli, Milan, Italy"},{"name":"Sforza Castle","kind":"poi","city":"Milan","lat":45.470301,"lon":9.178091,"mapsQuery":"Sforza Castle, Milan, Italy"}]
+  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      "use strict";
+      var canvas = document.getElementById("sg-tripmap-canvas");
+      var dataEl = document.getElementById("sg-tripmap-data");
+      if (!canvas || !dataEl || typeof L === "undefined") return;
+
+      var points;
+      try {
+        points = JSON.parse(dataEl.textContent);
+      } catch (e) {
+        canvas.textContent = "Map data failed to load.";
+        return;
+      }
+
+      // Chronological order of home bases — drives both the dashed route line and the
+      // "Stop N of 7" line in each stay's popup.
+      var ROUTE_ORDER = [
+        "Lake Como & Bellagio", "Ortisei & the Dolomites", "Venice",
+        "Florence", "Tuscany", "Cinque Terre & Portovenere", "Milan"
+      ];
+      var stays = points.filter(function (p) { return p.kind === "stay"; });
+      stays.sort(function (a, b) {
+        return ROUTE_ORDER.indexOf(a.city) - ROUTE_ORDER.indexOf(b.city);
+      });
+
+      function isDark() {
+        var explicit = document.documentElement.getAttribute("data-theme");
+        if (explicit === "dark") return true;
+        if (explicit === "light") return false;
+        return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      }
+
+      var TILE_LAYERS = {
+        light: {
+          url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+          attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
+        },
+        dark: {
+          url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+          attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
+        }
+      };
+
+      var map = L.map(canvas, { scrollWheelZoom: false });
+      var tileLayer = null;
+      var routeLine = null; // assigned once the route is drawn below; re-themed here too
+
+      function applyTileTheme() {
+        var cfg = isDark() ? TILE_LAYERS.dark : TILE_LAYERS.light;
+        if (tileLayer) map.removeLayer(tileLayer);
+        tileLayer = L.tileLayer(cfg.url, {
+          maxZoom: 19,
+          subdomains: "abcd",
+          attribution: cfg.attribution
+        }).addTo(map);
+        if (routeLine) {
+          routeLine.setStyle({ color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2f8f5b" });
+        }
+      }
+      applyTileTheme();
+
+      // Re-tile on theme change — covers the header's light/dark toggle button (which flips
+      // documentElement's data-theme) and a live OS-level scheme switch (which the toggle
+      // script also honors when no explicit choice has been saved).
+      new MutationObserver(applyTileTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+      if (window.matchMedia) {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        if (mq.addEventListener) mq.addEventListener("change", applyTileTheme);
+        else if (mq.addListener) mq.addListener(applyTileTheme);
+      }
+
+      function pinIcon(kind, size) {
+        var iconMap = { stay: "icon-home", restaurant: "icon-utensils", poi: "icon-eye" };
+        var html = '<div class="sg-tripmap-pin sg-tripmap-pin--' + kind + '">' +
+          '<svg class="sg-icon" aria-hidden="true"><use href="#' + iconMap[kind] + '"></use></svg></div>';
+        return L.divIcon({ html: html, className: "", iconSize: [size, size], iconAnchor: [size / 2, size / 2], popupAnchor: [0, -size / 2] });
+      }
+      var ICONS = { stay: pinIcon("stay", 34), restaurant: pinIcon("restaurant", 24), poi: pinIcon("poi", 22) };
+      var KIND_LABEL = { stay: "🏠 Where you're staying", restaurant: "🍴 Restaurant / food stop", poi: "👁️ Sight / point of interest" };
+
+      var allLatLngs = [];
+      var markerLayer = L.layerGroup();
+
+      points.forEach(function (p) {
+        var ll = [p.lat, p.lon];
+        allLatLngs.push(ll);
+        var marker = L.marker(ll, { icon: ICONS[p.kind] || ICONS.poi, riseOnHover: true });
+        var stopNote = "";
+        if (p.kind === "stay") {
+          stopNote = '<div class="sg-tripmap-popup-city">Home base ' + (stays.indexOf(p) + 1) + ' of ' + stays.length + '</div>';
+        }
+        var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.mapsQuery);
+        var popupHtml =
+          '<div class="sg-tripmap-popup-kind">' + KIND_LABEL[p.kind] + '</div>' +
+          '<div class="sg-tripmap-popup-name">' + p.name + '</div>' +
+          '<div class="sg-tripmap-popup-city">' + p.city + '</div>' +
+          stopNote +
+          '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
+        marker.bindPopup(popupHtml);
+        markerLayer.addLayer(marker);
+      });
+      markerLayer.addTo(map);
+
+      // Dashed route line between home bases, in travel order, with a small rotated chevron
+      // at each segment's midpoint pointing toward the next stop.
+      if (stays.length > 1) {
+        var routeLatLngs = stays.map(function (s) { return [s.lat, s.lon]; });
+        L.polyline(routeLatLngs, {
+          color: "#ffffff", weight: 5, opacity: 0.55, dashArray: null, lineCap: "round"
+        }).addTo(map);
+        routeLine = L.polyline(routeLatLngs, {
+          color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2f8f5b",
+          weight: 3, opacity: 0.95, dashArray: "1, 9", lineCap: "round"
+        }).addTo(map);
+
+        function bearing(a, b) {
+          var lat1 = a[0] * Math.PI / 180, lat2 = b[0] * Math.PI / 180;
+          var dLon = (b[1] - a[1]) * Math.PI / 180;
+          var y = Math.sin(dLon) * Math.cos(lat2);
+          var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+          return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+
+        for (var i = 0; i < routeLatLngs.length - 1; i++) {
+          var a = routeLatLngs[i], b = routeLatLngs[i + 1];
+          var mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+          var deg = bearing(a, b);
+          var arrowHtml = '<div class="sg-tripmap-arrow" style="transform:rotate(' + deg + 'deg)">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#icon-arrow-narrow-up"></use></svg></div>';
+          L.marker(mid, {
+            icon: L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] }),
+            interactive: false, keyboard: false
+          }).addTo(map);
+        }
+      }
+
+      if (allLatLngs.length) {
+        map.fitBounds(L.latLngBounds(allLatLngs), { padding: [28, 28] });
+      }
+
+      // Let the page scroll normally until the visitor deliberately interacts with the map —
+      // otherwise an idle two-finger scroll-past on mobile (or an accidental wheel-over on
+      // desktop) gets eaten by the map's own zoom instead of scrolling the page.
+      canvas.addEventListener("click", function () { map.scrollWheelZoom.enable(); });
+      map.on("focus", function () { map.scrollWheelZoom.enable(); });
+      map.on("blur", function () { map.scrollWheelZoom.disable(); });
+
+      // ---------- Fullscreen toggle ----------
+      var wrap = document.getElementById("sg-tripmap");
+      var fsBtn = document.getElementById("sg-tripmap-fullscreen");
+      function requestFs(el) {
+        var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+        if (fn) fn.call(el);
+      }
+      function exitFs() {
+        var fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+        if (fn) fn.call(document);
+      }
+      function fsElement() {
+        return document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+      }
+      if (fsBtn) {
+        fsBtn.addEventListener("click", function () {
+          if (fsElement()) exitFs(); else requestFs(wrap);
+        });
+      }
+      ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach(function (evt) {
+        document.addEventListener(evt, function () {
+          var active = fsElement() === wrap;
+          if (fsBtn) {
+            fsBtn.querySelector("use").setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
+            fsBtn.title = active ? "Exit fullscreen" : "View map fullscreen";
+          }
+          setTimeout(function () { map.invalidateSize(); }, 80);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
