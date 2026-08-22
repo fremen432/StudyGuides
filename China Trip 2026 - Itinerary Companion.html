@@ -190,8 +190,33 @@
     .sg-tripmap-arrow { color: var(--accent); filter: drop-shadow(0 0 2px var(--bg-elevated)); }
     .sg-tripmap-arrow svg { width: 18px; height: 18px; }
 
-    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow); }
-    .leaflet-popup-content { margin: 0.75rem 0.9rem; min-width: 180px; }
+    /* overflow:hidden lets the photo strip below bleed to the card's own rounded top corners
+       instead of squaring them off. */
+    .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow); overflow: hidden; }
+    .leaflet-popup-content { margin: 0.75rem 0.9rem; min-width: 200px; }
+    /* Negative-margin bleed to the card's own edges — same trick as the photo strip, cancels
+       .leaflet-popup-content's own margin so the strip reaches the (now-clipped) rounded
+       corners instead of sitting inset with a visible gap on all four sides. */
+    .sg-tripmap-popup-photos {
+      display: grid;
+      gap: 2px;
+      margin: -0.75rem -0.9rem 0.6rem;
+    }
+    .sg-tripmap-popup-photos[data-count="1"] { grid-template-columns: 1fr; }
+    .sg-tripmap-popup-photos[data-count="2"] { grid-template-columns: 1fr 1fr; }
+    .sg-tripmap-popup-photo { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--code-bg); }
+    .sg-tripmap-popup-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sg-tripmap-popup-photo-more {
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
     .sg-tripmap-popup-kind { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); }
     .sg-tripmap-popup-name { font-weight: 700; margin: 0.15rem 0 0.3rem; }
     .sg-tripmap-popup-city { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
@@ -1061,7 +1086,7 @@
 
   <!-- ---------- Trip Map (GIS-style overview, "Trip Map" section) ---------- -->
   <script type="application/json" id="sg-tripmap-data">
-[{"name":"Nanjing Road Pedestrian Street","kind":"stay","city":"Shanghai","lat":31.237684,"lon":121.475302,"mapsQuery":"Nanjing Road Pedestrian Street, Shanghai, China"},{"name":"Ye Shanghai (夜上海)","kind":"restaurant","city":"Shanghai","lat":31.222861,"lon":121.470642,"mapsQuery":"Ye Shanghai Restaurant Xintiandi, Shanghai, China"},{"name":"The Bund","kind":"poi","city":"Shanghai","lat":31.235336,"lon":121.487632,"mapsQuery":"The Bund, Shanghai, China"},{"name":"Shiliupu Marina (cruise dock)","kind":"poi","city":"Shanghai","lat":31.230588,"lon":121.493779,"mapsQuery":"Shiliupu Marina, Shanghai, China"},{"name":"Wukang Road","kind":"poi","city":"Shanghai","lat":31.207963,"lon":121.434582,"mapsQuery":"Wukang Road, Shanghai, China"},{"name":"Jing'an Temple","kind":"poi","city":"Shanghai","lat":31.225215,"lon":121.440792,"mapsQuery":"Jing'an Temple, Shanghai, China"},{"name":"Yu Garden","kind":"poi","city":"Shanghai","lat":31.228927,"lon":121.487975,"mapsQuery":"Yu Garden, Shanghai, China"},{"name":"Shanghai City God Temple","kind":"poi","city":"Shanghai","lat":31.228009,"lon":121.488007,"mapsQuery":"Chenghuang Miao City God Temple, Shanghai, China"},{"name":"Lao Zha & Zhonglou District","kind":"stay","city":"Changzhou","lat":31.804079,"lon":119.897059,"mapsQuery":"Zhonglou District, Changzhou, China"},{"name":"Hongmei Park (红梅公园)","kind":"poi","city":"Changzhou","lat":31.776715,"lon":119.969104,"mapsQuery":"Hongmei Park, Changzhou, China"},{"name":"Tianning Temple (天宁寺)","kind":"poi","city":"Changzhou","lat":31.775708,"lon":119.962339,"mapsQuery":"Tianning Temple, Changzhou, China"},{"name":"Qingguo Lane (青果巷)","kind":"poi","city":"Changzhou","lat":31.775077,"lon":119.951151,"mapsQuery":"Qingguo Lane, Changzhou, China"},{"name":"Nanshan Bamboo Sea (南山竹海)","kind":"poi","city":"Changzhou","lat":31.255423,"lon":119.507117,"mapsQuery":"Nanshan Bamboo Sea, Changzhou, China"},{"name":"Changzhou Museum","kind":"poi","city":"Changzhou","lat":31.811045,"lon":119.966857,"mapsQuery":"Changzhou Museum, China"},{"name":"Muslim Quarter / Dasi Residential Quarter","kind":"restaurant","city":"Xi'an","lat":34.263371,"lon":108.938929,"mapsQuery":"Muslim Quarter, Xi'an, China"},{"name":"Datang Everbright City (大唐不夜城)","kind":"poi","city":"Xi'an","lat":34.198466,"lon":108.959293,"mapsQuery":"Datang Everbright City, Xi'an, China"},{"name":"Terracotta Warriors","kind":"poi","city":"Xi'an","lat":34.387363,"lon":109.277673,"mapsQuery":"Terracotta Army Museum, Xi'an, China"},{"name":"Huaqing Palace","kind":"poi","city":"Xi'an","lat":34.367809,"lon":109.20989,"mapsQuery":"Huaqing Palace, Xi'an, China"},{"name":"Tian'anmen Square","kind":"poi","city":"Beijing","lat":39.902722,"lon":116.391441,"mapsQuery":"Tiananmen Square, Beijing, China"},{"name":"The Forbidden City","kind":"poi","city":"Beijing","lat":39.917276,"lon":116.390769,"mapsQuery":"Forbidden City, Beijing, China"},{"name":"Temple of Heaven","kind":"poi","city":"Beijing","lat":39.879907,"lon":116.402872,"mapsQuery":"Temple of Heaven, Beijing, China"},{"name":"The Great Wall (Mutianyu)","kind":"poi","city":"Beijing","lat":40.434515,"lon":116.560575,"mapsQuery":"Mutianyu Great Wall, China"},{"name":"Old Summer Palace (Yuanmingyuan)","kind":"poi","city":"Beijing","lat":40.005025,"lon":116.294797,"mapsQuery":"Old Summer Palace Yuanmingyuan, Beijing, China"},{"name":"Summer Palace (Yihe Yuan)","kind":"poi","city":"Beijing","lat":39.990098,"lon":116.26474,"mapsQuery":"Summer Palace, Beijing, China"},{"name":"Nanluoguxiang Hutong","kind":"poi","city":"Beijing","lat":39.935767,"lon":116.3969,"mapsQuery":"Nanluoguxiang, Beijing, China"},{"name":"Houhai","kind":"poi","city":"Beijing","lat":39.940779,"lon":116.379654,"mapsQuery":"Houhai, Beijing, China"},{"name":"Pianyifang Roast Duck (Dengshikou)","kind":"restaurant","city":"Beijing","lat":39.91541,"lon":116.411835,"mapsQuery":"Bianyifang Roast Duck Dengshikou, Beijing, China"}]
+[{"name":"Nanjing Road Pedestrian Street","kind":"stay","city":"Shanghai","lat":31.237684,"lon":121.475302,"mapsQuery":"Nanjing Road Pedestrian Street, Shanghai, China","images":["images/china-trip-2026-itinerary/nanjing-road-shanghai.jpg","images/china-trip-2026-itinerary/nanjing-road-shanghai-2.jpg","images/china-trip-2026-itinerary/nanjing-road-shanghai-3.jpg"]},{"name":"Ye Shanghai (夜上海)","kind":"restaurant","city":"Shanghai","lat":31.222861,"lon":121.470642,"mapsQuery":"Ye Shanghai Restaurant Xintiandi, Shanghai, China","images":[]},{"name":"The Bund","kind":"poi","city":"Shanghai","lat":31.235336,"lon":121.487632,"mapsQuery":"The Bund, Shanghai, China","images":["images/china-trip-city-history/the-bund-shanghai.jpg","images/china-trip-2026-itinerary/the-bund-shanghai-2.jpg","images/china-trip-2026-itinerary/the-bund-shanghai-3.jpg"]},{"name":"Shiliupu Marina (cruise dock)","kind":"poi","city":"Shanghai","lat":31.230588,"lon":121.493779,"mapsQuery":"Shiliupu Marina, Shanghai, China","images":[]},{"name":"Wukang Road","kind":"poi","city":"Shanghai","lat":31.207963,"lon":121.434582,"mapsQuery":"Wukang Road, Shanghai, China","images":["images/china-trip-2026-itinerary/wukang-mansion-shanghai.jpg","images/china-trip-2026-itinerary/wukang-mansion-shanghai-2.jpg"]},{"name":"Jing'an Temple","kind":"poi","city":"Shanghai","lat":31.225215,"lon":121.440792,"mapsQuery":"Jing'an Temple, Shanghai, China","images":["images/china-trip-2026-itinerary/jingan-temple-shanghai.jpg","images/china-trip-2026-itinerary/jingan-temple-shanghai-2.jpg","images/china-trip-2026-itinerary/jingan-temple-shanghai-3.jpg"]},{"name":"Yu Garden","kind":"poi","city":"Shanghai","lat":31.228927,"lon":121.487975,"mapsQuery":"Yu Garden, Shanghai, China","images":["images/china-trip-2026-itinerary/yu-garden-shanghai.jpg","images/china-trip-2026-itinerary/yu-garden-shanghai-2.jpg","images/china-trip-2026-itinerary/yu-garden-shanghai-3.jpg"]},{"name":"Shanghai City God Temple","kind":"poi","city":"Shanghai","lat":31.228009,"lon":121.488007,"mapsQuery":"Chenghuang Miao City God Temple, Shanghai, China","images":["images/china-trip-2026-itinerary/city-god-temple-shanghai.jpg","images/china-trip-2026-itinerary/city-god-temple-shanghai-2.jpg","images/china-trip-2026-itinerary/city-god-temple-shanghai-3.jpg"]},{"name":"Lao Zha & Zhonglou District","kind":"stay","city":"Changzhou","lat":31.804079,"lon":119.897059,"mapsQuery":"Zhonglou District, Changzhou, China","images":[]},{"name":"Hongmei Park (红梅公园)","kind":"poi","city":"Changzhou","lat":31.776715,"lon":119.969104,"mapsQuery":"Hongmei Park, Changzhou, China","images":["images/china-trip-2026-itinerary/hongmei-park-wenbi-pagoda-changzhou.jpg","images/china-trip-2026-itinerary/hongmei-park-wenbi-pagoda-changzhou-2.jpg"]},{"name":"Tianning Temple (天宁寺)","kind":"poi","city":"Changzhou","lat":31.775708,"lon":119.962339,"mapsQuery":"Tianning Temple, Changzhou, China","images":["images/china-trip-city-history/tianning-temple-changzhou.jpg","images/china-trip-2026-itinerary/tianning-temple-changzhou-2.jpg","images/china-trip-2026-itinerary/tianning-temple-changzhou-3.jpg"]},{"name":"Qingguo Lane (青果巷)","kind":"poi","city":"Changzhou","lat":31.775077,"lon":119.951151,"mapsQuery":"Qingguo Lane, Changzhou, China","images":["images/china-trip-2026-itinerary/qingguo-lane-changzhou.jpg","images/china-trip-2026-itinerary/qingguo-lane-changzhou-2.jpg"]},{"name":"Nanshan Bamboo Sea (南山竹海)","kind":"poi","city":"Changzhou","lat":31.255423,"lon":119.507117,"mapsQuery":"Nanshan Bamboo Sea, Changzhou, China","images":["images/china-trip-2026-itinerary/nanshan-bamboo-sea-changzhou.jpg","images/china-trip-2026-itinerary/nanshan-bamboo-sea-changzhou-3.jpg"]},{"name":"Changzhou Museum","kind":"poi","city":"Changzhou","lat":31.811045,"lon":119.966857,"mapsQuery":"Changzhou Museum, China","images":[]},{"name":"Muslim Quarter / Dasi Residential Quarter","kind":"restaurant","city":"Xi'an","lat":34.263371,"lon":108.938929,"mapsQuery":"Muslim Quarter, Xi'an, China","images":["images/china-trip-2026-itinerary/great-mosque-xian.jpg","images/china-trip-2026-itinerary/great-mosque-xian-2.jpg"]},{"name":"Datang Everbright City (大唐不夜城)","kind":"poi","city":"Xi'an","lat":34.198466,"lon":108.959293,"mapsQuery":"Datang Everbright City, Xi'an, China","images":["images/china-trip-2026-itinerary/datang-everbright-city-xian.jpg"]},{"name":"Terracotta Warriors","kind":"poi","city":"Xi'an","lat":34.387363,"lon":109.277673,"mapsQuery":"Terracotta Army Museum, Xi'an, China","images":["images/china-trip-city-history/terracotta-army-xian.jpg","images/china-trip-2026-itinerary/terracotta-army-xian-2.jpg","images/china-trip-2026-itinerary/terracotta-army-xian-3.jpg"]},{"name":"Huaqing Palace","kind":"poi","city":"Xi'an","lat":34.367809,"lon":109.20989,"mapsQuery":"Huaqing Palace, Xi'an, China","images":["images/china-trip-2026-itinerary/huaqing-palace-xian.jpg","images/china-trip-2026-itinerary/huaqing-palace-xian-2.jpg","images/china-trip-2026-itinerary/huaqing-palace-xian-3.jpg"]},{"name":"Tian'anmen Square","kind":"poi","city":"Beijing","lat":39.902722,"lon":116.391441,"mapsQuery":"Tiananmen Square, Beijing, China","images":["images/china-trip-2026-itinerary/tiananmen-square-beijing.jpg","images/china-trip-2026-itinerary/tiananmen-square-beijing-3.jpg"]},{"name":"The Forbidden City","kind":"poi","city":"Beijing","lat":39.917276,"lon":116.390769,"mapsQuery":"Forbidden City, Beijing, China","images":["images/china-trip-city-history/forbidden-city-beijing.jpg","images/china-trip-2026-itinerary/forbidden-city-beijing-2.jpg","images/china-trip-2026-itinerary/forbidden-city-beijing-3.jpg"]},{"name":"Temple of Heaven","kind":"poi","city":"Beijing","lat":39.879907,"lon":116.402872,"mapsQuery":"Temple of Heaven, Beijing, China","images":["images/china-trip-2026-itinerary/temple-of-heaven-beijing.jpg","images/china-trip-2026-itinerary/temple-of-heaven-beijing-2.jpg","images/china-trip-2026-itinerary/temple-of-heaven-beijing-3.jpg"]},{"name":"The Great Wall (Mutianyu)","kind":"poi","city":"Beijing","lat":40.434515,"lon":116.560575,"mapsQuery":"Mutianyu Great Wall, China","images":["images/china-trip-2026-itinerary/great-wall-mutianyu.jpg","images/china-trip-2026-itinerary/great-wall-mutianyu-2.jpg","images/china-trip-2026-itinerary/great-wall-mutianyu-3.jpg"]},{"name":"Old Summer Palace (Yuanmingyuan)","kind":"poi","city":"Beijing","lat":40.005025,"lon":116.294797,"mapsQuery":"Old Summer Palace Yuanmingyuan, Beijing, China","images":["images/china-trip-2026-itinerary/old-summer-palace-ruins-beijing.jpg","images/china-trip-2026-itinerary/old-summer-palace-ruins-beijing-2.jpg","images/china-trip-2026-itinerary/old-summer-palace-ruins-beijing-3.jpg"]},{"name":"Summer Palace (Yihe Yuan)","kind":"poi","city":"Beijing","lat":39.990098,"lon":116.26474,"mapsQuery":"Summer Palace, Beijing, China","images":["images/china-trip-2026-itinerary/summer-palace-marble-boat-beijing.jpg","images/china-trip-2026-itinerary/summer-palace-marble-boat-beijing-2.jpg"]},{"name":"Nanluoguxiang Hutong","kind":"poi","city":"Beijing","lat":39.935767,"lon":116.3969,"mapsQuery":"Nanluoguxiang, Beijing, China","images":["images/china-trip-2026-itinerary/hutong-beijing.jpg","images/china-trip-2026-itinerary/hutong-beijing-2.jpg","images/china-trip-2026-itinerary/hutong-beijing-3.jpg"]},{"name":"Houhai","kind":"poi","city":"Beijing","lat":39.940779,"lon":116.379654,"mapsQuery":"Houhai, Beijing, China","images":["images/china-trip-2026-itinerary/houhai-lake-beijing.jpg","images/china-trip-2026-itinerary/houhai-lake-beijing-2.jpg","images/china-trip-2026-itinerary/houhai-lake-beijing-3.jpg"]},{"name":"Pianyifang Roast Duck (Dengshikou)","kind":"restaurant","city":"Beijing","lat":39.91541,"lon":116.411835,"mapsQuery":"Bianyifang Roast Duck Dengshikou, Beijing, China","images":[]}]
   </script>
   <script type="application/json" id="sg-tripmap-route">
 [{"city":"Shanghai","lat":31.231271,"lon":121.470015},{"city":"Changzhou","lat":31.812262,"lon":119.969154},{"city":"Xi'an","lat":34.261004,"lon":108.942336},{"city":"Beijing","lat":39.905714,"lon":116.391297}]
@@ -1158,6 +1183,28 @@
       // this same all-visible default regardless of what was toggled off before.
       var LAYERS = { stay: L.layerGroup(), restaurant: L.layerGroup(), poi: L.layerGroup() };
 
+      function escAttr(s) {
+        return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+      }
+
+      // Up to 2 of the location's own photos (already embedded in the article, same files —
+      // no separate image set to keep in sync) as a header strip on its popup. A 3rd+ photo
+      // becomes a "+N" badge on the last thumbnail rather than being dropped silently, so it's
+      // clear there's more to see in the full write-up below.
+      function photoStripHtml(p) {
+        if (!p.images || !p.images.length) return "";
+        var shown = p.images.slice(0, 2);
+        var extra = p.images.length - shown.length;
+        var cells = shown.map(function (src, i) {
+          var badge = (i === shown.length - 1 && extra > 0)
+            ? '<span class="sg-tripmap-popup-photo-more">+' + extra + '</span>'
+            : "";
+          return '<a class="sg-tripmap-popup-photo" href="' + src + '" target="_blank" rel="noopener">' +
+            '<img src="' + src + '" alt="' + escAttr(p.name) + '" loading="lazy">' + badge + '</a>';
+        }).join("");
+        return '<div class="sg-tripmap-popup-photos" data-count="' + shown.length + '">' + cells + '</div>';
+      }
+
       points.forEach(function (p) {
         var ll = [p.lat, p.lon];
         allLatLngs.push(ll);
@@ -1168,12 +1215,13 @@
         }
         var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.mapsQuery);
         var popupHtml =
+          photoStripHtml(p) +
           '<div class="sg-tripmap-popup-kind">' + KIND_LABEL[p.kind] + '</div>' +
           '<div class="sg-tripmap-popup-name">' + p.name + '</div>' +
           '<div class="sg-tripmap-popup-city">' + p.city + '</div>' +
           stopNote +
           '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
-        marker.bindPopup(popupHtml);
+        marker.bindPopup(popupHtml, { maxWidth: 260 });
         (LAYERS[p.kind] || LAYERS.poi).addLayer(marker);
       });
       Object.keys(LAYERS).forEach(function (kind) { LAYERS[kind].addTo(map); });
