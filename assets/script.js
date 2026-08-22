@@ -683,6 +683,33 @@
     });
   }
 
+  // ---------- Refresh Page button (lives in the TOC rail, so it's reachable from both the
+  // desktop sidebar and the mobile hamburger drawer — same element, no separate mobile-only
+  // markup needed). Built here rather than hand-added to every guide's HTML so it's live on
+  // every guide the moment this shared script updates, with no per-file edit. Injected as raw
+  // SVG (not a <use href="#icon-x"> sprite reference) for the same reason the lightbox's own
+  // buttons use plain glyphs, per the comment in initLightbox() above: not every guide's inline
+  // sprite defines the icons a shared button would want, so relying on one here would render
+  // blank on older guides.
+  function initRefreshButton() {
+    var rail = document.querySelector(".sg-toc-rail");
+    if (!rail) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sg-btn";
+    btn.id = "sg-toc-refresh";
+    btn.title = "Reload this page";
+    btn.innerHTML =
+      '<svg class="sg-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />' +
+      '<path d="M3 3v5h5" />' +
+      '<path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />' +
+      '<path d="M16 16h5v5" />' +
+      '</svg><span class="sg-btn-label">Refresh Page</span>';
+    btn.addEventListener("click", function () { window.location.reload(); });
+    rail.appendChild(btn);
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     syncHeaderOffset();
     buildToc();
@@ -695,5 +722,6 @@
     initBackToTop();
     initCarousels();
     initLightbox();
+    initRefreshButton();
   });
 })();

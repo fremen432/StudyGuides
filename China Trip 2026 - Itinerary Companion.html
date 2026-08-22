@@ -220,6 +220,7 @@
     .sg-tripmap-popup-kind { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); }
     .sg-tripmap-popup-name { font-weight: 700; margin: 0.15rem 0 0.3rem; }
     .sg-tripmap-popup-city { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+    .sg-tripmap-popup-dates { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
     .sg-tripmap-popup-link { font-size: 0.85rem; }
     .leaflet-container { background: var(--code-bg); font-family: inherit; }
     .leaflet-control-attribution { background: var(--bg-elevated); color: var(--text-dim); }
@@ -1175,6 +1176,17 @@
       var ICONS = { stay: pinIcon("stay", 34), restaurant: pinIcon("restaurant", 24), poi: pinIcon("poi", 22) };
       var KIND_LABEL = { stay: "🏠 Where you're staying", restaurant: "🍴 Restaurant / food stop", poi: "👁️ Sight / point of interest" };
 
+      // Per-leg date range + day count, keyed by the same city string every pin already
+      // carries — sourced from each city section's own h2 badge, not recomputed, so it can
+      // never drift out of sync with the day-by-day detail below. Shown on every pin (not just
+      // "stay" pins) so tapping any sight/restaurant also answers "when am I here?".
+      var LEG_DATES = {
+        "Shanghai": { range: "Oct 18–21", days: 4 },
+        "Changzhou": { range: "Oct 21–24", days: 4 },
+        "Xi'an": { range: "Oct 24–26", days: 3 },
+        "Beijing": { range: "Oct 26–31", days: 6 }
+      };
+
       var allLatLngs = [];
       // One layer group per pin kind (not one shared group) so the legend chips can show/hide
       // an entire category by adding/removing its group — cheaper and simpler than walking
@@ -1213,12 +1225,17 @@
         if (p.kind === "stay") {
           stopNote = '<div class="sg-tripmap-popup-city">Home base ' + (stays.indexOf(p) + 1) + ' of ' + stays.length + '</div>';
         }
+        var leg = LEG_DATES[p.city];
+        var datesLine = leg
+          ? '<div class="sg-tripmap-popup-dates">📅 ' + leg.range + ' &middot; ' + leg.days + (leg.days === 1 ? " day" : " days") + '</div>'
+          : "";
         var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.mapsQuery);
         var popupHtml =
           photoStripHtml(p) +
           '<div class="sg-tripmap-popup-kind">' + KIND_LABEL[p.kind] + '</div>' +
           '<div class="sg-tripmap-popup-name">' + p.name + '</div>' +
           '<div class="sg-tripmap-popup-city">' + p.city + '</div>' +
+          datesLine +
           stopNote +
           '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
         marker.bindPopup(popupHtml, { maxWidth: 260 });

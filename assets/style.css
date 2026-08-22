@@ -255,7 +255,9 @@ html.sg-toc-pref-collapsed #sg-toc-collapse-all { display: none; } /* nothing vi
 .sg-toc.sg-toc-collapsed .sg-toc-rail .sg-btn,
 html.sg-toc-pref-collapsed .sg-toc-rail .sg-btn { justify-content: center; padding: 0.4rem; }
 .sg-toc.sg-toc-collapsed #sg-toc-toggle .sg-btn-label,
-html.sg-toc-pref-collapsed #sg-toc-toggle .sg-btn-label { display: none; }
+html.sg-toc-pref-collapsed #sg-toc-toggle .sg-btn-label,
+.sg-toc.sg-toc-collapsed #sg-toc-refresh .sg-btn-label,
+html.sg-toc-pref-collapsed #sg-toc-refresh .sg-btn-label { display: none; }
 
 .sg-toc-rail {
   flex: 0 0 auto;
@@ -1010,7 +1012,12 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
 .sg-lightbox-overlay {
   position: fixed;
   inset: 0;
-  z-index: 300;
+  /* Must outrank any guide's own custom fullscreen overlay (the Trip Map's CSS-only fullscreen
+     class sits at z-index: 1000) — the lightbox is meant to be the single topmost UI layer on
+     any guide page, full stop. position:fixed + a non-auto z-index here establishes its own
+     stacking context, so this one number is enough to raise the whole lightbox (including its
+     301-level internal controls below) as a unit; they don't each need bumping individually. */
+  z-index: 2000;
   background: rgba(0, 0, 0, 0.92);
   display: flex;
   align-items: center;
