@@ -1294,6 +1294,32 @@
       map.on("focus", function () { map.scrollWheelZoom.enable(); });
       map.on("blur", function () { map.scrollWheelZoom.disable(); });
 
+      // Tapping a popup photo opens the guide's own lightbox carousel (assets/script.js)
+      // instead of a new tab — showing every photo for that POI (not just the 2 in the popup)
+      // with captions/sources, exactly like tapping the same photo down in the article. Popup
+      // content is created fresh each time a marker opens, so this is delegated on the map
+      // canvas (which persists for the page's life) rather than bound per-photo. Forwarding a
+      // synthetic click to the matching original <img> — instead of duplicating the lightbox's
+      // open()/group-detection logic here — is what makes this "just work": that original
+      // image is already wired up by initLightbox() at page load, group and all.
+      canvas.addEventListener("click", function (e) {
+        var link = e.target.closest(".sg-tripmap-popup-photo");
+        if (!link) return;
+        e.preventDefault();
+        var src = link.getAttribute("href");
+        // Exclude #sg-tripmap itself — the popup's own <img> (this very photo) shares the same
+        // src and, since the Trip Map section sits at the top of the document, sorts BEFORE
+        // the real article image in DOM order. A plain querySelector would match the popup's
+        // own un-wired <img> and silently do nothing.
+        var candidates = src ? document.querySelectorAll('.sg-main img[src="' + CSS.escape(src) + '"]') : [];
+        var original = null;
+        for (var ci = 0; ci < candidates.length; ci++) {
+          if (!candidates[ci].closest("#sg-tripmap")) { original = candidates[ci]; break; }
+        }
+        if (original) original.click();
+        else if (src) window.open(src, "_blank", "noopener");
+      });
+
       // ---------- Fullscreen toggle ----------
       // CSS-class overlay rather than the real Fullscreen API — see the .sg-tripmap--fs CSS
       // comment for why (iOS Safari has no Element.requestFullscreen).
