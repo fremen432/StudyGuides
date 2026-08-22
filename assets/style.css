@@ -3,6 +3,12 @@
   Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\style.css
   Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\style.css
   Edit the master, then re-copy over the deployed copy so every existing guide re-themes at once.
+
+  Every guide links this via "assets/style.css?v=YYYYMMDD" (see template.html), not a bare path
+  — GitHub Pages / browsers otherwise cache this aggressively and a returning visitor can sit on
+  a stale copy indefinitely after an update. Bump the ?v= date on EVERY guide's <script>/<link>
+  tag (a repo-wide find/replace, both this file and script.js share one version string) whenever
+  either shared asset changes, in the same commit as the change itself.
 */
 
 :root {

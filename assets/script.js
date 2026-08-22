@@ -3,6 +3,12 @@
   Master copy: C:\vc\config\claude\skills\study-guide-maker\assets\script.js
   Deployed copy (what guides actually link to): C:\vc\apps\StudyGuides\assets\script.js
   Vanilla JS, no dependencies, no network calls — every guide must open standalone via file://.
+
+  Every guide links this via "assets/script.js?v=YYYYMMDD" (see template.html), not a bare path
+  — GitHub Pages / browsers otherwise cache this aggressively and a returning visitor can sit on
+  a stale copy indefinitely after an update. Bump the ?v= date on EVERY guide's <script>/<link>
+  tag (a repo-wide find/replace, both this file and style.css share one version string) whenever
+  either shared asset changes, in the same commit as the change itself.
 */
 (function () {
   "use strict";
