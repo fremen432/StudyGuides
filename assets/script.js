@@ -865,8 +865,10 @@
       });
     }
 
-    // Dashed route line between home bases, in travel order, with a small rotated chevron
-    // at each segment's midpoint pointing toward the next stop.
+    // Dashed route line between home bases, in travel order, with rotated chevrons pointing
+    // toward the next stop repeated along each segment — not just one at the exact midpoint —
+    // so a chevron is still in view after zooming into any one leg of a long segment, not only
+    // when the whole segment is visible at once.
     if (stays.length > 1) {
       var routeLatLngs = stays.map(function (s) { return [s.lat, s.lon]; });
       L.polyline(routeLatLngs, {
@@ -885,16 +887,34 @@
         return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
       }
 
+      // Haversine, in km — just to decide how many chevrons a segment earns, not for display,
+      // so the simple spherical-Earth approximation is more than accurate enough here.
+      function distanceKm(a, b) {
+        var R = 6371;
+        var dLat = (b[0] - a[0]) * Math.PI / 180, dLon = (b[1] - a[1]) * Math.PI / 180;
+        var lat1 = a[0] * Math.PI / 180, lat2 = b[0] * Math.PI / 180;
+        var h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+        return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+      }
+
+      var ARROW_SPACING_KM = 70; // roughly one chevron every 70km of a leg
+      var ARROW_MAX_PER_LEG = 6; // cap so a very long leg (e.g. a cross-country transfer) doesn't clutter
+
       for (var i = 0; i < routeLatLngs.length - 1; i++) {
         var a = routeLatLngs[i], b = routeLatLngs[i + 1];
-        var mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
         var deg = bearing(a, b);
+        var legKm = distanceKm(a, b);
+        var count = Math.min(ARROW_MAX_PER_LEG, Math.max(1, Math.round(legKm / ARROW_SPACING_KM)));
         var arrowHtml = '<div class="sg-tripmap-arrow" style="transform:rotate(' + deg + 'deg)">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#icon-arrow-narrow-up"></use></svg></div>';
-        L.marker(mid, {
-          icon: L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] }),
-          interactive: false, keyboard: false
-        }).addTo(map);
+        var icon = L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] });
+        // Evenly spaced along the leg (not including the endpoints themselves) — e.g. count=1
+        // places one chevron at the midpoint same as before, count=3 places them at 25/50/75%.
+        for (var j = 1; j <= count; j++) {
+          var t = j / (count + 1);
+          var pt = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+          L.marker(pt, { icon: icon, interactive: false, keyboard: false }).addTo(map);
+        }
       }
     }
 
