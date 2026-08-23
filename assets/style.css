@@ -32,6 +32,13 @@
   --badge-intermediate: #b9861f;
   --badge-expert: #a3423f;
   --max-width: 920px;
+  /* Trip Map marker colors (see "Trip Map" block below) — stays reuse --accent so the route
+     line and "home base" pins read as one family; food and sights get their own hues so the
+     three pin kinds are tellable apart at a glance even before reading the legend. A guide with
+     its own accent palette (e.g. a trip guide's flag-inspired theme override) can override these
+     two alongside its other --accent overrides; these are just the default-theme values. */
+  --map-food: #b9791f;
+  --map-poi: #3c6ea5;
 }
 
 :root[data-theme="dark"] {
@@ -51,6 +58,8 @@
   --warning-bg: #3a2320;
   --warning-border: #8a4a42;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --map-food: #d9a54c;
+  --map-poi: #7ea3d9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -71,6 +80,8 @@
     --warning-bg: #3a2320;
     --warning-border: #8a4a42;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --map-food: #d9a54c;
+    --map-poi: #7ea3d9;
   }
 }
 
@@ -1147,6 +1158,163 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
   cursor: pointer;
 }
 .sg-lightbox-close:hover { background: rgba(255, 255, 255, 0.22); }
+
+/* ---------- Trip Map (GIS-style overview map, "Trip Map" section) ---------- */
+/* Promoted here 2026-08-23 after the second guide (Germany Trip 2027) wanted one — first built
+   as a one-off in "Italy Trip 2026 - Travel Companion.html". Renders via Leaflet (loaded by the
+   guide itself, not a shared dependency — see script.js's initTripMap() for why) reading a
+   #sg-tripmap-data JSON island of points plus a #sg-tripmap-config JSON island of route order /
+   per-leg dates; a guide with neither element simply never calls this and pays nothing for it. */
+.sg-tripmap { margin-top: 1rem; }
+.sg-tripmap-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+.sg-tripmap-legend { display: flex; flex-wrap: wrap; gap: 0.9rem; font-size: 0.85rem; color: var(--text-dim); }
+.sg-tripmap-legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+.sg-tripmap-toolbar-actions { display: flex; align-items: center; gap: 0.4rem; flex: none; }
+/* Legend chips double as filter toggles — real <button>s (not <span>s) so they're
+   keyboard/screen-reader operable, reset to plain text-button chrome, with a dimmed
+   "--off" state that mirrors visually what's currently hidden on the map itself. */
+.sg-tripmap-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  margin: -0.2rem -0.35rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+.sg-tripmap-filter:hover { background: var(--accent-soft); }
+.sg-tripmap-filter[aria-pressed="false"] { opacity: 0.4; }
+.sg-tripmap-filter[aria-pressed="false"] .sg-tripmap-swatch { filter: grayscale(1); }
+.sg-tripmap-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex: none;
+}
+.sg-tripmap-swatch .sg-icon { width: 0.7em; height: 0.7em; stroke-width: 2.75; }
+.sg-tripmap-swatch--stay { background: var(--accent); }
+.sg-tripmap-swatch--restaurant { background: var(--map-food); }
+.sg-tripmap-swatch--poi { background: var(--map-poi); }
+.sg-tripmap-canvas {
+  width: 100%;
+  height: clamp(360px, 55vh, 560px);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--code-bg);
+}
+/* Leaflet's own panes/controls run z-index up to 1000 (leaflet.css), and .leaflet-container
+   is only position:relative with no z-index of its own — so without this, those panes
+   aren't trapped in a local stacking context and escape straight into the page's root
+   stacking order, rendering above the mobile TOC drawer (z-index 60) whenever it's open.
+   Giving the container an explicit z-index (any value, including 0) makes it establish its
+   own stacking context, containing everything Leaflet draws inside it. */
+#sg-tripmap-canvas.leaflet-container { z-index: 0; }
+/* "Fullscreen" is a CSS-only fixed-position overlay, not the real Fullscreen API — iOS
+   Safari doesn't implement Element.requestFullscreen at all (only <video> can go
+   fullscreen there), so a native-API button silently did nothing on iPhone. This class
+   toggle covers the viewport identically on every platform instead. */
+.sg-tripmap.sg-tripmap--fs {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+  background: var(--bg-elevated);
+}
+.sg-tripmap.sg-tripmap--fs .sg-tripmap-canvas {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+body.sg-tripmap-fs-lock { overflow: hidden; }
+.sg-tripmap-hint { color: var(--text-dim); font-size: 0.9rem; }
+
+/* Marker pins — plain circular badges (anchor = exact center) rather than teardrop pins, so
+   there's no anchor-offset math to get wrong. Stays are drawn larger and given a heavier
+   white ring so the home-base "spine" of the route stands out from the sights/restaurants
+   around them. */
+.sg-tripmap-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+.sg-tripmap-pin .sg-icon { stroke-width: 2.5; }
+.sg-tripmap-pin--stay { background: var(--accent); width: 34px; height: 34px; border-width: 3px; }
+.sg-tripmap-pin--stay .sg-icon { width: 18px; height: 18px; }
+.sg-tripmap-pin--restaurant { background: var(--map-food); width: 24px; height: 24px; }
+.sg-tripmap-pin--restaurant .sg-icon { width: 13px; height: 13px; }
+.sg-tripmap-pin--poi { background: var(--map-poi); width: 22px; height: 22px; }
+.sg-tripmap-pin--poi .sg-icon { width: 12px; height: 12px; }
+.sg-tripmap-arrow { color: var(--accent); filter: drop-shadow(0 0 2px var(--bg-elevated)); }
+.sg-tripmap-arrow svg { width: 18px; height: 18px; }
+
+/* Leaflet's own popup chrome ships light-mode-only inline colors — retheme it to match
+   the guide instead of leaving a white card floating in dark mode. overflow:hidden lets
+   the photo strip below bleed to the card's own rounded top corners instead of squaring
+   them off. */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: var(--bg-elevated); color: var(--text); box-shadow: var(--shadow); overflow: hidden; }
+.leaflet-popup-content { margin: 0.75rem 0.9rem; min-width: 200px; }
+/* Negative-margin bleed to the card's own edges — same trick as the photo strip, cancels
+   .leaflet-popup-content's own margin so the strip reaches the (now-clipped) rounded
+   corners instead of sitting inset with a visible gap on all four sides. */
+.sg-tripmap-popup-photos {
+  display: grid;
+  gap: 2px;
+  margin: -0.75rem -0.9rem 0.6rem;
+}
+.sg-tripmap-popup-photos[data-count="1"] { grid-template-columns: 1fr; }
+.sg-tripmap-popup-photos[data-count="2"] { grid-template-columns: 1fr 1fr; }
+.sg-tripmap-popup-photo { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--code-bg); }
+.sg-tripmap-popup-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sg-tripmap-popup-photo-more {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.sg-tripmap-popup-kind { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-dim); }
+.sg-tripmap-popup-name { font-weight: 700; margin: 0.15rem 0 0.3rem; }
+.sg-tripmap-popup-city { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+.sg-tripmap-popup-dates { font-size: 0.82rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+.sg-tripmap-popup-link { font-size: 0.85rem; }
+.leaflet-container { background: var(--code-bg); font-family: inherit; }
+.leaflet-control-attribution { background: var(--bg-elevated); color: var(--text-dim); }
+.leaflet-control-attribution a { color: var(--text-dim); }
+.leaflet-control-zoom a { background: var(--bg-elevated); color: var(--text); border-color: var(--border) !important; }
+.leaflet-control-zoom a:hover { background: var(--accent-soft); }
+.sg-tripmap-fullscreen-btn.sg-btn { background: var(--bg-elevated); }
 
 @media print {
   .sg-toc, .sg-controls, .sg-back-to-top, .sg-lightbox-overlay { display: none !important; }

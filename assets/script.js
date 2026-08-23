@@ -697,6 +697,270 @@
   // buttons use plain glyphs, per the comment in initLightbox() above: not every guide's inline
   // sprite defines the icons a shared button would want, so relying on one here would render
   // blank on older guides.
+  // Trip Map — promoted 2026-08-23 from a one-off built for "Italy Trip 2026 - Travel
+  // Companion.html", once a second guide (Germany Trip 2027) wanted the same thing. Reads two
+  // JSON islands the guide embeds itself: #sg-tripmap-data (an array of points) and
+  // #sg-tripmap-config ({routeOrder, legDates}). A guide with neither element (i.e. every guide
+  // without a Trip Map) hits the early return on the very first line and pays nothing for this.
+  // Leaflet itself is NOT a shared dependency — each guide that wants a map includes the
+  // leaflet.css/leaflet.js CDN tags itself (see template.html's comment on this), so this
+  // function silently no-ops if L is undefined too, rather than throwing.
+  function initTripMap() {
+    var canvas = document.getElementById("sg-tripmap-canvas");
+    var dataEl = document.getElementById("sg-tripmap-data");
+    if (!canvas || !dataEl || typeof L === "undefined") return;
+
+    var points;
+    try {
+      points = JSON.parse(dataEl.textContent);
+    } catch (e) {
+      canvas.textContent = "Map data failed to load.";
+      return;
+    }
+
+    var config = {};
+    var configEl = document.getElementById("sg-tripmap-config");
+    if (configEl) {
+      try { config = JSON.parse(configEl.textContent) || {}; } catch (e) { config = {}; }
+    }
+    var routeOrder = config.routeOrder || [];
+    var legDates = config.legDates || {};
+
+    var stays = points.filter(function (p) { return p.kind === "stay"; });
+    stays.sort(function (a, b) {
+      return routeOrder.indexOf(a.city) - routeOrder.indexOf(b.city);
+    });
+
+    function isDark() {
+      var explicit = document.documentElement.getAttribute("data-theme");
+      if (explicit === "dark") return true;
+      if (explicit === "light") return false;
+      return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+
+    var TILE_LAYERS = {
+      light: {
+        url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
+      },
+      dark: {
+        url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
+      }
+    };
+
+    var map = L.map(canvas, { scrollWheelZoom: false });
+    var tileLayer = null;
+    var routeLine = null; // assigned once the route is drawn below; re-themed here too
+
+    function applyTileTheme() {
+      var cfg = isDark() ? TILE_LAYERS.dark : TILE_LAYERS.light;
+      if (tileLayer) map.removeLayer(tileLayer);
+      tileLayer = L.tileLayer(cfg.url, {
+        maxZoom: 19,
+        subdomains: "abcd",
+        attribution: cfg.attribution
+      }).addTo(map);
+      if (routeLine) {
+        routeLine.setStyle({ color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2f8f5b" });
+      }
+    }
+    applyTileTheme();
+
+    // Re-tile on theme change — covers the header's light/dark toggle button (which flips
+    // documentElement's data-theme) and a live OS-level scheme switch (which the toggle
+    // script also honors when no explicit choice has been saved).
+    new MutationObserver(applyTileTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    if (window.matchMedia) {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      if (mq.addEventListener) mq.addEventListener("change", applyTileTheme);
+      else if (mq.addListener) mq.addListener(applyTileTheme);
+    }
+
+    function pinIcon(kind, size) {
+      var iconMap = { stay: "icon-home", restaurant: "icon-utensils", poi: "icon-eye" };
+      var html = '<div class="sg-tripmap-pin sg-tripmap-pin--' + kind + '">' +
+        '<svg class="sg-icon" aria-hidden="true"><use href="#' + iconMap[kind] + '"></use></svg></div>';
+      return L.divIcon({ html: html, className: "", iconSize: [size, size], iconAnchor: [size / 2, size / 2], popupAnchor: [0, -size / 2] });
+    }
+    var ICONS = { stay: pinIcon("stay", 34), restaurant: pinIcon("restaurant", 24), poi: pinIcon("poi", 22) };
+    var KIND_LABEL = { stay: "🏠 Where you're staying", restaurant: "🍴 Restaurant / food stop", poi: "👁️ Sight / point of interest" };
+
+    var allLatLngs = [];
+    // One layer group per pin kind (not one shared group) so the legend chips can show/hide
+    // an entire category by adding/removing its group — cheaper and simpler than walking
+    // every marker on every toggle. Every group starts added to the map (all pins visible on
+    // load); nothing here is persisted across a refresh, so a reload always comes back to
+    // this same all-visible default regardless of what was toggled off before.
+    var LAYERS = { stay: L.layerGroup(), restaurant: L.layerGroup(), poi: L.layerGroup() };
+
+    function escAttr(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    }
+
+    // Up to 2 of the location's own photos (already embedded in the article, same files —
+    // no separate image set to keep in sync) as a header strip on its popup. A 3rd+ photo
+    // becomes a "+N" badge on the last thumbnail rather than being dropped silently, so it's
+    // clear there's more to see in the full write-up below. A point with no images (common —
+    // this is optional per-point) just skips the strip entirely.
+    function photoStripHtml(p) {
+      if (!p.images || !p.images.length) return "";
+      var shown = p.images.slice(0, 2);
+      var extra = p.images.length - shown.length;
+      var cells = shown.map(function (src, i) {
+        var badge = (i === shown.length - 1 && extra > 0)
+          ? '<span class="sg-tripmap-popup-photo-more">+' + extra + '</span>'
+          : "";
+        return '<a class="sg-tripmap-popup-photo" href="' + src + '" target="_blank" rel="noopener">' +
+          '<img src="' + src + '" alt="' + escAttr(p.name) + '" loading="lazy">' + badge + '</a>';
+      }).join("");
+      return '<div class="sg-tripmap-popup-photos" data-count="' + shown.length + '">' + cells + '</div>';
+    }
+
+    points.forEach(function (p) {
+      var ll = [p.lat, p.lon];
+      allLatLngs.push(ll);
+      var marker = L.marker(ll, { icon: ICONS[p.kind] || ICONS.poi, riseOnHover: true });
+      var stopNote = "";
+      if (p.kind === "stay") {
+        stopNote = '<div class="sg-tripmap-popup-city">Home base ' + (stays.indexOf(p) + 1) + ' of ' + stays.length + '</div>';
+      }
+      var leg = legDates[p.city];
+      var datesLine = leg
+        ? '<div class="sg-tripmap-popup-dates">📅 ' + leg.range + ' &middot; ' + leg.days + (leg.days === 1 ? " day" : " days") + '</div>'
+        : "";
+      var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.mapsQuery);
+      var popupHtml =
+        photoStripHtml(p) +
+        '<div class="sg-tripmap-popup-kind">' + KIND_LABEL[p.kind] + '</div>' +
+        '<div class="sg-tripmap-popup-name">' + p.name + '</div>' +
+        '<div class="sg-tripmap-popup-city">' + p.city + '</div>' +
+        datesLine +
+        stopNote +
+        '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
+      marker.bindPopup(popupHtml, { maxWidth: 260 });
+      (LAYERS[p.kind] || LAYERS.poi).addLayer(marker);
+    });
+    Object.keys(LAYERS).forEach(function (kind) { LAYERS[kind].addTo(map); });
+
+    // Legend chips double as filter toggles.
+    document.querySelectorAll(".sg-tripmap-filter").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var kind = btn.dataset.kind;
+        var layer = LAYERS[kind];
+        if (!layer) return;
+        var showing = btn.getAttribute("aria-pressed") === "true";
+        var next = !showing;
+        btn.setAttribute("aria-pressed", String(next));
+        if (next) map.addLayer(layer); else map.removeLayer(layer);
+      });
+    });
+
+    // Zoom-to-fit button — always fits every pin regardless of which kinds are currently
+    // toggled off, so it doubles as a "reset the view" control.
+    var fitBtn = document.getElementById("sg-tripmap-fit");
+    if (fitBtn) {
+      fitBtn.addEventListener("click", function () {
+        if (allLatLngs.length) map.fitBounds(L.latLngBounds(allLatLngs), { padding: [28, 28] });
+      });
+    }
+
+    // Dashed route line between home bases, in travel order, with a small rotated chevron
+    // at each segment's midpoint pointing toward the next stop.
+    if (stays.length > 1) {
+      var routeLatLngs = stays.map(function (s) { return [s.lat, s.lon]; });
+      L.polyline(routeLatLngs, {
+        color: "#ffffff", weight: 5, opacity: 0.55, dashArray: null, lineCap: "round"
+      }).addTo(map);
+      routeLine = L.polyline(routeLatLngs, {
+        color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2f8f5b",
+        weight: 3, opacity: 0.95, dashArray: "1, 9", lineCap: "round"
+      }).addTo(map);
+
+      function bearing(a, b) {
+        var lat1 = a[0] * Math.PI / 180, lat2 = b[0] * Math.PI / 180;
+        var dLon = (b[1] - a[1]) * Math.PI / 180;
+        var y = Math.sin(dLon) * Math.cos(lat2);
+        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+      }
+
+      for (var i = 0; i < routeLatLngs.length - 1; i++) {
+        var a = routeLatLngs[i], b = routeLatLngs[i + 1];
+        var mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        var deg = bearing(a, b);
+        var arrowHtml = '<div class="sg-tripmap-arrow" style="transform:rotate(' + deg + 'deg)">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#icon-arrow-narrow-up"></use></svg></div>';
+        L.marker(mid, {
+          icon: L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] }),
+          interactive: false, keyboard: false
+        }).addTo(map);
+      }
+    }
+
+    if (allLatLngs.length) {
+      map.fitBounds(L.latLngBounds(allLatLngs), { padding: [28, 28] });
+    }
+
+    // Let the page scroll normally until the visitor deliberately interacts with the map —
+    // otherwise an idle two-finger scroll-past on mobile (or an accidental wheel-over on
+    // desktop) gets eaten by the map's own zoom instead of scrolling the page.
+    canvas.addEventListener("click", function () { map.scrollWheelZoom.enable(); });
+    map.on("focus", function () { map.scrollWheelZoom.enable(); });
+    map.on("blur", function () { map.scrollWheelZoom.disable(); });
+
+    // Tapping a popup photo opens the guide's own lightbox carousel (initLightbox() below)
+    // instead of a new tab — showing every photo for that POI (not just the 2 in the popup)
+    // with captions/sources, exactly like tapping the same photo down in the article. Popup
+    // content is created fresh each time a marker opens, so this is delegated on the map
+    // canvas (which persists for the page's life) rather than bound per-photo. Forwarding a
+    // synthetic click to the matching original <img> — instead of duplicating the lightbox's
+    // open()/group-detection logic here — is what makes this "just work": that original
+    // image is already wired up by initLightbox() at page load, group and all.
+    canvas.addEventListener("click", function (e) {
+      var link = e.target.closest(".sg-tripmap-popup-photo");
+      if (!link) return;
+      e.preventDefault();
+      var src = link.getAttribute("href");
+      // Exclude #sg-tripmap itself — the popup's own <img> (this very photo) shares the same
+      // src and, since the Trip Map section typically sits near the top of the document, can
+      // sort before the real article image in DOM order. A plain querySelector would match
+      // the popup's own un-wired <img> and silently do nothing.
+      var candidates = src ? document.querySelectorAll('.sg-main img[src="' + CSS.escape(src) + '"]') : [];
+      var original = null;
+      for (var ci = 0; ci < candidates.length; ci++) {
+        if (!candidates[ci].closest("#sg-tripmap")) { original = candidates[ci]; break; }
+      }
+      if (original) original.click();
+      else if (src) window.open(src, "_blank", "noopener");
+    });
+
+    // ---------- Fullscreen toggle ----------
+    // CSS-class overlay rather than the real Fullscreen API — see the .sg-tripmap--fs CSS
+    // comment for why (iOS Safari has no Element.requestFullscreen).
+    var wrap = document.getElementById("sg-tripmap");
+    var fsBtn = document.getElementById("sg-tripmap-fullscreen");
+    var fsActive = false;
+
+    function setFullscreen(active) {
+      fsActive = active;
+      wrap.classList.toggle("sg-tripmap--fs", active);
+      document.body.classList.toggle("sg-tripmap-fs-lock", active);
+      if (fsBtn) {
+        fsBtn.querySelector("use").setAttribute("href", active ? "#icon-minimize" : "#icon-maximize");
+        fsBtn.title = active ? "Exit fullscreen" : "View map fullscreen";
+      }
+      setTimeout(function () { map.invalidateSize(); }, 80);
+    }
+
+    if (fsBtn) {
+      fsBtn.addEventListener("click", function () { setFullscreen(!fsActive); });
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && fsActive) setFullscreen(false);
+    });
+  }
+
   function initRefreshButton() {
     var rail = document.querySelector(".sg-toc-rail");
     if (!rail) return;
@@ -729,5 +993,6 @@
     initCarousels();
     initLightbox();
     initRefreshButton();
+    initTripMap();
   });
 })();
