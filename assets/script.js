@@ -920,7 +920,7 @@
         return [t0, t1];
       }
 
-      var ARROW_EDGE_MARGIN = 56; // px kept clear of the map's own border
+      var ARROW_EDGE_MARGIN = 40; // px kept clear of the map's own border
       function updateLegArrowPositions() {
         var size = map.getSize();
         if (!size.x || !size.y) return;
