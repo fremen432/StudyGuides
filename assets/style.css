@@ -460,8 +460,19 @@ html.sg-toc-pref-collapsed #sg-toc-refresh .sg-btn-label { display: none; }
 .sg-level-badge.intermediate { background: var(--badge-intermediate); }
 .sg-level-badge.expert { background: var(--badge-expert); }
 
+/* display:block (not the default table/table-row-group/table-cell trio) turns the table itself
+   into a plain scrollable box — width:max-content lets it size naturally to its columns up to
+   max-width:100% of its container, then overflow-x:auto scrolls internally past that instead of
+   stretching .sg-main/body wider than the viewport. Same fix GitHub uses for wide markdown
+   tables. Without this, a table with several columns or a long unbreakable cell (a currency
+   range next to a prose Notes column, say) forced the whole page into horizontal scroll on
+   mobile — the table's min-content width has to fit somewhere, and with a plain
+   width:100% table that "somewhere" was every ancestor up to <body>. */
 table {
-  width: 100%;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   margin: 1rem 0;
   font-size: 0.9rem;
