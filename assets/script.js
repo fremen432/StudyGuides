@@ -866,11 +866,10 @@
     }
 
     // Dashed route line between home bases, in travel order, with one rotated chevron per leg
-    // pointing toward the next stop. The chevron lives at the leg's true geographic midpoint
-    // whenever that's on-screen; once zoom/pan would carry it out of view, it's pinned to the
-    // edge of the visible map instead — same "off-screen waypoint" pattern as a game minimap
-    // arrow or a turn-by-turn app's next-maneuver indicator — so there's always a visible cue
-    // for which way the route goes, not just when the whole leg happens to fit in the viewport.
+    // pointing toward the next stop. The chevron always sits ON the visible portion of that
+    // leg's line — at the midpoint of whatever stretch of it is currently on-screen — and is
+    // hidden entirely once none of the leg's line is on-screen at all, rather than floating
+    // somewhere off the line to indicate an off-screen direction.
     if (stays.length > 1) {
       var routeLatLngs = stays.map(function (s) { return [s.lat, s.lon]; });
       L.polyline(routeLatLngs, {
@@ -881,60 +880,82 @@
         weight: 3, opacity: 0.95, dashArray: "1, 9", lineCap: "round"
       }).addTo(map);
 
-      function bearing(a, b) {
-        var lat1 = a[0] * Math.PI / 180, lat2 = b[0] * Math.PI / 180;
-        var dLon = (b[1] - a[1]) * Math.PI / 180;
-        var y = Math.sin(dLon) * Math.cos(lat2);
-        var x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-        return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-      }
-
       var legArrows = [];
       for (var i = 0; i < routeLatLngs.length - 1; i++) {
         var a = routeLatLngs[i], b = routeLatLngs[i + 1];
-        var mid = L.latLng((a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
-        var deg = bearing(a, b);
-        var arrowHtml = '<div class="sg-tripmap-arrow" style="transform:rotate(' + deg + 'deg)">' +
+        var arrowHtml = '<div class="sg-tripmap-arrow">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#icon-arrow-narrow-up"></use></svg></div>';
-        var marker = L.marker(mid, {
+        var marker = L.marker(a, {
           icon: L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] }),
-          interactive: false, keyboard: false
+          interactive: false, keyboard: false, opacity: 0
         }).addTo(map);
-        legArrows.push({ trueLatLng: mid, marker: marker });
+        legArrows.push({ from: L.latLng(a[0], a[1]), to: L.latLng(b[0], b[1]), marker: marker });
       }
 
-      // Clamp each chevron's true midpoint into the visible container rect, sliding it along
-      // the line from the view's center toward that midpoint until it hits the (inset) edge —
-      // a standard radial off-screen-indicator clamp, not just an independent x/y clamp, so the
-      // chevron lands on the edge in the direction actually toward its leg, not just "nearest
-      // corner". A midpoint already on-screen (inside the inset rect) is left exactly where it
-      // is — this only kicks in once zoom/pan would otherwise carry it out of view.
-      var ARROW_EDGE_MARGIN = 22; // px kept clear of the map's own border
+      // Liang-Barsky segment-vs-rectangle clip, in container pixel space — the same straight
+      // line Leaflet actually draws between two projected points at the current zoom (Leaflet
+      // connects vertices with straight lines in projected/Mercator space, not geodesics, so
+      // clipping in pixel space matches the rendered line exactly, not an approximation of it).
+      // Returns the [t0, t1] parametric range (0..1 along p0->p1) that's inside the rect, or
+      // null if the segment never enters it at all.
+      function clipSegmentToRect(p0, p1, minX, minY, maxX, maxY) {
+        var dx = p1.x - p0.x, dy = p1.y - p0.y;
+        var t0 = 0, t1 = 1;
+        var p = [-dx, dx, -dy, dy];
+        var q = [p0.x - minX, maxX - p0.x, p0.y - minY, maxY - p0.y];
+        for (var i = 0; i < 4; i++) {
+          if (p[i] === 0) {
+            if (q[i] < 0) return null; // parallel to this edge and entirely outside it
+          } else {
+            var r = q[i] / p[i];
+            if (p[i] < 0) {
+              if (r > t1) return null;
+              if (r > t0) t0 = r;
+            } else {
+              if (r < t0) return null;
+              if (r < t1) t1 = r;
+            }
+          }
+        }
+        return [t0, t1];
+      }
+
+      var ARROW_EDGE_MARGIN = 16; // px kept clear of the map's own border
       function updateLegArrowPositions() {
         var size = map.getSize();
         if (!size.x || !size.y) return;
-        var cx = size.x / 2, cy = size.y / 2;
         var minX = ARROW_EDGE_MARGIN, maxX = size.x - ARROW_EDGE_MARGIN;
         var minY = ARROW_EDGE_MARGIN, maxY = size.y - ARROW_EDGE_MARGIN;
         legArrows.forEach(function (la) {
-          var p = map.latLngToContainerPoint(la.trueLatLng);
-          var x = p.x, y = p.y;
-          if (x < minX || x > maxX || y < minY || y > maxY) {
-            var dx = p.x - cx, dy = p.y - cy;
-            var scaleX = dx === 0 ? Infinity : ((dx > 0 ? maxX : minX) - cx) / dx;
-            var scaleY = dy === 0 ? Infinity : ((dy > 0 ? maxY : minY) - cy) / dy;
-            var scale = Math.min(scaleX, scaleY);
-            x = cx + dx * scale;
-            y = cy + dy * scale;
+          var p0 = map.latLngToContainerPoint(la.from);
+          var p1 = map.latLngToContainerPoint(la.to);
+          var range = clipSegmentToRect(p0, p1, minX, minY, maxX, maxY);
+          if (!range) {
+            la.marker.setOpacity(0);
+            return;
           }
+          var tMid = (range[0] + range[1]) / 2;
+          var dx = p1.x - p0.x, dy = p1.y - p0.y;
+          var x = p0.x + dx * tMid, y = p0.y + dy * tMid;
+          // Rotation from the same pixel-space vector the clip used, so the chevron's angle
+          // always matches the line exactly as drawn on screen — 0deg is "up" (matching the
+          // arrow-narrow-up icon's own default orientation), measured clockwise, same
+          // convention CSS rotate() uses.
+          var deg = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360;
           la.marker.setLatLng(map.containerPointToLatLng([x, y]));
+          la.marker.setOpacity(1);
+          var el = la.marker.getElement();
+          if (el) {
+            var arrowEl = el.querySelector(".sg-tripmap-arrow");
+            if (arrowEl) arrowEl.style.transform = "rotate(" + deg + "deg)";
+          }
         });
       }
       // "move" covers both panning and the pan-portion of a zoom (fires repeatedly through an
-      // animated zoom, not just at its end) so the chevron tracks smoothly rather than jumping
-      // once the zoom settles; "resize" covers the fullscreen toggle's invalidateSize() call.
-      // No manual initial call here — the map has no center/zoom yet at this point (that's set
-      // by the fitBounds() call below), and latLngToContainerPoint() throws on an unset view;
+      // animated zoom, not just at its end) so chevrons track smoothly rather than jumping once
+      // the zoom settles; "resize" covers the fullscreen toggle's invalidateSize() call. No
+      // manual initial call here — the map has no center/zoom yet at this point (that's set by
+      // the fitBounds() call below), and latLngToContainerPoint() throws on an unset view;
       // fitBounds() itself fires "move", which runs this for the first time once there's an
       // actual view to measure against.
       map.on("move zoom resize", updateLegArrowPositions);
