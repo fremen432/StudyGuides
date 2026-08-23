@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Germany Trip 2027 — Travel Companion</title>
+  <link rel="stylesheet" href="assets/style.css?v=20260822">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">Germany Trip 2027 — Travel Companion</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Generated 2026-08-23 &middot; Draft budget itinerary — dates/prices below are planning estimates, confirm before booking anything</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Standard Itinerary</span>
+                  <span class="sg-badge">Frugal Traveler · Bike &amp; Rail</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>Welcome to the Trip 🇩🇪</h2>
+          <p>Two weeks across Germany in May 2027 — Munich, Berlin, Hamburg (with a day trip out to
+          Buchholz and the Lüneburg Heath), the North Sea at St. Peter-Ording, and Cologne, all
+          strung together by train. Built around three things you actually like doing: riding a
+          bike somewhere new, drinking good beer, and eating better sausage than that — on a
+          genuinely frugal $5,000 solo budget, not a padded one.</p>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> This is a planning draft, not a booking</div>
+            <p>Nothing here is reserved yet. Dates below assume a sample window (Sat May 8 – Sat May
+            22, 2027) — swap in your real dates and the train/lodging numbers barely move, since
+            May weekday fares in Germany don't swing much week to week. Lodging picks are strong,
+            bookable candidates, not confirmed reservations — check current prices and availability
+            before you commit. This page is also public on the open web the moment it's published
+            (GitHub Pages), so nothing sensitive lives here beyond the trip itself.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Trip at a Glance 🗓️</h2>
+          <p>Thirteen nights, five home bases, one running theme: bike there, eat well, get back on
+          a train. Full detail for each stop is below this table.</p>
+          <table>
+            <thead><tr><th>Day</th><th>Date</th><th>Base</th><th>Headline</th></tr></thead>
+            <tbody>
+              <tr><td>Day 0</td><td>Sat 5/8</td><td>In transit</td><td>Depart home airport, overnight flight toward Munich</td></tr>
+              <tr><td>Day 1</td><td>Sun 5/9</td><td>Munich</td><td>Arrive, ease in — Marienplatz, Viktualienmarkt, early night</td></tr>
+              <tr><td>Day 2</td><td>Mon 5/10</td><td>Munich</td><td>Isar Cycle Path ride; English Garden &amp; the Eisbach surf wave</td></tr>
+              <tr><td>Day 3</td><td>Tue 5/11</td><td>Munich</td><td>Nymphenburg Palace bike loop; Hofbräuhaus for dinner</td></tr>
+              <tr><td>Day 4</td><td>Wed 5/12</td><td>Berlin</td><td>ICE to Berlin (~4h); Brandenburg Gate &amp; Mitte on foot</td></tr>
+              <tr><td>Day 5</td><td>Thu 5/13</td><td>Berlin</td><td>Bike ride: Tiergarten → Wannsee (28 km)</td></tr>
+              <tr><td>Day 6</td><td>Fri 5/14</td><td>Berlin</td><td>Berlin Wall Trail segment &amp; Mauerpark; currywurst crawl</td></tr>
+              <tr><td>Day 7</td><td>Sat 5/15</td><td>Hamburg</td><td>ICE to Hamburg (~1h45); Speicherstadt &amp; HafenCity by bike</td></tr>
+              <tr><td>Day 8</td><td>Sun 5/16</td><td>Hamburg</td><td>Alster lakes bike loop; Sunday Fischmarkt at dawn</td></tr>
+              <tr><td>Day 9</td><td>Mon 5/17</td><td>Hamburg</td><td>Day trip: Buchholz &amp; the Lüneburg Heath by bike</td></tr>
+              <tr><td>Day 10</td><td>Tue 5/18</td><td>St. Peter-Ording</td><td>Regional train via Husum (~2.5h); beach &amp; Deichradweg ride</td></tr>
+              <tr><td>Day 11</td><td>Wed 5/19</td><td>St. Peter-Ording</td><td>Guided Wattwanderung mudflat hike; Eiderstedt bike loop</td></tr>
+              <tr><td>Day 12</td><td>Thu 5/20</td><td>Cologne</td><td>Train via Hamburg (~6h); Altstadt &amp; Kölsch at Früh am Dom</td></tr>
+              <tr><td>Day 13</td><td>Fri 5/21</td><td>Cologne</td><td>Cathedral climb; Rhine promenade bike ride</td></tr>
+              <tr><td>Day 14</td><td>Sat 5/22</td><td>Home</td><td>Train to Frankfurt (~1h); fly home</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section>
+          <h2>Budget Breakdown 💶</h2>
+          <p>Solo, frugal, budget-hotel-and-guesthouse lodging throughout. Figures are per-person
+          totals for the whole 13-night trip, in euros and rough dollars (assuming roughly 1:1.08).</p>
+          <table>
+            <thead><tr><th>Category</th><th>Estimate (EUR)</th><th>Estimate (USD)</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Round-trip flight</td><td>&mdash;</td><td>$700–950</td><td>Open-jaw into Munich (MUC), home from Frankfurt (FRA) — see Getting There below</td></tr>
+              <tr><td>Long-distance trains (Sparpreis)</td><td>€150–230</td><td>$165–250</td><td>5 ICE legs, booked as soon as dates are fixed</td></tr>
+              <tr><td>Deutschlandticket (1 month)</td><td>€58</td><td>$65</td><td>Covers every city's transit + the two regional (non-ICE) legs — see below</td></tr>
+              <tr><td>Bike rentals</td><td>€120–150</td><td>$130–165</td><td>City bike-share days + St. Peter-Ording &amp; heath rental shops</td></tr>
+              <tr><td>Lodging (13 nights)</td><td>€850–950</td><td>$920–1,030</td><td>Budget hotels/guesthouses, see each city section</td></tr>
+              <tr><td>Food &amp; drink</td><td>€500–650</td><td>$540–700</td><td>~€40–50/day — street food lunches, one brauhaus dinner most nights</td></tr>
+              <tr><td>Activities &amp; entries</td><td>€150–200</td><td>$165–220</td><td>Cathedral climbs, guided Wattwanderung, Kiekeberg museum, misc.</td></tr>
+              <tr><td>E-scooters &amp; incidentals</td><td>€80–120</td><td>$85–130</td><td>Tier/Bolt/Lime for the odd late-night or rainy hop</td></tr>
+              <tr><td><strong>Subtotal</strong></td><td></td><td><strong>~$3,050–3,400</strong></td><td></td></tr>
+              <tr><td><strong>Buffer against $5,000</strong></td><td></td><td><strong>~$1,600–1,950</strong></td><td>Room for a Neuschwanstein day tour, a nicer dinner, or just not stressing about it</td></tr>
+            </tbody>
+          </table>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> There's real slack in this budget</div>
+            <p>Traveling frugally doesn't mean spending every dollar of the $5,000 — this plan comes
+            in well under it on purpose. The leftover ~$1,600–1,950 is a cushion for flight-price
+            reality (May fares move), a splurge dinner or two, or an add-on day trip (Neuschwanstein
+            Castle from Munich is a classic one, ~€60–90 round trip by regional train + bus) —
+            not a target to hit.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>Getting There &amp; Getting Around 🚆</h2>
+          <p>You said you like riding trains, planes, bikes, and scooters — good news, this trip
+          runs on exactly that stack. Here's how the pieces fit together.</p>
+
+          <h3>Flights ✈️</h3>
+          <p>Fly <strong>open-jaw</strong>: into Munich (MUC), home from Frankfurt (FRA) — never
+          backtrack across the country to catch your original arrival airport. Munich has strong
+          direct service from major U.S. hubs (round-trip fares from the East Coast were pricing
+          around $575–650 in searches for nearby dates, per <a href="https://www.skyscanner.com/routes/nyca/muc/new-york-to-munich.html" target="_blank" rel="noopener">Skyscanner</a>
+          and <a href="https://www.kayak.com/flight-routes/United-States-US0/Munich-Franz-Josef-Strauss-MUC" target="_blank" rel="noopener">KAYAK</a>);
+          from the middle of the country expect somewhat more. May 2027 fares aren't loaded on
+          booking sites yet — search closer to the date (ideally 4–6 months out) on Google Flights
+          or ITA Matrix with flexible dates, and price the open-jaw MUC-in/FRA-out combination
+          directly rather than two separate round trips, which is usually cheaper than it sounds.</p>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Departure airport</div>
+            <p>This section is written generically since the home airport wasn't locked in when this
+            page was built — plug in your actual departure city on Google Flights' "explore" map
+            and the MUC/FRA numbers above should hold roughly steady from most major U.S. hubs.</p>
+          </div>
+
+          <h3>Long-distance trains 🚄</h3>
+          <p>Deutsche Bahn's <strong>Sparpreis</strong> fares (from ~€20–45 per leg for routes this
+          length) are released roughly 6 months ahead and only get more expensive as the date
+          nears or the cheapest allotment sells out — book every long-distance leg the moment your
+          dates are final. Sparpreis tickets are non-refundable but can be changed once for a small
+          fee; the pricier flexible <strong>Flexpreis</strong> isn't worth it for a fixed
+          itinerary like this one.</p>
+          <table>
+            <thead><tr><th>Leg</th><th>Duration</th><th>Approx. Sparpreis</th></tr></thead>
+            <tbody>
+              <tr><td>Munich → Berlin</td><td>~4h (ICE)</td><td>€25–45</td></tr>
+              <tr><td>Berlin → Hamburg</td><td>~1h45 (ICE)</td><td>€20–35</td></tr>
+              <tr><td>Hamburg → Buchholz (round trip)</td><td>~30 min each way (RE)</td><td>€10–15 <em>(covered by Deutschlandticket)</em></td></tr>
+              <tr><td>Hamburg → St. Peter-Ording</td><td>~2h30, 1 change at Husum (RE)</td><td>€15–25 <em>(covered by Deutschlandticket)</em></td></tr>
+              <tr><td>St. Peter-Ording → Cologne</td><td>~6h via Hamburg (RE + ICE)</td><td>€45–70</td></tr>
+              <tr><td>Cologne → Frankfurt Airport</td><td>~1h (ICE)</td><td>€20–30</td></tr>
+            </tbody>
+          </table>
+
+          <div class="sg-callout formula">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-calculator"></use></svg> The Deutschlandticket move</div>
+            <p>Buy one <strong>Deutschlandticket</strong> (€58, valid a full calendar month) the day
+            you land. It's unlimited nationwide on every regional (RE/RB) train, plus every city's
+            U-Bahn/S-Bahn/bus/tram and bike-share unlock — it just doesn't cover ICE/IC
+            long-distance trains. That means it replaces separate day-transit-tickets in Munich,
+            Berlin, Hamburg, and Cologne <em>and</em> covers the two regional legs above (Buchholz
+            and St. Peter-Ording) for free — only the four true ICE legs need a separate Sparpreis
+            ticket.</p>
+          </div>
+
+          <h3>Bikes &amp; scooters 🚲</h3>
+          <p>Every city on this trip has a bike-share network — Munich and Berlin run
+          <strong>Call a Bike/Nextbike</strong>, Hamburg runs its own <strong>StadtRAD</strong>
+          (first 30 minutes free, a genuinely good deal for short hops), Cologne runs
+          <strong>KVB-Rad</strong>. Day passes run roughly €10–15 where a flat free window doesn't
+          apply. St. Peter-Ording and the Lüneburg Heath around Buchholz don't have bike-share —
+          rent from a shop at the train station or in town, ~€12–18/day. <strong>Tier</strong>,
+          <strong>Bolt</strong>, and <strong>Lime</strong> e-scooters are all over every city here
+          (~€1 unlock + ~€0.20/min) for the odd late-night or rain-shortcut hop.</p>
+
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Weather &amp; packing</div>
+            <p>May in Germany averages 50–65°F (10–18°C) inland, with the North Sea coast at
+            St. Peter-Ording running a few degrees cooler and noticeably windier — pack real
+            layers and a windproof/rain shell, not just a light jacket. Bring a bike-friendly
+            daypack and a phone mount if you have one; Deutsche Bahn's app + Google Maps cover
+            navigation offline once routes are cached.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 data-toc="Munich">Munich — Bavaria's Beer-Garden Capital 🍺</h2>
+          <p>Three nights to shake off jet lag the right way: slow mornings, an Isar-side bike ride,
+          and beer gardens instead of nightlife. Munich is compact and almost entirely flat along
+          the river, which makes it the easiest city on this trip to get around by bike from day one.</p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/munich-marienplatz.jpg" alt="Marienplatz and the Neues Rathaus in Munich">
+            <figcaption>Marienplatz and the Neues Rathaus (New Town Hall) — Munich's central square and the meeting point for the Glockenspiel show. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Neues_Rathaus_und_Marienplatz_M%C3%BCnchen.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Chris 73 (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <h3>Where to stay</h3>
+          <p><strong>MEININGER Hotel München Zentrum</strong> — a budget hotel/hostel hybrid chain
+          with private en-suite doubles, right by the Hauptbahnhof (main station), which makes the
+          Day 4 train to Berlin a five-minute walk instead of a taxi. Expect roughly €75–95/night
+          for a private double. <a href="https://www.google.com/maps/search/?api=1&query=MEININGER+Hotel+Munich+City+Center" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Bike rides</h3>
+          <p>The <strong>Isar Cycle Path</strong> runs flat along the river for roughly 150 km in
+          each direction from the city center — you only need a fraction of that. Head south from
+          the center through the Flaucher riverside meadows toward <strong>Schäftlarn Monastery</strong>
+          for an easy 20–30 km round trip, mostly car-free and shaded. Inside the city, the
+          <strong>English Garden</strong> is one of the largest urban parks in the world — ride
+          its main paths (dismount near the Eisbach, where surfers ride a standing river wave right
+          in the middle of the park, worth stopping to watch) and loop out toward
+          <strong>Nymphenburg Palace</strong> along its formal canal for a quieter, flatter ride.
+          <a href="https://www.google.com/maps/search/?api=1&query=Englischer+Garten+Munich" target="_blank" rel="noopener">(map)</a></p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/munich-isar-river.jpg" alt="The Isar River running through Munich, lined with gravel banks">
+            <figcaption>The Isar River through Munich — the cycle path follows it for miles in either direction, mostly flat and shaded. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:The_Isar_river_-_Munich,_Germany_-_panoramio.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Sergey Ashmarin (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <h3>Eat &amp; drink</h3>
+          <p><strong>Hofbräuhaus</strong> — yes, it's the touristy one, but it's touristy for a
+          reason: cavernous, loud, live oompah music, and a proper Weisswurst-and-pretzel plate. Go
+          once. <a href="https://www.google.com/maps/search/?api=1&query=Hofbrauhaus+Munich" target="_blank" rel="noopener">(map)</a></p>
+          <p><strong>Augustiner-Keller</strong> — the beer garden locals actually go to, with a
+          self-serve area (bring your own food if you want, order beer at the stand) that's the
+          cheapest way to drink well in this city. <a href="https://www.google.com/maps/search/?api=1&query=Augustiner-Keller+Munich" target="_blank" rel="noopener">(map)</a></p>
+          <p><strong>Viktualienmarkt</strong> — a permanent open-air market a block from Marienplatz;
+          cheap Bratwurst stalls, produce, and a beer garden of its own in the middle. Good spot for
+          an easy lunch between sights. <a href="https://www.google.com/maps/search/?api=1&query=Viktualienmarkt+Munich" target="_blank" rel="noopener">(map)</a></p>
+        </section>
+
+        <section>
+          <h2 data-toc="Berlin">Berlin — History on Two Wheels 🏛️</h2>
+          <p>Berlin is enormous and almost entirely flat, which is exactly why so much of it is best
+          seen by bike. Three nights here covers the Mitte core on foot and two very different bike
+          routes — one toward the lakes, one along Cold War history.</p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/berlin-brandenburg-gate.jpg" alt="The Brandenburg Gate in Berlin">
+            <figcaption>The Brandenburg Gate at Pariser Platz — once a symbol of division, now the city's most recognizable landmark and the starting point for the Tiergarten bike route. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Brandenburg_Gate_-_Brandenburger_Tor_-_Berlin_-_Germany_-_02.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Norbert Nagel (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <h3>Where to stay</h3>
+          <p><strong>MEININGER Hotel Berlin East Side Gallery</strong> — private double rooms right
+          next to the longest surviving stretch of the Berlin Wall, in Friedrichshain — puts you
+          within walking distance of one end of the Wall Trail ride and a short U-Bahn hop from
+          Mitte. Roughly €65–85/night. <a href="https://www.google.com/maps/search/?api=1&query=MEININGER+Hotel+Berlin+East+Side+Gallery" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Bike rides</h3>
+          <p><strong>Tiergarten → Wannsee (28 km)</strong> — starts at Schloßplatz in Mitte, cuts
+          through Gendarmenmarkt and past Checkpoint Charlie, then opens up into Tiergarten (Berlin's
+          huge central park) before running all the way south to Wannsee and the
+          <strong>Glienicker Brücke</strong> — the Cold War "Bridge of Spies" where East and West
+          traded captured agents. Wannsee itself has Europe's largest public lake beach, a good spot
+          to stop, swim, and eat before turning back or taking the S-Bahn home.
+          <a href="https://www.google.com/maps/search/?api=1&query=Glienicker+Brucke+Berlin" target="_blank" rel="noopener">(map)</a></p>
+          <p><strong>Berlin Wall Trail (Mauerweg)</strong> — a marked 160 km loop tracing the
+          former border in full, done in stages by most riders. You don't need the whole thing:
+          ride the segment from the East Side Gallery north through <strong>Mauerpark</strong>
+          (Sunday flea market and karaoke-in-the-amphitheater if your dates line up) for a shorter,
+          history-dense couple of hours. <a href="https://www.google.com/maps/search/?api=1&query=Mauerpark+Berlin" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Eat &amp; drink</h3>
+          <p><strong>Curry 36</strong> — one of Berlin's most-cited currywurst stands, open late,
+          cheap, and always busy — the city's signature street food and a good cap to a long ride.
+          <a href="https://www.google.com/maps/search/?api=1&query=Curry+36+Berlin" target="_blank" rel="noopener">(map)</a></p>
+          <p><strong>Konnopke's Imbiss</strong> — a Prenzlauer Berg institution under the elevated
+          U-Bahn tracks, currywurst since 1930 (East Berlin's version survived the Wall years right
+          here). <a href="https://www.google.com/maps/search/?api=1&query=Konnopkes+Imbiss+Berlin" target="_blank" rel="noopener">(map)</a></p>
+        </section>
+
+        <section>
+          <h2 data-toc="Hamburg & Buchholz">Hamburg &amp; the Lüneburg Heath — Harbor City to Heather Country ⚓</h2>
+          <p>Hamburg is Germany's flattest major city and its best-organized for cycling — hardly a
+          hill anywhere, a huge bike-lane network, and a free-for-30-minutes bike-share system. Three
+          nights here: two in the city, one built around the day trip out to Buchholz and the
+          Lüneburg Heath.</p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/hamburg-speicherstadt.jpg" alt="The Wasserschloss building in Hamburg's Speicherstadt warehouse district">
+            <figcaption>The Wasserschloss ("water castle") in Hamburg's Speicherstadt — the world's largest warehouse district, built on oak piles and a UNESCO World Heritage Site since 2015. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Wasserschloss_Speicherstadt_Hamburg.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Bettina Bruns (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+
+          <h3>Where to stay</h3>
+          <p><strong>MEININGER Hotel Hamburg City Center</strong> — private doubles a short ride
+          from both the Hauptbahnhof and the Alster lakes, roughly €70–90/night.
+          <a href="https://www.google.com/maps/search/?api=1&query=MEININGER+Hotel+Hamburg+City+Center" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Bike rides &amp; things to do in the city</h3>
+          <p>Grab a <strong>StadtRAD</strong> bike (first 30 minutes free — plan short hops, not one
+          long rental) and loop the <strong>Alster lakes</strong> — a flat, scenic ~7.5 km circuit
+          around the Binnenalster and Außenalster right in the city center, popular with locals on
+          any nice evening. Separately, ride down to <strong>Speicherstadt and HafenCity</strong>
+          along the Elbe, and don't skip the <strong>Old Elbe Tunnel</strong> — a century-old
+          pedestrian/bike tunnel under the river with harbor views on the far side.
+          <a href="https://www.google.com/maps/search/?api=1&query=Alster+Hamburg" target="_blank" rel="noopener">(map)</a></p>
+          <p>If your dates land on a Sunday, the <strong>Fischmarkt</strong> (fish market) starts at
+          5 a.m. and runs to 9:30, with a live band in the old Fischauktionshalle — a genuinely fun,
+          very Hamburg way to start a day, fish sandwich in hand.
+          <a href="https://www.google.com/maps/search/?api=1&query=Hamburg+Fischmarkt" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Day trip: Buchholz &amp; the Lüneburg Heath</h3>
+          <p>Buchholz in der Nordheide sits about 30 minutes south of Hamburg by regional train
+          (covered by the Deutschlandticket) and is the easiest gateway into the
+          <strong>Lüneburg Heath</strong> — rolling heathland known for its purple bloom in late
+          summer, but genuinely beautiful in May too: open moor, pine forest, and grazing
+          Heidschnucke sheep. Rent a bike in Buchholz and ride out to <strong>Wilseder Berg</strong>
+          (169 m, the heath's highest point — cars are banned in its core, so the last stretch is
+          bike/foot/horse-cart only) for a 360° view that reaches Hamburg on a clear day, or the
+          slightly quieter <strong>Brunsberg</strong> summit for the same payoff with fewer people.
+          On the way back into town, the <strong>Kiekeberg open-air museum</strong> is worth an hour
+          — reconstructed 19th-century farm buildings and craft demonstrations.
+          <a href="https://www.google.com/maps/search/?api=1&query=Wilseder+Berg" target="_blank" rel="noopener">(map)</a></p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/lueneburg-heath.jpg" alt="Open heathland in the Lüneburg Heath nature reserve">
+            <figcaption>The Lüneburg Heath's open moorland — Wilseder Berg, its 169 m high point, is reachable only by bike, foot, or horse-drawn cart. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:L%C3%BCneburger_Heide_092.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Willow (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <h3>Eat &amp; drink</h3>
+          <p>A <strong>Fischbrötchen</strong> (fish sandwich — pickled herring or fried fish in a
+          bread roll) from any Fischmarkt stall is the defining Hamburg cheap eat. In town, look for
+          a straightforward <em>Fischbude</em> (fish shack) rather than a sit-down restaurant to keep
+          it frugal and authentic.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="St. Peter-Ording">St. Peter-Ording — The North Sea 🌊</h2>
+          <p>Two nights on the Schleswig-Holstein coast, reached by regional train via Husum
+          (covered by the Deutschlandticket). St. Peter-Ording is a mainland resort with a
+          famously wide beach — up to a kilometer of tidal flat before you reach open water — laced
+          with a dedicated bike/boardwalk network and framed by the Wadden Sea, a UNESCO World
+          Heritage tidal ecosystem.</p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/st-peter-ording-pfahlbauten.jpg" alt="Stilt houses (Pfahlbauten) on the beach at St. Peter-Ording">
+            <figcaption>The Pfahlbauten — stilt-built beach huts and cafés at St. Peter-Ording, standing clear of the tide on the North Sea's famously wide flat beach. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Pfahlbauten_St._Peter-Ording_am_Strand.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Meles1 (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+
+          <h3>Where to stay</h3>
+          <p>St. Peter-Ording is a small resort town with no chain-hostel presence — instead, filter
+          Booking.com for a budget <strong>Pension</strong> or <strong>Ferienwohnung</strong> (guest
+          house / holiday apartment) in the <strong>Bad</strong> or <strong>Ording</strong>
+          districts, both walkable to the beach and the Deichradweg. Expect roughly €60–80/night for
+          a simple private room — book early, since May is shoulder season heading into the busy
+          summer months and small-town inventory is limited.</p>
+
+          <h3>Bike rides &amp; the mudflat hike</h3>
+          <p>Book a <strong>guided Wattwanderung</strong> (mudflat walk) in advance — the tide moves
+          fast and unpredictably across the flats, so this genuinely isn't a solo-explore activity.
+          Guided walks run a few hours, start from the Bad district, and typically cost around
+          €15–20 per person. Save the bike for the afternoon: the <strong>Deichradweg</strong> runs
+          along the top of the dike with open views over the salt marsh and Wadden Sea, and a longer
+          loop out onto the <strong>Eiderstedt Peninsula</strong> covers pine forest, marshland, and
+          small villages if you want more distance.
+          <a href="https://www.google.com/maps/search/?api=1&query=Sankt+Peter-Ording+Deich" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Eat &amp; drink</h3>
+          <p>Fischbude stalls along the beach promenade sell the local specialty — a
+          <strong>Krabbenbrötchen</strong> (North Sea shrimp roll) — for a few euros, the natural
+          lunch here every day.</p>
+        </section>
+
+        <section>
+          <h2 data-toc="Cologne">Cologne — Cathedral, Rhine &amp; Kölsch 🍻</h2>
+          <p>The last stop, and the shortest — one night, one full day. Cologne's Altstadt is small
+          enough to see on foot, its Rhine promenade is flat and made for an easy bike ride, and its
+          beer culture is unlike anywhere else in Germany: Kölsch is a protected style, brewed only
+          within about 50 km of the city, and served exclusively in small 200ml glasses called
+          <em>Stangen</em>.</p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/cologne-cathedral-bridge.jpg" alt="Cologne Cathedral and the Hohenzollern Bridge over the Rhine">
+            <figcaption>Cologne Cathedral (Kölner Dom) and the Hohenzollern Bridge over the Rhine — the cathedral's twin spires dominate the skyline from nearly anywhere in the city. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Cologne_Cathedral_and_the_Hohenzollern_Bridge_b.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Jiuguang Wang, retouched by Georgfotoart (CC BY-SA 3.0)</span></figcaption>
+          </figure>
+
+          <h3>Where to stay</h3>
+          <p><strong>MEININGER Hotel Köln West</strong> — private doubles at the frugal end of the
+          chain's pricing, roughly €55–75/night; it's in Junkersdorf, a bit outside the Altstadt but
+          directly on a tram line into the center in about 15 minutes.
+          <a href="https://www.google.com/maps/search/?api=1&query=MEININGER+Hotel+Koln+West" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Things to do &amp; the bike ride</h3>
+          <p><strong>Cologne Cathedral</strong> — free to enter the nave; climbing the 533 steps of
+          the south tower costs around €12 (as of mid-2026 pricing) for a rooftop view over the Rhine
+          and the whole Altstadt. Afterward, the <strong>Rhine promenade</strong> is flat and
+          pleasant on both banks between the Cathedral and Rheinauhafen — an easy, low-key bike ride
+          to close out the trip, cathedral spires in view most of the way.
+          <a href="https://www.google.com/maps/search/?api=1&query=Cologne+Cathedral" target="_blank" rel="noopener">(map)</a></p>
+
+          <h3>Eat &amp; drink</h3>
+          <p><strong>Früh am Dom</strong> — the most tourist-friendly Brauhaus in the city, literally
+          steps from the Cathedral, multilingual staff, and a roaming Köbes (waiter) who keeps
+          bringing fresh Stangen until you put a coaster on top of your glass to signal "enough."
+          Order a <em>Halve Hahn</em> (despite the name, not chicken — a rye roll with aged Gouda,
+          mustard, and pickle) alongside. <a href="https://www.google.com/maps/search/?api=1&query=Fruh+am+Dom+Cologne" target="_blank" rel="noopener">(map)</a></p>
+
+          <figure>
+            <img src="images/germany-trip-2027-companion/cologne-brauhaus.jpg" alt="Peters Brauhaus, a traditional Kölsch beer hall in Cologne">
+            <figcaption>Peters Brauhaus, a traditional Kölsch beer hall in Cologne's Altstadt — one of several classic brauhaus options if Früh am Dom is packed. <span class="sg-figure-source">- Source: <a href="https://commons.wikimedia.org/wiki/File:Peters_Brauhaus,_K%C3%B6ln-8848.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, photo by Raimond Spekking (CC BY-SA 4.0)</span></figcaption>
+          </figure>
+
+          <p><strong>Brauerei zur Malzmühle</strong> — quieter, more local, fewer tourists, in
+          Altstadt-Süd — a good pick if you want the same Kölsch-and-Brauhaus experience without the
+          crowd right at the Cathedral. <a href="https://www.google.com/maps/search/?api=1&query=Malzmuhle+Cologne" target="_blank" rel="noopener">(map)</a></p>
+        </section>
+
+        <section>
+          <h2>Glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td>Altstadt</td><td>"Old town" — the historic core of a German city, usually the most walkable, tourist-dense district.</td></tr>
+              <tr><td>Brauhaus</td><td>A traditional beer hall, usually attached to (or historically brewing) its own beer — the standard venue for Kölsch in Cologne or Weissbier in Munich.</td></tr>
+              <tr><td>Currywurst</td><td>Sliced sausage in curry-spiced ketchup, Berlin's signature street food since the postwar era.</td></tr>
+              <tr><td>Deichradweg</td><td>A bike path running along the top of a coastal dike (Deich) — common on the North Sea coast, offering flat, open, wind-exposed riding.</td></tr>
+              <tr><td>Deutschlandticket</td><td>A €58/month nationwide transit pass covering all regional (RE/RB) trains and every city's local public transit (U-Bahn, S-Bahn, bus, tram) — does not cover ICE/IC long-distance trains.</td></tr>
+              <tr><td>Fischbrötchen</td><td>A fish sandwich — fried or pickled fish in a bread roll — the classic cheap eat of Germany's northern coast.</td></tr>
+              <tr><td>Hauptbahnhof</td><td>"Main station" — the primary train station of a German city, usually abbreviated Hbf.</td></tr>
+              <tr><td>ICE</td><td>Intercity-Express — Deutsche Bahn's high-speed long-distance train, used for the Munich–Berlin–Hamburg–Cologne–Frankfurt legs of this trip.</td></tr>
+              <tr><td>Kölsch</td><td>A light, pale beer style with EU-protected geographic status — legally brewable only within about 50 km of Cologne, served in small 200ml glasses.</td></tr>
+              <tr><td>Krabbenbrötchen</td><td>A North Sea shrimp roll — the St. Peter-Ording equivalent of Hamburg's Fischbrötchen.</td></tr>
+              <tr><td>Open-jaw flight</td><td>A round trip that arrives in one city and departs from another (e.g. into Munich, home from Frankfurt), avoiding a backtrack to the original arrival airport.</td></tr>
+              <tr><td>RE / RB</td><td>Regional-Express / Regionalbahn — Deutsche Bahn's slower regional trains, covered by the Deutschlandticket, used for the Buchholz and St. Peter-Ording legs of this trip.</td></tr>
+              <tr><td>Sparpreis</td><td>Deutsche Bahn's discounted advance-purchase long-distance fare — cheapest booked early, non-refundable but changeable once for a fee.</td></tr>
+              <tr><td>Stange</td><td>The small (200ml) cylindrical glass Kölsch is traditionally served in — a full glass arrives unprompted until you cover it with a coaster.</td></tr>
+              <tr><td>Wattwanderung</td><td>A guided walk out onto the Wadden Sea's exposed tidal mudflats at low tide — should always be done with a licensed guide due to fast-changing tides.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js?v=20260822"></script>
+</body>
+</html>
