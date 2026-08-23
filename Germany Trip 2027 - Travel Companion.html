@@ -7,6 +7,81 @@
   <link rel="stylesheet" href="assets/style.css?v=20260824">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    /* German-flag-inspired palette for this guide only — shared template variables overridden
+       here, not in assets/style.css, so every other guide in the repo keeps the default green
+       theme. Same scoping technique as the Italy guide's tricolore override.
+       Schwarz-Rot-Gold (black / red / gold), but muted, sophisticated tones rather than the
+       flag's literal saturated bands: a burnished gold as the accent color (links, badges,
+       buttons, tip callouts and "stay" map pins), near-black for body text and the formula
+       callout family, and the flag's red reserved for warning callouts and "food" map pins — a
+       natural semantic fit, same reasoning the Italy guide used for its own warning red. */
+    :root {
+      --bg: #f7f6f3;
+      --bg-elevated: #ffffff;
+      --text: #1a1a18;
+      --text-dim: #5c584f;
+      --border: #ddd8cc;
+      --accent: #96731a;
+      --accent-soft: #f2e8d0;
+      --accent-contrast: #ffffff;
+      --code-bg: #efece4;
+      --tip-bg: #f7eed7;
+      --tip-border: #b8860b;
+      --formula-bg: #eceae6;
+      --formula-border: #4a4740;
+      --warning-bg: #fbe7e5;
+      --warning-border: #b3261e;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      /* Trip Map marker colors — stays reuse --accent (gold) so the route line and "home base"
+         pins read as one family; food pins take the flag's red, sights take a neutral blue so
+         all three pin kinds stay tellable apart at a glance even before reading the legend. */
+      --map-food: #b3261e;
+      --map-poi: #3c6ea5;
+    }
+    :root[data-theme="dark"] {
+      --bg: #17140f;
+      --bg-elevated: #211d16;
+      --text: #f2ede1;
+      --text-dim: #b3ab9a;
+      --border: #3d382c;
+      --accent: #d9ae42;
+      --accent-soft: #3a2f14;
+      --accent-contrast: #221a08;
+      --code-bg: #2a2519;
+      --tip-bg: #332a12;
+      --tip-border: #d9ae42;
+      --formula-bg: #2c2a26;
+      --formula-border: #9a958a;
+      --warning-bg: #3a1e1b;
+      --warning-border: #e0685c;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+      --map-food: #e0685c;
+      --map-poi: #7ea3d9;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #17140f;
+        --bg-elevated: #211d16;
+        --text: #f2ede1;
+        --text-dim: #b3ab9a;
+        --border: #3d382c;
+        --accent: #d9ae42;
+        --accent-soft: #3a2f14;
+        --accent-contrast: #221a08;
+        --code-bg: #2a2519;
+        --tip-bg: #332a12;
+        --tip-border: #d9ae42;
+        --formula-bg: #2c2a26;
+        --formula-border: #9a958a;
+        --warning-bg: #3a1e1b;
+        --warning-border: #e0685c;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+        --map-food: #e0685c;
+        --map-poi: #7ea3d9;
+      }
+    }
+  </style>
   <script>
     (function () {
       try {
