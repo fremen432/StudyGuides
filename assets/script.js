@@ -865,10 +865,12 @@
       });
     }
 
-    // Dashed route line between home bases, in travel order, with rotated chevrons pointing
-    // toward the next stop repeated along each segment — not just one at the exact midpoint —
-    // so a chevron is still in view after zooming into any one leg of a long segment, not only
-    // when the whole segment is visible at once.
+    // Dashed route line between home bases, in travel order, with one rotated chevron per leg
+    // pointing toward the next stop. The chevron lives at the leg's true geographic midpoint
+    // whenever that's on-screen; once zoom/pan would carry it out of view, it's pinned to the
+    // edge of the visible map instead — same "off-screen waypoint" pattern as a game minimap
+    // arrow or a turn-by-turn app's next-maneuver indicator — so there's always a visible cue
+    // for which way the route goes, not just when the whole leg happens to fit in the viewport.
     if (stays.length > 1) {
       var routeLatLngs = stays.map(function (s) { return [s.lat, s.lon]; });
       L.polyline(routeLatLngs, {
@@ -887,35 +889,55 @@
         return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
       }
 
-      // Haversine, in km — just to decide how many chevrons a segment earns, not for display,
-      // so the simple spherical-Earth approximation is more than accurate enough here.
-      function distanceKm(a, b) {
-        var R = 6371;
-        var dLat = (b[0] - a[0]) * Math.PI / 180, dLon = (b[1] - a[1]) * Math.PI / 180;
-        var lat1 = a[0] * Math.PI / 180, lat2 = b[0] * Math.PI / 180;
-        var h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
-        return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-      }
-
-      var ARROW_SPACING_KM = 70; // roughly one chevron every 70km of a leg
-      var ARROW_MAX_PER_LEG = 6; // cap so a very long leg (e.g. a cross-country transfer) doesn't clutter
-
+      var legArrows = [];
       for (var i = 0; i < routeLatLngs.length - 1; i++) {
         var a = routeLatLngs[i], b = routeLatLngs[i + 1];
+        var mid = L.latLng((a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
         var deg = bearing(a, b);
-        var legKm = distanceKm(a, b);
-        var count = Math.min(ARROW_MAX_PER_LEG, Math.max(1, Math.round(legKm / ARROW_SPACING_KM)));
         var arrowHtml = '<div class="sg-tripmap-arrow" style="transform:rotate(' + deg + 'deg)">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#icon-arrow-narrow-up"></use></svg></div>';
-        var icon = L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] });
-        // Evenly spaced along the leg (not including the endpoints themselves) — e.g. count=1
-        // places one chevron at the midpoint same as before, count=3 places them at 25/50/75%.
-        for (var j = 1; j <= count; j++) {
-          var t = j / (count + 1);
-          var pt = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
-          L.marker(pt, { icon: icon, interactive: false, keyboard: false }).addTo(map);
-        }
+        var marker = L.marker(mid, {
+          icon: L.divIcon({ html: arrowHtml, className: "", iconSize: [18, 18], iconAnchor: [9, 9] }),
+          interactive: false, keyboard: false
+        }).addTo(map);
+        legArrows.push({ trueLatLng: mid, marker: marker });
       }
+
+      // Clamp each chevron's true midpoint into the visible container rect, sliding it along
+      // the line from the view's center toward that midpoint until it hits the (inset) edge —
+      // a standard radial off-screen-indicator clamp, not just an independent x/y clamp, so the
+      // chevron lands on the edge in the direction actually toward its leg, not just "nearest
+      // corner". A midpoint already on-screen (inside the inset rect) is left exactly where it
+      // is — this only kicks in once zoom/pan would otherwise carry it out of view.
+      var ARROW_EDGE_MARGIN = 22; // px kept clear of the map's own border
+      function updateLegArrowPositions() {
+        var size = map.getSize();
+        if (!size.x || !size.y) return;
+        var cx = size.x / 2, cy = size.y / 2;
+        var minX = ARROW_EDGE_MARGIN, maxX = size.x - ARROW_EDGE_MARGIN;
+        var minY = ARROW_EDGE_MARGIN, maxY = size.y - ARROW_EDGE_MARGIN;
+        legArrows.forEach(function (la) {
+          var p = map.latLngToContainerPoint(la.trueLatLng);
+          var x = p.x, y = p.y;
+          if (x < minX || x > maxX || y < minY || y > maxY) {
+            var dx = p.x - cx, dy = p.y - cy;
+            var scaleX = dx === 0 ? Infinity : ((dx > 0 ? maxX : minX) - cx) / dx;
+            var scaleY = dy === 0 ? Infinity : ((dy > 0 ? maxY : minY) - cy) / dy;
+            var scale = Math.min(scaleX, scaleY);
+            x = cx + dx * scale;
+            y = cy + dy * scale;
+          }
+          la.marker.setLatLng(map.containerPointToLatLng([x, y]));
+        });
+      }
+      // "move" covers both panning and the pan-portion of a zoom (fires repeatedly through an
+      // animated zoom, not just at its end) so the chevron tracks smoothly rather than jumping
+      // once the zoom settles; "resize" covers the fullscreen toggle's invalidateSize() call.
+      // No manual initial call here — the map has no center/zoom yet at this point (that's set
+      // by the fitBounds() call below), and latLngToContainerPoint() throws on an unset view;
+      // fitBounds() itself fires "move", which runs this for the first time once there's an
+      // actual view to measure against.
+      map.on("move zoom resize", updateLegArrowPositions);
     }
 
     if (allLatLngs.length) {
