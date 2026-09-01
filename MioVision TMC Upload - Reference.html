@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MioVision TMC Upload — Reference</title>
+  <link rel="stylesheet" href="assets/style.css?v=20260830">
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("sg-theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.setAttribute("data-theme", theme);
+        }
+        if (localStorage.getItem("sg-toc-collapsed") === "1") {
+          document.documentElement.classList.add("sg-toc-pref-collapsed");
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Same Miovision-blue accent override as "Scout User Guide - Reference.html" (sampled from
+       Miovision's own wordmark, ~#2670e8) — kept in sync with that companion guide rather than
+       the shared default accent, since both guides cover the same product family. Scoped
+       override on top of the shared template, not an edit to style.css itself. -->
+  <style>
+    :root {
+      --accent: #2670e8;
+      --accent-soft: #e8f1fe;
+      --tip-border: #2670e8;
+    }
+    :root[data-theme="dark"] {
+      --accent: #6ca4fb;
+      --accent-soft: #17263f;
+      --tip-border: #6ca4fb;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --accent: #6ca4fb;
+        --accent-soft: #17263f;
+        --tip-border: #6ca4fb;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="icon-info" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" /><path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24">
+      <path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+    </symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24">
+      <path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" />
+    </symbol>
+    <symbol id="icon-chevrons-up-down" viewBox="0 0 24 24">
+      <path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" />
+    </symbol>
+    <symbol id="icon-arrow-up" viewBox="0 0 24 24">
+      <path d="m5 12 7-7 7 7" /><path d="M12 19V5" />
+    </symbol>
+    <symbol id="icon-lightbulb" viewBox="0 0 24 24">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" /><path d="M10 22h4" />
+    </symbol>
+    <symbol id="icon-calculator" viewBox="0 0 24 24">
+      <rect width="16" height="20" x="4" y="2" rx="2" />
+      <line x1="8" x2="16" y1="6" y2="6" /><line x1="16" x2="16" y1="14" y2="18" />
+      <path d="M16 10h.01" /><path d="M12 10h.01" /><path d="M8 10h.01" />
+      <path d="M12 14h.01" /><path d="M8 14h.01" /><path d="M12 18h.01" /><path d="M8 18h.01" />
+    </symbol>
+    <symbol id="icon-triangle-alert" viewBox="0 0 24 24">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+      <path d="M12 9v4" /><path d="M12 17h.01" />
+    </symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24">
+      <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+    </symbol>
+  </svg>
+
+  <div class="sg-layout">
+    <div class="sg-toc-backdrop" id="sg-toc-backdrop" aria-hidden="true"></div>
+
+    <div class="sg-toc" id="toc">
+      <div class="sg-toc-topbar">
+        <button class="sg-btn sg-btn-icon sg-toc-close" id="sg-toc-close" title="Close menu" aria-label="Close menu">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-x"></use></svg>
+        </button>
+      </div>
+      <div class="sg-toc-rail">
+        <button class="sg-btn" id="sg-toc-toggle" title="Show/hide the contents sidebar">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          <span class="sg-btn-label">Hide Contents</span>
+        </button>
+        <button class="sg-btn" id="sg-toc-collapse-all" title="Collapse/expand all sub-sections">
+          <svg class="sg-icon" aria-hidden="true"><use href="#icon-chevrons-up-down"></use></svg>
+          <span class="sg-btn-label">Collapse Sub-sections</span>
+        </button>
+      </div>
+      <div class="sg-toc-body">
+        <div class="sg-toc-title-row">
+          <div class="sg-toc-title">Contents</div>
+        </div>
+        <div id="toc-nav"></div>
+      </div>
+    </div>
+
+    <div class="sg-main-wrap">
+      <header class="sg-header">
+        <div class="sg-header-row">
+          <button class="sg-btn sg-btn-icon sg-mobile-menu-btn" id="sg-mobile-menu-toggle" title="Open contents menu" aria-label="Open contents menu" aria-expanded="false" aria-controls="toc">
+            <svg class="sg-icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+          </button>
+          <h1 class="sg-title">Uploading a TMC Study to MioVision</h1>
+          <div class="sg-controls">
+            <div class="sg-info-wrap">
+              <button class="sg-btn sg-btn-icon" id="sg-info-toggle" title="Guide info" aria-expanded="false">
+                <svg class="sg-icon" aria-hidden="true"><use href="#icon-info"></use></svg>
+              </button>
+              <div class="sg-info-popover" id="sg-info-popover" aria-hidden="true">
+                <div class="sg-meta">Written 2026-09-01 &middot; internal RTG workflow, source: Steve Sharma's Traffic Data Online walkthrough</div>
+                <div class="sg-badges">
+                  <span class="sg-badge">Reference Manual</span>
+                  <span class="sg-badge">Step-by-Step Workflow</span>
+                </div>
+              </div>
+            </div>
+            <button class="sg-btn sg-btn-icon" id="sg-theme-toggle" title="Toggle light/dark">
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-sun"></use></svg>
+              <svg class="sg-icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="sg-main">
+
+        <section>
+          <h2>Overview</h2>
+          <p>This walks through getting a turning-movement-count (TMC) recording off a Miovision
+          Scout and turned into a finished traffic count. It uses two separate Miovision tools:
+          <strong>Traffic Data Online</strong> (<code>trafficdataonline.com</code>) to upload and
+          configure the study, and <strong>Miovision DataLink</strong>
+          (<code>datalink.miovision.com</code>) to find the finished study and download its
+          report once Miovision has processed it.</p>
+          <div class="sg-callout tip">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-lightbulb"></use></svg> Defaults to use, unless the job says otherwise</div>
+            <ul>
+              <li><strong>Study type:</strong> TMC Study &mdash; Roundabout Study and ATR Study are only for those specific setups.</li>
+              <li><strong>Video storage:</strong> Forever (Included) &mdash; keeps the raw video archived.</li>
+              <li><strong>Classification:</strong> Lights / Mediums / Articulated Trucks &mdash; add the crosswalk pedestrian/bicycle counts only when the scope calls for it, both cost extra.</li>
+              <li><strong>Turnaround:</strong> Standard, ~72 hours &mdash; 24/48 hour turnaround costs extra.</li>
+              <li><strong>Traffic flow:</strong> Right-hand traffic (US default).</li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <h2>Open Projects</h2>
+          <p>From the Traffic Data Online home screen, under <strong>"What would you like to
+          do?"</strong>, click the <code>Projects</code> icon.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/01-open-projects.png" alt="Traffic Data Online home screen with the Projects icon highlighted by a red arrow">
+            <figcaption>Projects icon, top row of shortcuts on the home screen.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Create the Project</h2>
+          <p>On the Projects tab, click <code>Create New Project</code> &mdash; or open an
+          existing project if this count already belongs to one.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/02-create-new-project.png" alt="Projects tab with the Create New Project button highlighted">
+            <figcaption>Create New Project, top-left of the Projects tab.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Open Add Video</h2>
+          <p>Switch to the <code>Add Video</code> tab in the main navigation.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/03-add-video-tab.png" alt="Main navigation bar with the Add Video tab highlighted">
+            <figcaption>Add Video tab, next to Plan in the top navigation.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Add a Video Study</h2>
+          <p>Click <code>Add Video Study</code> to attach a recorded count to the project.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/04-add-video-study-button.png" alt="Add Video page with the Add Video Study button highlighted">
+            <figcaption>Add Video Study, top-left action button.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Choose the Study Type</h2>
+          <p>In <strong>Select Study Type</strong>, pick <code>TMC Study</code> for a standard
+          turning-movement count &mdash; it covers most everyday intersection counts. Roundabout
+          Study and ATR Study are for those specific setups.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/05-select-study-type.png" alt="Select Study Type dialog with TMC Study and ATR Study highlighted as the most common choices">
+            <figcaption>TMC Study and ATR Study &mdash; the two used most often.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Browse for the .mio File</h2>
+          <p>In <strong>Select Videos</strong>, click <code>Browse for a Mio file</code>.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/06-browse-for-mio-file.png" alt="Add Video Study dialog with the Browse for a Mio file button highlighted">
+            <figcaption>Browse for a Mio file, top-left of the Select Videos step.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="Find the File on the Scout">Find the File on the Scout's Drive</h2>
+          <p>The <code>.mio</code> file sits on the flash drive pulled from the Scout, alongside
+          its <code>.mp4</code> clips, <code>.log</code>, and <code>.schedule</code> files for
+          that recording. Select it.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/07-mio-file-on-scout-drive.png" alt="File browser showing the Scout's flash drive contents with the .mio file selected">
+            <figcaption>The .mio file, selected alongside the recording's other exported files.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Set the Trim Range</h2>
+          <p>Click <code>Maximize Trim</code> to load the full recorded window into the trim
+          selection, then <code>Next</code>.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/08-maximize-trim.png" alt="Select Videos step showing a video preview and the Maximize Trim button highlighted">
+            <figcaption>Maximize Trim expands the yellow trim bar to match the full blue recording.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Set Study Options</h2>
+          <p>Name the study, confirm its <code>Project</code>, and set
+          <code>Video Storage</code> to <strong>Forever (Included)</strong> so the raw video
+          stays archived. Leave Turnaround Time on Standard and Traffic Flow on Right-hand
+          traffic unless the job needs otherwise.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/09-study-options-forever-storage.png" alt="Study Options dialog with Video Storage set to Forever, highlighted">
+            <figcaption>Video Storage &mdash; set to Forever (Included).</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Set Classifications</h2>
+          <p>Pick <code>Lights / Mediums / Articulated Trucks</code> for most counts. Only check
+          <strong>Count Pedestrians on Crosswalks</strong> and <strong>Count Bicycles on
+          Crosswalks</strong> when the scope calls for it &mdash; both add cost.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/10-classification-settings.png" alt="Classification Settings dialog with Lights, Mediums, Articulated Trucks and the crosswalk checkboxes highlighted">
+            <figcaption>Standard classification, plus the optional crosswalk counts below it.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="Location &amp; Legs">Set the Location, Then Annotate the Legs</h2>
+          <p>Right-click the map to drop a pin where the Scout was mounted &mdash; or hover an
+          existing grey pin to reuse it.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/11-set-location-map.png" alt="Set Location dialog with a map and a red arrow pointing to a newly-dropped location pin">
+            <figcaption>Set the location &mdash; right-click the map to drop a pin.</figcaption>
+          </figure>
+          <p>Then, in <strong>Annotate Study</strong>, name each leg, set its compass direction,
+          and flag any one-way legs or right-turn-on-red movements. Use
+          <code>Additional Instructions</code> for anything unusual &mdash; camera count,
+          direction limits, and so on.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/12-annotate-study-legs.png" alt="Annotate Study dialog with leg names, directions, and additional instructions filled in">
+            <figcaption>Name each leg and its direction; note anything unusual below.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="Switch Accounts in DataLink">Switch to the Right Account in DataLink</h2>
+          <p>Once Miovision has finished processing, studies show up in
+          <strong>Miovision DataLink</strong> (<code>datalink.miovision.com</code>). If a study
+          isn't showing up, check the account switcher, top-right &mdash; make sure the correct
+          account is selected.</p>
+          <div class="sg-callout warning">
+            <div class="sg-callout-title"><svg class="sg-icon" aria-hidden="true"><use href="#icon-triangle-alert"></use></svg> Common Pitfall</div>
+            <p>Different accounts see different studies. If a finished count is missing, this is
+            almost always why.</p>
+          </div>
+          <figure>
+            <img src="images/miovision-tmc-upload/13-datalink-account-switcher.png" alt="Miovision DataLink account menu with the RTG, Inc account highlighted">
+            <figcaption>Account switcher, top-right of the Traffic Data Search page.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2 data-toc="Review &amp; Download">Review the Study, Then Download the Report</h2>
+          <p>Open the finished study to see its snapshot &mdash; volumes by class, Peak Hour
+          Factor, and the source video.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/14-finished-study-snapshot.png" alt="Finished study snapshot in DataLink showing traffic counts by class over time">
+            <figcaption>Finished study &mdash; traffic counts by class, PHF, and video.</figcaption>
+          </figure>
+          <p>Use <code>Download Reports &rarr; Generate Report</code> to pick a format (Excel,
+          CSV, PDF, UTDF, or GEOCOUNTS) and a bin size, then <code>Create Report</code>.</p>
+          <figure>
+            <img src="images/miovision-tmc-upload/15-generate-report-dialog.png" alt="Generate Report dialog with format and bin size options">
+            <figcaption>Generate Report &mdash; format, bin size, then Create Report.</figcaption>
+          </figure>
+        </section>
+
+        <section>
+          <h2>Glossary</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Definition</th></tr></thead>
+            <tbody>
+              <tr><td>ATR</td><td>Automatic Traffic Recorder study &mdash; counts volume/speed/classification on a road segment, without turning movements.</td></tr>
+              <tr><td>DataLink</td><td>Miovision's portal (<code>datalink.miovision.com</code>) for finding finished studies, viewing their snapshot, and generating reports.</td></tr>
+              <tr><td>.mio file</td><td>The study index file the Scout writes alongside its video clips, which Traffic Data Online reads to reassemble the full recording for upload.</td></tr>
+              <tr><td>PHF</td><td>Peak Hour Factor &mdash; a measure of how evenly traffic volume is distributed within the peak hour (closer to 1.0 is more even).</td></tr>
+              <tr><td>Scout</td><td>Miovision's portable video traffic-counting camera unit, deployed at an intersection to record a study.</td></tr>
+              <tr><td>TMC</td><td>Turning Movement Count &mdash; a study that classifies and counts vehicles by the specific turn they make at each leg of an intersection.</td></tr>
+              <tr><td>Traffic Data Online</td><td>Miovision's upload &amp; configuration tool (<code>trafficdataonline.com</code>) &mdash; where a study is created, its video attached, and its classification/location settings are set.</td></tr>
+              <tr><td>UTDF / GEOCOUNTS</td><td>Two of the report export formats Miovision offers alongside Excel, CSV, and PDF, aimed at specific traffic-modeling software.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
+    <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
+  </button>
+  <script src="assets/script.js?v=20260822"></script>
+</body>
+</html>
