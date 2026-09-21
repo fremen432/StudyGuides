@@ -39,6 +39,7 @@
      two alongside its other --accent overrides; these are just the default-theme values. */
   --map-food: #b9791f;
   --map-poi: #3c6ea5;
+  --map-terminal: #c8452d;
 }
 
 :root[data-theme="dark"] {
@@ -60,6 +61,7 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --map-food: #d9a54c;
   --map-poi: #7ea3d9;
+  --map-terminal: #f0785f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -82,6 +84,7 @@
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     --map-food: #d9a54c;
     --map-poi: #7ea3d9;
+  --map-terminal: #f0785f;
   }
 }
 
@@ -1223,6 +1226,7 @@ details.sg-section > *:not(summary) { margin-top: 0.75rem; }
 .sg-tripmap-swatch--stay { background: var(--accent); }
 .sg-tripmap-swatch--restaurant { background: var(--map-food); }
 .sg-tripmap-swatch--poi { background: var(--map-poi); }
+.sg-tripmap-swatch--terminal { background: var(--map-terminal); }
 .sg-tripmap-canvas {
   width: 100%;
   height: clamp(360px, 55vh, 560px);
@@ -1283,6 +1287,33 @@ body.sg-tripmap-fs-lock { overflow: hidden; }
 .sg-tripmap-pin--restaurant .sg-icon { width: 13px; height: 13px; }
 .sg-tripmap-pin--poi { background: var(--map-poi); width: 22px; height: 22px; }
 .sg-tripmap-pin--poi .sg-icon { width: 12px; height: 12px; }
+.sg-tripmap-pin--terminal {
+  background: var(--map-terminal);
+  width: 44px;
+  height: 44px;
+  border-width: 3px;
+  box-shadow: 0 0 0 3px var(--map-terminal), 0 2px 6px rgba(0, 0, 0, 0.55);
+}
+.sg-tripmap-pin--terminal .sg-icon { width: 24px; height: 24px; }
+.sg-tripmap-terminal { position: relative; width: 44px; height: 44px; }
+.sg-tripmap-terminal-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--map-terminal);
+  color: #fff;
+  border: 1.5px solid #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
 .sg-tripmap-arrow { color: var(--accent); filter: drop-shadow(0 0 2px var(--bg-elevated)); }
 .sg-tripmap-arrow svg { width: 18px; height: 18px; }
 

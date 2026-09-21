@@ -738,16 +738,18 @@
       return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
     }
 
-    var TILE_LAYERS = {
-      light: {
-        url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-        attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
-      },
-      dark: {
-        url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
-      }
-    };
+    // Esri's gray canvas (base + place-name reference overlay) — CARTO's free basemap started
+    // stamping "API KEY REQUIRED" across every tile, and Esri's needs no key. Tiles stop at
+    // z16, so maxNativeZoom lets Leaflet upscale beyond that instead of going blank.
+    var ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+    var ESRI_ATTR = "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors";
+    function esriTheme(name) {
+      return {
+        base: ESRI + "World_" + name + "_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        ref: ESRI + "World_" + name + "_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+      };
+    }
+    var TILE_LAYERS = { light: esriTheme("Light"), dark: esriTheme("Dark") };
 
     var map = L.map(canvas, { scrollWheelZoom: false });
     var tileLayer = null;
@@ -756,11 +758,11 @@
     function applyTileTheme() {
       var cfg = isDark() ? TILE_LAYERS.dark : TILE_LAYERS.light;
       if (tileLayer) map.removeLayer(tileLayer);
-      tileLayer = L.tileLayer(cfg.url, {
-        maxZoom: 19,
-        subdomains: "abcd",
-        attribution: cfg.attribution
-      }).addTo(map);
+      var opts = { maxZoom: 19, maxNativeZoom: 16, attribution: ESRI_ATTR };
+      tileLayer = L.layerGroup([
+        L.tileLayer(cfg.base, opts),
+        L.tileLayer(cfg.ref, { maxZoom: 19, maxNativeZoom: 16, pane: "shadowPane" })
+      ]).addTo(map);
       if (routeLine) {
         routeLine.setStyle({ color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2f8f5b" });
       }
@@ -784,6 +786,28 @@
       return L.divIcon({ html: html, className: "", iconSize: [size, size], iconAnchor: [size / 2, size / 2], popupAnchor: [0, -size / 2] });
     }
     var ICONS = { stay: pinIcon("stay", 34), restaurant: pinIcon("restaurant", 24), poi: pinIcon("poi", 22) };
+
+    // Optional "role" ("start" / "end") on a stay point marks the trip's endpoints — e.g. a
+    // cruise's embarkation and disembarkation. Those get a larger, differently-colored pin with
+    // a ship (or flag) icon and a caption, instead of the ordinary home-base house. When a
+    // start and an end share the exact same coordinates (a round-trip cruise from one port) they
+    // collapse into ONE combined pin, since two markers would just stack on top of each other.
+    // Points without a role are unaffected, so every other guide's map renders exactly as before.
+    var ROLE_LABEL = { start: "Start", end: "Finish", both: "Start & finish" };
+    var ROLE_ICON = { start: "icon-ship", end: "icon-flag", both: "icon-ship" };
+    function terminalIcon(role) {
+      var html = '<div class="sg-tripmap-terminal">' +
+        '<div class="sg-tripmap-pin sg-tripmap-pin--terminal">' +
+        '<svg class="sg-icon" aria-hidden="true"><use href="#' + ROLE_ICON[role] + '"></use></svg></div>' +
+        '<div class="sg-tripmap-terminal-label">' + ROLE_LABEL[role] + '</div></div>';
+      return L.divIcon({ html: html, className: "", iconSize: [44, 44], iconAnchor: [22, 22], popupAnchor: [0, -22] });
+    }
+    var terminals = {};
+    points.forEach(function (p) {
+      if (!p.role) return;
+      var key = p.lat + "," + p.lon;
+      (terminals[key] = terminals[key] || []).push(p);
+    });
     var KIND_LABEL = { stay: "🏠 Where you're staying", restaurant: "🍴 Restaurant / food stop", poi: "👁️ Sight / point of interest" };
 
     var allLatLngs = [];
@@ -820,21 +844,29 @@
     points.forEach(function (p) {
       var ll = [p.lat, p.lon];
       allLatLngs.push(ll);
-      var marker = L.marker(ll, { icon: ICONS[p.kind] || ICONS.poi, riseOnHover: true });
+      var group = p.role ? terminals[p.lat + "," + p.lon] : null;
+      if (group && group[0] !== p) return; // folded into the first point sharing this location
+      var role = !group ? null : (group.length > 1 ? "both" : p.role);
+      var marker = L.marker(ll, { icon: role ? terminalIcon(role) : (ICONS[p.kind] || ICONS.poi), riseOnHover: true, zIndexOffset: role ? 1000 : 0 });
       var stopNote = "";
-      if (p.kind === "stay") {
+      if (role) {
+        stopNote = group.map(function (g) {
+          var lg = legDates[g.city];
+          return '<div class="sg-tripmap-popup-city"><strong>' + ROLE_LABEL[g.role] + '</strong>' + (lg ? ' &middot; ' + lg.range : '') + '</div>';
+        }).join("");
+      } else if (p.kind === "stay") {
         stopNote = '<div class="sg-tripmap-popup-city">Home base ' + (stays.indexOf(p) + 1) + ' of ' + stays.length + '</div>';
       }
-      var leg = legDates[p.city];
+      var leg = role ? null : legDates[p.city];
       var datesLine = leg
         ? '<div class="sg-tripmap-popup-dates">📅 ' + leg.range + ' &middot; ' + leg.days + (leg.days === 1 ? " day" : " days") + '</div>'
         : "";
       var mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(p.mapsQuery);
       var popupHtml =
         photoStripHtml(p) +
-        '<div class="sg-tripmap-popup-kind">' + KIND_LABEL[p.kind] + '</div>' +
-        '<div class="sg-tripmap-popup-name">' + p.name + '</div>' +
-        '<div class="sg-tripmap-popup-city">' + p.city + '</div>' +
+        '<div class="sg-tripmap-popup-kind">' + (role ? (role === "both" ? "🚢 Cruise start &amp; finish" : role === "start" ? "🚢 Trip start" : "🏁 Trip finish") : KIND_LABEL[p.kind]) + '</div>' +
+        '<div class="sg-tripmap-popup-name">' + (role === "both" ? (p.terminalName || p.name) : p.name) + '</div>' +
+        (role ? "" : '<div class="sg-tripmap-popup-city">' + p.city + '</div>') +
         datesLine +
         stopNote +
         '<a class="sg-tripmap-popup-link" href="' + mapsUrl + '" target="_blank" rel="noopener">Open in Google Maps &rarr;</a>';
