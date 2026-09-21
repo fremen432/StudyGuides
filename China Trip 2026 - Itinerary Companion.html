@@ -1083,7 +1083,7 @@
   <button class="sg-back-to-top" id="sg-back-to-top" title="Back to top">
     <svg class="sg-icon" aria-hidden="true"><use href="#icon-arrow-up"></use></svg>
   </button>
-  <script src="assets/script.js?v=20260830"></script>
+  <script src="assets/script.js?v=20260920b"></script>
 
   <!-- ---------- Trip Map (GIS-style overview, "Trip Map" section) ---------- -->
   <script type="application/json" id="sg-tripmap-data">
@@ -1128,16 +1128,18 @@
         return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
       }
 
-      var TILE_LAYERS = {
-        light: {
-          url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-          attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
-        },
-        dark: {
-          url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-          attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors &copy; <a href=\"https://carto.com/attributions\" target=\"_blank\" rel=\"noopener\">CARTO</a>"
-        }
-      };
+      // Esri gray canvas (base + place-name overlay) — CARTO's free basemap now stamps
+      // "API KEY REQUIRED" on every tile; Esri's needs no key. Tiles stop at z16, so
+      // maxNativeZoom lets Leaflet upscale past that instead of going blank.
+      var ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+      var ESRI_ATTR = "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors";
+      function esriTheme(name) {
+        return {
+          base: ESRI + "World_" + name + "_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+          ref: ESRI + "World_" + name + "_Gray_Reference/MapServer/tile/{z}/{y}/{x}"
+        };
+      }
+      var TILE_LAYERS = { light: esriTheme("Light"), dark: esriTheme("Dark") };
 
       var map = L.map(canvas, { scrollWheelZoom: false });
       var tileLayer = null;
@@ -1146,11 +1148,10 @@
       function applyTileTheme() {
         var cfg = isDark() ? TILE_LAYERS.dark : TILE_LAYERS.light;
         if (tileLayer) map.removeLayer(tileLayer);
-        tileLayer = L.tileLayer(cfg.url, {
-          maxZoom: 19,
-          subdomains: "abcd",
-          attribution: cfg.attribution
-        }).addTo(map);
+        tileLayer = L.layerGroup([
+          L.tileLayer(cfg.base, { maxZoom: 19, maxNativeZoom: 16, attribution: ESRI_ATTR }),
+          L.tileLayer(cfg.ref, { maxZoom: 19, maxNativeZoom: 16, pane: "shadowPane" })
+        ]).addTo(map);
         if (routeLine) {
           routeLine.setStyle({ color: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#de2910" });
         }
