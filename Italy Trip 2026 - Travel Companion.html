@@ -230,37 +230,6 @@
       </header>
 
       <main class="sg-main">
-<section>
-<h2>Trip Map 🗺️</h2>
-<p>Every stop in this guide, plotted at once — zoomed way out from the day-by-day detail below.
-<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span></span>House pins are
-where you're sleeping each night; <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span></span>fork-and-knife pins are restaurants and food stops;
-<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span></span>eye pins are everything else worth seeing. The dashed green line traces the route between home
-bases, in the order you'll actually travel it.</p>
-<div class="sg-tripmap" id="sg-tripmap">
-  <div class="sg-tripmap-toolbar">
-    <div class="sg-tripmap-legend" role="group" aria-label="Show or hide pin types">
-      <button type="button" class="sg-tripmap-filter" data-kind="stay" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span>Where you're staying</button>
-      <button type="button" class="sg-tripmap-filter" data-kind="restaurant" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span>Restaurants &amp; food</button>
-      <button type="button" class="sg-tripmap-filter" data-kind="poi" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span>Sights &amp; points of interest</button>
-    </div>
-    <div class="sg-tripmap-toolbar-actions">
-      <button class="sg-btn sg-btn-icon" id="sg-tripmap-fit" type="button" title="Zoom to fit all pins" aria-label="Zoom to fit all pins">
-        <svg class="sg-icon" aria-hidden="true"><use href="#icon-focus"></use></svg>
-      </button>
-      <button class="sg-btn sg-btn-icon sg-tripmap-fullscreen-btn" id="sg-tripmap-fullscreen" type="button" title="View map fullscreen" aria-label="View map fullscreen">
-        <svg class="sg-icon" aria-hidden="true"><use href="#icon-maximize"></use></svg>
-      </button>
-    </div>
-  </div>
-  <div class="sg-tripmap-canvas" id="sg-tripmap-canvas" role="img" aria-label="Map of every location mentioned in this guide, from Lake Como to Milan"></div>
-</div>
-<p class="sg-tripmap-hint">💡 Tap or click any pin for what it is and a link straight into Google
-Maps. Pinch or scroll to zoom, drag to pan, and use the
-<svg class="sg-icon" aria-hidden="true" style="width:0.9em;height:0.9em;vertical-align:-0.1em"><use href="#icon-maximize"></use></svg>
-button for a fullscreen view. This part of the page needs a connection to load the map tiles —
-see the offline note below.</p>
-</section>
 
 <section>
 <h2>Welcome to the Trip 🇮🇹</h2>
@@ -322,9 +291,41 @@ one table before the day-by-day detail below.</p>
 </table>
 </section>
 
+<section>
+<h2>Trip Map 🗺️</h2>
+<p>Every stop in this guide, plotted at once — zoomed way out from the day-by-day detail below.
+<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span></span>House pins are
+where you're sleeping each night; <span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span></span>fork-and-knife pins are restaurants and food stops;
+<span class="sg-tripmap-legend-item"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span></span>eye pins are everything else worth seeing. The dashed green line traces the route between home
+bases, in the order you'll actually travel it.</p>
+<div class="sg-tripmap" id="sg-tripmap">
+  <div class="sg-tripmap-toolbar">
+    <div class="sg-tripmap-legend" role="group" aria-label="Show or hide pin types">
+      <button type="button" class="sg-tripmap-filter" data-kind="stay" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--stay"><svg class="sg-icon" aria-hidden="true"><use href="#icon-home"></use></svg></span>Where you're staying</button>
+      <button type="button" class="sg-tripmap-filter" data-kind="restaurant" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--restaurant"><svg class="sg-icon" aria-hidden="true"><use href="#icon-utensils"></use></svg></span>Restaurants &amp; food</button>
+      <button type="button" class="sg-tripmap-filter" data-kind="poi" aria-pressed="true"><span class="sg-tripmap-swatch sg-tripmap-swatch--poi"><svg class="sg-icon" aria-hidden="true"><use href="#icon-eye"></use></svg></span>Sights &amp; points of interest</button>
+    </div>
+    <div class="sg-tripmap-toolbar-actions">
+      <button class="sg-btn sg-btn-icon" id="sg-tripmap-fit" type="button" title="Zoom to fit all pins" aria-label="Zoom to fit all pins">
+        <svg class="sg-icon" aria-hidden="true"><use href="#icon-focus"></use></svg>
+      </button>
+      <button class="sg-btn sg-btn-icon sg-tripmap-fullscreen-btn" id="sg-tripmap-fullscreen" type="button" title="View map fullscreen" aria-label="View map fullscreen">
+        <svg class="sg-icon" aria-hidden="true"><use href="#icon-maximize"></use></svg>
+      </button>
+    </div>
+  </div>
+  <div class="sg-tripmap-canvas" id="sg-tripmap-canvas" role="img" aria-label="Map of every location mentioned in this guide, from Lake Como to Milan"></div>
+</div>
+<p class="sg-tripmap-hint">💡 Tap or click any pin for what it is and a link straight into Google
+Maps. Pinch or scroll to zoom, drag to pan, and use the
+<svg class="sg-icon" aria-hidden="true" style="width:0.9em;height:0.9em;vertical-align:-0.1em"><use href="#icon-maximize"></use></svg>
+button for a fullscreen view. This part of the page needs a connection to load the map tiles —
+see the offline note below.</p>
+</section>
+
 
 <section>
-<h2>Lake Como &amp; Bellagio 🚤 <span class="sg-level-badge">Days 1&ndash;4</span></h2>
+<h2 data-toc="Days 1&ndash;4 — Lake Como &amp; Bellagio">Lake Como &amp; Bellagio 🚤 <span class="sg-level-badge">Days 1&ndash;4</span></h2>
 <p>Lake Como is shaped like an upside-down Y, and Bellagio sits right at the point where its three
 arms meet — which is exactly why the town has been called <em>"the Pearl of Lake Como"</em> 💎 since
 the 19th century. Wisteria-draped stepped lanes, ferry horns, and lake breezes with the specific
@@ -511,7 +512,7 @@ way on purpose: slow mornings, boat rides instead of trains, and nothing that st
 </section>
 
 <section>
-<h2>Ortisei &amp; the Dolomites ⛰️ <span class="sg-level-badge">Days 5&ndash;8</span></h2>
+<h2 data-toc="Days 5&ndash;8 — Ortisei &amp; Dolomites">Ortisei &amp; the Dolomites ⛰️ <span class="sg-level-badge">Days 5&ndash;8</span></h2>
 <p>Val Gardena is Ladin-speaking territory — Ladin is a Romance language predating both Italian and
 German in this valley, and Ortisei (Urtijëi in Ladin, St. Ulrich in German) still runs on all
 three. Road signs, menus, and church services alternate between them. This is also where the trip
@@ -707,7 +708,7 @@ the Alps further west — you're looking at fossilized coral reef 🪸 standing 
 </section>
 
 <section>
-<h2>Venice 🛶 <span class="sg-level-badge">Days 9&ndash;11</span></h2>
+<h2 data-toc="Days 9&ndash;11 — Venice">Venice 🛶 <span class="sg-level-badge">Days 9&ndash;11</span></h2>
 <p>Venice is built on roughly 118 small islands linked by some 400 bridges, all sitting on wooden
 piles driven into the lagoon mud centuries ago — the city is, structurally, standing on an upside-
 down forest. There are no cars anywhere in the historic center, which is the single biggest reason
@@ -873,7 +874,7 @@ it feels unlike anywhere else on this trip: every sound is a footstep, an oar, o
 </section>
 
 <section>
-<h2>Florence 🎨 <span class="sg-level-badge">Days 12&ndash;14</span></h2>
+<h2 data-toc="Days 12&ndash;14 — Florence">Florence 🎨 <span class="sg-level-badge">Days 12&ndash;14</span></h2>
 <p>Florence is a small city that happens to hold an outsized share of the Western art canon 🖌️ —
 the Renaissance essentially started here in the early 1400s, funded by Medici banking money and a
 cluster of artists (Brunelleschi, Donatello, Botticelli, Michelangelo, Leonardo) who mostly knew
@@ -1013,7 +1014,7 @@ across.</p>
 </section>
 
 <section>
-<h2>Tuscany 🍇 <span class="sg-level-badge">Days 15&ndash;17</span></h2>
+<h2 data-toc="Days 15&ndash;17 — Tuscany">Tuscany 🍇 <span class="sg-level-badge">Days 15&ndash;17</span></h2>
 <p>This is the rental-car leg 🚗 — the only stretch of the trip where you're driving yourselves,
 which is exactly right for Tuscany's back roads between hill towns, vineyards, and cypress-lined
 farm lanes. San Gimignano and Siena are both proudly independent hill towns with centuries of
@@ -1149,7 +1150,7 @@ symbols still carry that old rivalry.</p>
 </section>
 
 <section>
-<h2>Cinque Terre &amp; Portovenere 🌊 <span class="sg-level-badge">Days 18&ndash;21</span></h2>
+<h2 data-toc="Days 18&ndash;21 — Cinque Terre">Cinque Terre &amp; Portovenere 🌊 <span class="sg-level-badge">Days 18&ndash;21</span></h2>
 <p>The whole coastline here — Portovenere, the five Cinque Terre villages, and the islands offshore
 — is a single UNESCO World Heritage Site 🏆, protected specifically because it's one of the last
 stretches of Ligurian coast where centuries-old terraced vineyards, pastel fishing villages, and
@@ -1343,7 +1344,7 @@ point is the vertical drama of village meeting cliff meeting sea.</p>
 </section>
 
 <section>
-<h2>Milan 🏛️ <span class="sg-level-badge">Days 22&ndash;24</span></h2>
+<h2 data-toc="Days 22&ndash;24 — Milan">Milan 🏛️ <span class="sg-level-badge">Days 22&ndash;24</span></h2>
 <p>Milan closes the loop where it opened — back to the city you flew into, but with almost three
 weeks of context behind you. It's Italy's financial and fashion 🛍️ capital rather than its
 historical showpiece, which makes it a good decompression stop: fewer must-see checkboxes, more
